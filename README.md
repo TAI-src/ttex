@@ -1,2 +1,2 @@
-# tex
-Tools for (jax) experiments
+# ttex
+Tracking Tools for (jax) EXperiments

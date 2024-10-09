@@ -33,5 +33,6 @@ jobs:
     with:
       docker-service: ttex
       lint-src: ttex
+    secrets:
       pr_token: ${{ secrets.GITHUB_TOKEN }}
 

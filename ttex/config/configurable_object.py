@@ -7,13 +7,10 @@ from ttex.config.config import Config, ConfigFactory
 logger = logging.getLogger("DefaultLogger")
 
 
-C = TypeVar("C", bound=Config)
-
-
 class ConfigurableObject(ABC):  # pylint: disable=too-few-public-methods
     config_class = Config
 
-    def __init__(self, config: C, *args, **kwargs):
+    def __init__(self, config: Config, *args, **kwargs):
         self.config = config
         if not isinstance(config, self.config_class):
             logger.warning(
@@ -35,7 +32,9 @@ class ConfigurableObjectFactory(ABC):  # pylint: disable=too-few-public-methods
     """Utility to create a Configurable Object"""
 
     @staticmethod
-    def create(configurable_object_class: Type[T], config: C, *args, **kwargs) -> T:
+    def create(
+        configurable_object_class: Type[T], config: Config, *args, **kwargs
+    ) -> T:
         """Create configurable object with the given config
 
          Args:

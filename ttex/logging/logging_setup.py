@@ -2,6 +2,7 @@
 import logging
 import logging.config
 import copy
+from typing import cast
 
 logging_config = {
     "version": 1,
@@ -50,7 +51,7 @@ def initiate_logger(log_level: int):
     If given log level is not recognised, set to default
     """
 
-    config = copy.deepcopy(logging_config)
+    config = cast(dict, copy.deepcopy(logging_config))
 
     chosen_level = logging.getLevelName(log_level)
     chosen_level_exists = chosen_level != f"Level {log_level}"

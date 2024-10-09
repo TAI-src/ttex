@@ -1,0 +1,14 @@
+# docker-compose run ttex bash
+
+services:
+
+  ttex:
+    container_name: ttex
+    env_file: .env
+    image: ttex
+    build:
+        context: ..
+        dockerfile: docker/Dockerfile
+    volumes:
+      - ../ttex:/ttex
+      - ../tests:/tests

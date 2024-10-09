@@ -22,7 +22,6 @@ on:
         required: false
         default: "Manually trigger ci"
 
-
 jobs:
   run-ci:
     uses: TAI-src/workflows/.github/workflows/ci.yml@main

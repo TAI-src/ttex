@@ -20,7 +20,7 @@ on:
       reason:
         description: "Reason for Running"
         required: false
-        default: "Manually trigger testing and linting"
+        default: "Manually trigger ci"
 
 jobs:
   run-ci:

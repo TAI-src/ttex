@@ -1,6 +1,7 @@
 from ttex.config import Config, ConfigFactory
 from .. import dummy_log_handler
 
+
 class DummyConfig(Config):
     def __init__(self, a, b, c=None, d=3):
         self.a = a

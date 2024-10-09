@@ -13,7 +13,7 @@ C = TypeVar("C", bound=Config)
 class ConfigurableObject(ABC):  # pylint: disable=too-few-public-methods
     config_class = Config
 
-    def __init__(self, config: C):
+    def __init__(self, config: C, *args, **kwargs):
         self.config = config
         if not isinstance(config, self.config_class):
             logger.warning(

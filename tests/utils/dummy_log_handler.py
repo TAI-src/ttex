@@ -50,5 +50,6 @@ logging_config = {
 
 logging.config.dictConfig(logging_config)
 
+# TODO: might need to think about whether to explicitly name?
 logger = logging.getLogger("DefaultLogger")
 dummy_log_handler = logger.handlers[0]

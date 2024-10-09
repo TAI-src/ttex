@@ -28,4 +28,3 @@ jobs:
     with:
       docker-service: ttex
       lint-src: ttex
-    secrets: inherit

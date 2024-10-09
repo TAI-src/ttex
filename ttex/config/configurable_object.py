@@ -32,7 +32,9 @@ class ConfigurableObjectFactory(ABC):  # pylint: disable=too-few-public-methods
     """Utility to create a Configurable Object"""
 
     @staticmethod
-    def create(configurable_object_class: Type[T], config: Config, *args, **kwargs) -> T:
+    def create(
+        configurable_object_class: Type[T], config: Config, *args, **kwargs
+    ) -> T:
         """Create configurable object with the given config
 
          Args:

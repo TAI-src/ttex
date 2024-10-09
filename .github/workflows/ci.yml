@@ -24,7 +24,7 @@ on:
 
 jobs:
   run-ci:
-    uses: TAI-src/workflows/.github/workflows/ci.yml@main
+    uses: TAI-src/workflows/.github/workflows/ci.yml@fix/init
     with:
       docker-service: ttex
       lint-src: ttex

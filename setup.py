@@ -1,11 +1,10 @@
 from distutils.core import setup
+from setuptools import find_packages
 
 setup(
     name="tai_ttex",
     version="0.1",
-    packages=[
-        "ttex",
-    ],
+    packages=find_packages(),
     install_requires=[],
     license="GPL3",
     long_description="Tool for experiments",

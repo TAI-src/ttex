@@ -1,0 +1,23 @@
+name: Testing and Linting
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - "**.md"
+      - "docker/**"
+  workflow_dispatch: # allow triggering workflow manually
+    inputs:
+      reason:
+        description: "Reason for Running"
+        required: false
+        default: "Manually trigger ci"
+
+jobs:
+  release:
+    uses: TAI-src/.github/.github/workflows/release-python.yml@feat/release
+    with:
+      pkg-src: .
+    secrets: inherit

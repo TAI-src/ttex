@@ -37,8 +37,6 @@ jobs:
         with:
           env-var: MY_VERSION
           args: --style semver
-      - run: |
-      	echo $MY_VERSION
-      	sed -i '/__version__ = /s/.*/__version__ = "'${MY_VERSION}'"/' setup.py
-      # Commit all changed files back to the repository
+      - run: echo $MY_VERSION
+      - run: sed -i '/__version__ = /s/.*/__version__ = "'${MY_VERSION}'"/' setup.py
       - uses: stefanzweifel/git-auto-commit-action@v5

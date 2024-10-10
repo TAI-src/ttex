@@ -1,4 +1,4 @@
-name: Testing and Linting
+name: Release
 
 on:
   push:

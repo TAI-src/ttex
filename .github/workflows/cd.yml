@@ -16,7 +16,7 @@ on:
         default: "Manually trigger ci"
 
 jobs:
-  release:
+  release-build:
     uses: TAI-src/.github/.github/workflows/release-python.yml@main
     permissions:
       # IMPORTANT: this permission is mandatory for trusted publishing

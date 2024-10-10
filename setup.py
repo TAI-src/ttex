@@ -1,7 +1,7 @@
 from distutils.core import setup
 from setuptools import find_packages
 
-__version__ = "0.0.0-post.42+df4ce69"
+__version__ = "0.0.0-post.43+4683e6e"
 
 setup(
     name="tai_ttex",

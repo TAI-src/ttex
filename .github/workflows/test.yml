@@ -33,6 +33,7 @@ jobs:
         with:
           # This is necessary so that we have the tags.
           fetch-depth: 0
+          token: ${{ secrets.CID_PAT }}
       - uses: mtkennerly/dunamai-action@v1
         with:
           env-var: MY_VERSION
@@ -40,3 +41,5 @@ jobs:
       - run: echo $MY_VERSION
       - run: sed -i '/__version__ = /s/.*/__version__ = "'${MY_VERSION}'"/' setup.py
       - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Version Push

@@ -18,6 +18,9 @@ on:
 jobs:
   release:
     uses: TAI-src/.github/.github/workflows/release-python.yml@feat/release
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
     with:
       pkg-src: .
     secrets: inherit

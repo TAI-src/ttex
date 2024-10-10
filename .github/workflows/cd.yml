@@ -8,13 +8,6 @@ on:
       - 'docs/**'
       - "**.md"
       - "docker/**"
-  pull_request:
-    branches:
-      - main
-    paths-ignore:
-      - 'docs/**'
-      - "**.md"
-      - "docker/**"
   workflow_dispatch: # allow triggering workflow manually
     inputs:
       reason:

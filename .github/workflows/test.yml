@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.triggering_actor != 'github-actions[bot]' && github.triggering_actor != 'auto-cid'
     steps:
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - uses: actions/checkout@v4

@@ -1,0 +1,40 @@
+name: Testing and Linting
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - "**.md"
+      - "docker/**"
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - "**.md"
+      - "docker/**"
+  workflow_dispatch: # allow triggering workflow manually
+    inputs:
+      reason:
+        description: "Reason for Running"
+        required: false
+        default: "Manually trigger ci"
+
+jobs:
+  example:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - uses: actions/checkout@v4
+        with:
+          # This is necessary so that we have the tags.
+          fetch-depth: 0
+      - uses: mtkennerly/dunamai-action@v1
+        with:
+          env-var: MY_VERSION
+          args: --style semver
+      - run: echo $MY_VERSION

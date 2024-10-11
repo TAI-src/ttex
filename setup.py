@@ -1,9 +1,11 @@
 from distutils.core import setup
 from setuptools import find_packages
 
+__version__ = "0.0.0-post.49+4257840"
+
 setup(
     name="tai_ttex",
-    version="0.1",
+    version=__version__,
     packages=find_packages(),
     install_requires=[],
     license="GPL3",

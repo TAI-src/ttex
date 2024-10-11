@@ -17,7 +17,7 @@ on:
 
 jobs:
   release-build:
-    uses: TAI-src/.github/.github/workflows/release-python.yml@feat/release
+    uses: TAI-src/.github/.github/workflows/release-python.yml@main
     permissions:
       # IMPORTANT: this permission is mandatory for trusted publishing
       contents: read

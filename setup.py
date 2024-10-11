@@ -5,7 +5,7 @@ __version__ = "0.0.0-post.49+4257840"
 
 setup(
     name="tai_ttex",
-    version = __version__,
+    version=__version__,
     packages=find_packages(),
     install_requires=[],
     license="GPL3",

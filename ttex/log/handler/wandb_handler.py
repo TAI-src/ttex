@@ -4,14 +4,16 @@ import wandb
 import json
 import ast
 
+
 class WandbHandler(logging.Handler):
     """
     Handler that will emit results to wandb
     """
+
     def __init__(self, wandb_args: Dict, level=logging.NOTSET):
         super().__init__(level)
         self.wandb_args = wandb_args
-        
+
         assert "project" in wandb_args
         assert "config" in wandb_args
 
@@ -22,7 +24,7 @@ class WandbHandler(logging.Handler):
             config=wandb_args["config"],
         )
 
-    def emit(self,record):
+    def emit(self, record):
         msg = record.getMessage()
         try:
             msg_dict = ast.literal_eval(msg)
@@ -30,4 +32,3 @@ class WandbHandler(logging.Handler):
             wandb.log(msg_dict)
         except ValueError as e:
             pass
-

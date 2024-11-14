@@ -4,6 +4,7 @@ from typing import Optional
 
 # Based on https://stackoverflow.com/questions/50144628/python-logging-into-file-as-a-dictionary-or-json
 
+
 class JsonFormatter(logging.Formatter):
     """
     Formatter that outputs JSON strings after parsing the LogRecord.
@@ -12,7 +13,13 @@ class JsonFormatter(logging.Formatter):
     @param str time_format: time.strftime() format string. Default: "%Y-%m-%dT%H:%M:%S"
     @param str msec_format: Microsecond formatting. Appended at the end. Default: "%s.%03dZ"
     """
-    def __init__(self, fmt_dict: Optional[dict] = None, time_format: str = "%Y-%m-%dT%H:%M:%S", msec_format: str = "%s.%03dZ"):
+
+    def __init__(
+        self,
+        fmt_dict: Optional[dict] = None,
+        time_format: str = "%Y-%m-%dT%H:%M:%S",
+        msec_format: str = "%s.%03dZ",
+    ):
         self.fmt_dict = fmt_dict if fmt_dict is not None else {"message": "message"}
         self.default_time_format = time_format
         self.default_msec_format = msec_format
@@ -26,10 +33,13 @@ class JsonFormatter(logging.Formatter):
 
     def _formatMessage(self, record) -> dict:
         """
-        Overwritten to return a dictionary of the relevant LogRecord attributes instead of a string. 
-        KeyError is raised if an unknown attribute is provided in the fmt_dict. 
+        Overwritten to return a dictionary of the relevant LogRecord attributes instead of a string.
+        KeyError is raised if an unknown attribute is provided in the fmt_dict.
         """
-        return {fmt_key: record.__dict__[fmt_val] for fmt_key, fmt_val in self.fmt_dict.items()}
+        return {
+            fmt_key: record.__dict__[fmt_val]
+            for fmt_key, fmt_val in self.fmt_dict.items()
+        }
 
     def format(self, record) -> str:
         """

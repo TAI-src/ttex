@@ -1,13 +1,13 @@
 import logging
 from ttex.log.handler import WandbHandler
 import os
-import pkg_resources
 import shutil
+from importlib.metadata import version
 
 def test_wandb_handler():
     prev_mode = os.environ.get("WANDB_MODE", "online")
     os.environ["WANDB_MODE"] = "offline"
-    ttex_version = pkg_resources.require("tai_ttex")[0].version
+    ttex_version = version("tai_ttex")
     wandb_args = {
         "project": "ci-cd",
         "config": {"repo": "ttex",
@@ -19,6 +19,7 @@ def test_wandb_handler():
 
     logger.addHandler(handler)
     logger.info("test")
+    logger.info({"test":"test"})
     os.environ["WANDB_MODE"] = prev_mode
 
     shutil.rmtree(handler.run.dir)

@@ -1,6 +1,8 @@
 import logging
 from typing import Dict
 import wandb
+import json
+import ast
 
 class WandbHandler(logging.Handler):
     """
@@ -22,5 +24,10 @@ class WandbHandler(logging.Handler):
 
     def emit(self,record):
         msg = record.getMessage()
-        if isinstance(msg, dict):
-            wandb.log(msg)
+        try:
+            msg_dict = ast.literal_eval(msg)
+            assert isinstance(msg_dict, dict)
+            wandb.log(msg_dict)
+        except ValueError as e:
+            pass
+

@@ -14,15 +14,7 @@ class WandbHandler(logging.Handler):
         super().__init__(level)
         self.wandb_args = wandb_args
 
-        assert "project" in wandb_args
-        assert "config" in wandb_args
-
-        self.run = wandb.init(
-            # Set the project where this run will be logged
-            project=wandb_args["project"],
-            # Track hyperparameters and run metadata
-            config=wandb_args["config"],
-        )
+        self.run = wandb.init(**wandb_args)
 
     def emit(self, record):
         msg = record.getMessage()

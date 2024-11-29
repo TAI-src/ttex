@@ -5,10 +5,29 @@ services:
   ttex:
     container_name: ttex
     env_file: .env
-    image: ttex
+    image: taisrc/ttex
     build:
         context: ..
         dockerfile: docker/Dockerfile
     volumes:
       - ../ttex:/ttex
       - ../tests:/tests
+      
+  wandb_launcher:
+    container_name: wandb_launcher
+    env_file: .env
+    image: taisrc/wandb:launcher
+    privileged: true
+    build:
+        context: ..
+        dockerfile: docker/Dockerfile_launcher
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      
+  wandb_job:
+    container_name: wandb_job
+    env_file: .env
+    image: taisrc/wandb:job
+    build:
+        context: ..
+        dockerfile: docker/Dockerfile_job

@@ -6,7 +6,8 @@ from importlib.metadata import version
 from typing import Dict, Optional
 from wandb.sdk import launch
 
-def test_wandb_handler(config:Optional[Dict]=None):
+
+def test_wandb_handler(config: Optional[Dict] = None):
     # Update config
     ttex_version = version("tai_ttex")
     config_override = {"repo": "ttex", "version": ttex_version}
@@ -34,12 +35,13 @@ def test_wandb_handler(config:Optional[Dict]=None):
 
     # Remove logging files
     shutil.rmtree(handler.run.dir)
-    
+
     if not config:
-      # Iff available, reset the mode
-      os.environ["WANDB_MODE"] = prev_mode
-      
-if __name__ == '__main__':
+        # Iff available, reset the mode
+        os.environ["WANDB_MODE"] = prev_mode
+
+
+if __name__ == "__main__":
     # This is to test launch from wandb
     if not os.environ.get("WANDB_CONFIG", None):
         raise RuntimeError("Needs to be launched from wandb")

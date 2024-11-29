@@ -7,6 +7,9 @@ WORKDIR /ttex
 COPY setup.py setup.py
 COPY ttex ttex
 
+# Launcher script
+COPY launch.sh launch.sh
+
 RUN pip install -e .
 
 WORKDIR /tests

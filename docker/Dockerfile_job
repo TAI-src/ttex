@@ -1,0 +1,5 @@
+FROM taisrc/ttex
+WORKDIR /ttex
+COPY tests/log/test_wandb_handler.py wandb_test.py
+ENV ENTRY_PATH=wandb_test.py
+ENTRYPOINT ["./launch.sh", "-j"]

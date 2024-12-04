@@ -2,7 +2,7 @@ from ttex.config import (
     ConfigurableObject,
     ConfigurableObjectFactory,
 )
-from . import DummyConfig, EmptyConfig
+from . import DummyConfig, EmptyConfig, dict_config
 from .. import dummy_log_handler
 
 
@@ -20,7 +20,7 @@ def test_configurable_object():
     conf_obj = DummyConfigurableObject(config, "test")
 
     # init
-    assert conf_obj.config_class == type(config)
+    assert conf_obj.config_class is type(config)
 
     # apply config
     for arg in ["a", "b", "c", "d"]:
@@ -49,3 +49,7 @@ def test_create():
         assert getattr(conf_obj, arg) == getattr(config, arg)
     assert getattr(conf_obj, "args_test") == "test"
     assert getattr(conf_obj, "kwargs_test") == "kwargs_test"
+
+
+def test_from_dict():
+    ConfigurableObjectFactory.from_dict(dict_config, DummyConfig)

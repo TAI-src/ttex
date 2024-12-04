@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import TypeVar, Type
+from typing import TypeVar, Type, Union, Dict
 import logging
 
 from ttex.config.config import Config, ConfigFactory
@@ -33,7 +33,7 @@ class ConfigurableObjectFactory(ABC):  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def create(
-        configurable_object_class: Type[T], config: Config, *args, **kwargs
+        configurable_object_class: Type[T], config: Union[Dict, Config], *args, **kwargs
     ) -> T:
         """Create configurable object with the given config
 
@@ -46,6 +46,10 @@ class ConfigurableObjectFactory(ABC):  # pylint: disable=too-few-public-methods
             configurable object (T:Configurable object):
                 the configured configurable object
         """
+        if isinstance(config, dict):
+            config = ConfigFactory.from_dict(
+                config, configurable_object_class.config_class
+            )
 
         # TODO should try force-casting
         if not isinstance(config, configurable_object_class.config_class):

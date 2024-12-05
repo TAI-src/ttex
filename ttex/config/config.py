@@ -62,11 +62,12 @@ class ConfigFactory(ABC):
     @staticmethod
     def _extract_attr(full_name: str, context: Optional[Dict] = None):
         # Split the string, will throw value error if there is no .
+        module_name: Optional[str] = None
         try:
             module_name, class_name = full_name.rsplit(".", 1)
         except ValueError:
             # We do not enforce . - class could already be loaded
-            module_name = None
+            pass
         if module_name:
             # load the module, will raise ImportError if module cannot be loaded
             try:

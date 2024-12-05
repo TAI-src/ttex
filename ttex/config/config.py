@@ -62,7 +62,7 @@ class ConfigFactory(ABC):
     @staticmethod
     def _extract_attr(full_name: str, context: Optional[Dict] = None):
         # Split the string, will throw value error if there is no .
-        module_name: Optional[str] = None
+        module_name = None  # type: Optional[str]
         try:
             module_name, class_name = full_name.rsplit(".", 1)
         except ValueError:

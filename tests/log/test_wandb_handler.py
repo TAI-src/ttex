@@ -5,6 +5,7 @@ import shutil
 from importlib.metadata import version
 from typing import Dict, Optional
 from wandb.sdk import launch
+import wandb
 
 
 def test_wandb_handler(config: Optional[Dict] = None):
@@ -24,8 +25,9 @@ def test_wandb_handler(config: Optional[Dict] = None):
         config.update(config_override)
         # No project here because that is determined at launch
         wandb_args = {"config": config}
+    run = wandb.init(**wandb_args)
 
-    handler = WandbHandler(wandb_args)
+    handler = WandbHandler(run)
     logger = logging.getLogger("test_wandb_handler")
     logger.setLevel(logging.DEBUG)
 

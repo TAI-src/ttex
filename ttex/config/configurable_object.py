@@ -1,6 +1,7 @@
 from abc import ABC
-from typing import TypeVar, Type
+from typing import TypeVar, Type, Union, Dict, Optional
 import logging
+import os
 
 from ttex.config.config import Config, ConfigFactory
 
@@ -33,19 +34,34 @@ class ConfigurableObjectFactory(ABC):  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def create(
-        configurable_object_class: Type[T], config: Config, *args, **kwargs
+        configurable_object_class: Type[T],
+        config: Union[Dict, Config, str],
+        *args,
+        context: Optional[Dict] = None,
+        **kwargs,
     ) -> T:
         """Create configurable object with the given config
 
          Args:
             configurable_object_class (Type[T: ConfigurableObject]):
                  They type of configurable object being created
-            config (Config): The config for the object
+            config (Config/Dict/str): The config for the object
+                 Can be passed directly as a config object,
+                 its dict representation or as a file path
+                 to a json containing the dict
 
         Returns:
             configurable object (T:Configurable object):
                 the configured configurable object
         """
+        if isinstance(config, str):
+            # Assuming this is a file path, load from file
+            assert ".json" in config
+            assert os.path.exists(config)
+            config = ConfigFactory.from_file(config, context=context)
+
+        if isinstance(config, dict):
+            config = ConfigFactory.from_dict(config, context=context)
 
         # TODO should try force-casting
         if not isinstance(config, configurable_object_class.config_class):

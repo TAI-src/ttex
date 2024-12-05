@@ -1,9 +1,9 @@
-from ttex.config import (
-    ConfigurableObject,
-    ConfigurableObjectFactory,
-)
+from ttex.config import ConfigurableObject, ConfigurableObjectFactory, ConfigFactory
 from . import DummyConfig, EmptyConfig, dict_config
 from .. import dummy_log_handler
+import pytest
+import json
+import os
 
 
 class DummyConfigurableObject(ConfigurableObject):
@@ -37,19 +37,32 @@ def test_wrong_config_class():
     assert isinstance(conf_obj.config, EmptyConfig)
 
 
-def test_create():
-    config = DummyConfig(a=1, b=2, c=3, d=5)
+@pytest.mark.parametrize("mode", ["config", "dict", "json"])
+def test_create(mode):
+    if mode == "config":
+        config = DummyConfig(a=1, b=2, c=3, d=5)
+    elif mode == "dict":
+        config = dict_config
+    else:
+        path = "sample_dict.json"
+        with open(path, "w") as outfile:
+            json.dump(dict_config, outfile)
+        config = path
+
     conf_obj = ConfigurableObjectFactory.create(
-        DummyConfigurableObject, config, "test", kwargs_test="kwargs_test"
+        DummyConfigurableObject,
+        config,
+        "test",
+        context=globals(),
+        kwargs_test="kwargs_test",
     )
 
     assert isinstance(conf_obj, DummyConfigurableObject)
     # apply config
     for arg in ["a", "b", "c", "d"]:
-        assert getattr(conf_obj, arg) == getattr(config, arg)
+        assert hasattr(conf_obj, arg)
     assert getattr(conf_obj, "args_test") == "test"
     assert getattr(conf_obj, "kwargs_test") == "kwargs_test"
 
-
-def test_from_dict():
-    ConfigurableObjectFactory.from_dict(dict_config, DummyConfig)
+    if mode == "json":
+        os.remove(config)

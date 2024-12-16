@@ -45,3 +45,12 @@ jobs:
           path: ./dist/
       - name: Publish release distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        
+  release-docker:
+    if: github.triggering_actor == 'auto-cid'
+    uses: TAI-src/.github/.github/workflows/release-docker.yml@main
+    permissions:
+        contents: read
+    with:
+        docker-dir: docker
+    secrets: inherit

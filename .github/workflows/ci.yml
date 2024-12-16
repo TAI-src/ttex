@@ -46,9 +46,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - uses: actions/checkout@v4
-      - name: Build the stack
+      - name: Build and push
         run: |
           cd docker
           docker compose build
-      - name: Push to Dockerhub
-        run: docker compose push
+          docker compose push

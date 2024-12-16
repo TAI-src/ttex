@@ -38,7 +38,7 @@ jobs:
     
     
   release-docker:
-    uses: TAI-src/.github/.github/workflows/release-docker.yml@release-docker
+    uses: TAI-src/.github/.github/workflows/release-docker.yml@feat/release-docker
     permissions:
         contents: read
     with:

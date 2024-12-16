@@ -25,6 +25,7 @@ def test_wandb_handler(config: Optional[Dict] = None):
         config.update(config_override)
         # No project here because that is determined at launch
         wandb_args = {"config": config}
+
     run = wandb.init(**wandb_args)
 
     handler = WandbHandler(run)
@@ -32,8 +33,8 @@ def test_wandb_handler(config: Optional[Dict] = None):
     logger.setLevel(logging.DEBUG)
 
     logger.addHandler(handler)
-    logger.info("test")
-    logger.info({"test": "test"})
+    for i in range(3):
+        logger.info({"test": i})
 
     # Remove logging files
     shutil.rmtree(handler.run.dir)

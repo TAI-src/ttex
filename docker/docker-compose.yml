@@ -31,3 +31,7 @@ services:
     build:
         context: ..
         dockerfile: docker/Dockerfile_job
+    volumes:
+      - ../ttex:/ttex
+      - ../tests:/tests
+    entrypoint: bash

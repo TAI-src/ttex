@@ -49,5 +49,6 @@ jobs:
       - name: Build and push
         run: |
           cd docker
+          touch .env
           docker compose build
           docker compose push

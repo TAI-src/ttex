@@ -1,7 +1,7 @@
 import logging
-import wandb
 import ast
 from wandb.sdk.wandb_run import Run
+from typing import Optional
 
 
 class WandbHandler(logging.Handler):
@@ -15,9 +15,12 @@ class WandbHandler(logging.Handler):
 
     def emit(self, record):
         msg = record.getMessage()
+        step = record.step if hasattr(record, "step") else None
+        commit = record.commit if hasattr(record, "commit") else None
+
         try:
             msg_dict = ast.literal_eval(msg)
             assert isinstance(msg_dict, dict)
-            wandb.log(msg_dict)
+            self.run.log(msg_dict, step=step, commit=commit)
         except ValueError:
             pass

@@ -44,6 +44,11 @@ def test_wandb_handler(config: Optional[Dict] = None):
         os.environ["WANDB_MODE"] = prev_mode
 
 
+def test_without_run():
+    logger = logging.getLogger("test_wandb_handler")
+    logger.info({"test": 5}, extra={"step": 10})
+
+
 if __name__ == "__main__":
     # This is to test launch from wandb
     if not os.environ.get("WANDB_CONFIG", None):

@@ -49,6 +49,11 @@ def test_without_run():
     logger.info({"test": 5}, extra={"step": 10})
 
 
+def test_with_non_dict():
+    logger = logging.getLogger("test_wandb_handler")
+    logger.warning("i encountered an error")
+
+
 if __name__ == "__main__":
     # This is to test launch from wandb
     if not os.environ.get("WANDB_CONFIG", None):

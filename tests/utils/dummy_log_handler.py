@@ -1,6 +1,7 @@
 import logging
 import logging.config
 import copy
+from ttex.log import initiate_logger
 
 
 # This is a test handler so it is easy to capture what was logged
@@ -48,8 +49,10 @@ logging_config = {
     },
 }
 
-logging.config.dictConfig(logging_config)
+initiate_logger(
+    log_level=10, logger_name="DefaultLogger", logging_config=logging_config
+)
 
-# TODO: might need to think about whether to explicitly name?
+
 logger = logging.getLogger("DefaultLogger")
 dummy_log_handler = logger.handlers[0]

@@ -1,8 +1,10 @@
 import logging
 import ast
 from wandb.sdk.wandb_run import Run
+from typing import Optional, Dict
+from ttex.log import LOGGER_NAME
 
-logger = logging.getLogger()
+logger = logging.getLogger(LOGGER_NAME)
 
 
 class WandbHandler(logging.Handler):
@@ -10,9 +12,19 @@ class WandbHandler(logging.Handler):
     Handler that will emit results to wandb
     """
 
-    def __init__(self, wandb_run: Run, level=logging.NOTSET):
+    def __init__(
+        self,
+        wandb_run: Run,
+        custom_metrics: Optional[Dict] = None,
+        level=logging.NOTSET,
+    ):
         super().__init__(level)
         self.run = wandb_run
+        if custom_metrics:
+            for step_metric, metrics in custom_metrics.items():
+                self.run.define_metric(step_metric)
+                for metric in metrics:
+                    self.run.define_metric(metric, step_metric=step_metric)
 
     def emit(self, record):
         msg = record.getMessage()

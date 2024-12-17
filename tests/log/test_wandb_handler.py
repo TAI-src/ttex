@@ -8,6 +8,11 @@ from wandb.sdk import launch
 import wandb
 
 
+def basic_logging(logger):
+    for i in range(3):
+        logger.info({"test": i})
+
+
 def test_wandb_handler(config: Optional[Dict] = None):
     # Update config
     ttex_version = version("tai_ttex")
@@ -42,6 +47,24 @@ def test_wandb_handler(config: Optional[Dict] = None):
     if not config:
         # Iff available, reset the mode
         os.environ["WANDB_MODE"] = prev_mode
+
+
+def test_metrics_setup():
+    prev_mode = os.environ.get("WANDB_MODE", "online")
+    os.environ["WANDB_MODE"] = "offline"
+    run = wandb.init(project="ci-cd", config={})
+
+    custom_metrics = {"env/step": ["env/*"]}
+    handler = WandbHandler(run, custom_metrics)
+    logger = logging.getLogger("test_wandb_handler")
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(handler)
+
+    for env in range(3):
+        for step in range(10):
+            logger.info({f"env/r/{env}": env * step, "env/step": step})
+
+    os.environ["WANDB_MODE"] = prev_mode
 
 
 def test_without_run():

@@ -1,7 +1,6 @@
 import logging
 import ast
 from wandb.sdk.wandb_run import Run
-from typing import Optional
 
 
 class WandbHandler(logging.Handler):

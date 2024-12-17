@@ -44,6 +44,24 @@ def test_wandb_handler(config: Optional[Dict] = None):
         os.environ["WANDB_MODE"] = prev_mode
 
 
+def test_metrics_setup():
+    prev_mode = os.environ.get("WANDB_MODE", "online")
+    os.environ["WANDB_MODE"] = "offline"
+    run = wandb.init(project="ci-cd", config={})
+
+    custom_metrics = {"env/step": ["env/*"]}
+    handler = WandbHandler(run, custom_metrics)
+    logger = logging.getLogger("test_wandb_handler")
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(handler)
+
+    for env in range(3):
+        for step in range(10):
+            logger.info({f"env/r/{env}": env * step, "env/step": step})
+
+    os.environ["WANDB_MODE"] = prev_mode
+
+
 def test_without_run():
     logger = logging.getLogger("test_wandb_handler")
     logger.info({"test": 5}, extra={"step": 10})

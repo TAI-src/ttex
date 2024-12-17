@@ -66,8 +66,9 @@ def initiate_logger(
         logger_name = LOGGER_NAME
     if not logging_config:
         logging_config = get_logging_config(logger_name, disable_existing)
-    assert logger_name in logging_config["loggers"]
     config = cast(dict, copy.deepcopy(logging_config))
+
+    assert logger_name in config["loggers"]
 
     chosen_level = logging.getLevelName(log_level)
     chosen_level_exists = chosen_level != f"Level {log_level}"

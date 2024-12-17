@@ -21,5 +21,5 @@ class WandbHandler(logging.Handler):
             msg_dict = ast.literal_eval(msg)
             assert isinstance(msg_dict, dict)
             self.run.log(msg_dict, step=step, commit=commit)
-        except ValueError:
-            pass
+        except ValueError as e:
+            raise ValueError(str(e))

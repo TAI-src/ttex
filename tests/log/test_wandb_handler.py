@@ -8,11 +8,6 @@ from wandb.sdk import launch
 import wandb
 
 
-def basic_logging(logger):
-    for i in range(3):
-        logger.info({"test": i})
-
-
 def test_wandb_handler(config: Optional[Dict] = None):
     # Update config
     ttex_version = version("tai_ttex")

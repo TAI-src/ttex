@@ -5,6 +5,10 @@ from typing import TypeVar, Type, Union, Dict, Optional
 from inspect import signature, Parameter
 import importlib
 import json
+import logging
+from ttex.log import LOGGER_NAME
+
+logger = logging.getLogger(LOGGER_NAME)
 
 
 # TODO config with separate levels for keys
@@ -147,6 +151,8 @@ class ConfigFactory(ABC):
             for _, p in signa.parameters.items()
             if p.name != "self"
         }
+        logger.debug(values)
+
         # Make sure no non-default params are missing
         assert all([v != Parameter.empty for _, v in values.items()])
         if isinstance(config, dict):

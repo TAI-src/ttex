@@ -1,6 +1,6 @@
 from ttex.config import Config
 from .. import dummy_log_handler
-from typing import Union
+from typing import Union, List, Tuple
 from enum import Enum
 
 
@@ -11,7 +11,12 @@ class DummyEnum(Enum):
 
 class DummyConfig(Config):
     def __init__(
-        self, a: int, b: Union[Config, str], c=None, d=3, e: DummyEnum = DummyEnum.A
+        self,
+        a: int,
+        b: Union[Config, str],
+        c: List[str] = [""],
+        d: Tuple[str, int] = ("", 3),
+        e: DummyEnum = DummyEnum.A,
     ):
         self.a = a
         self.b = b
@@ -35,7 +40,7 @@ dict_config = {
             }
         },
         "c": "ConfigFactory",
-        "d": "d",
+        "d": ["d", 4],
         "e": "DummyEnum.B",
     }
 }

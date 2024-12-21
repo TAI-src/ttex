@@ -27,8 +27,8 @@ def test_extract_empty():
     test_config = ConfigFactory.extract(DummyConfig, config)
     assert test_config.a is not None
     assert test_config.b is not None
-    assert test_config.c is None
-    assert test_config.d == 3
+    assert test_config.c == [""]
+    assert test_config.d == ("", 3)
     assert test_config.e == DummyEnum.A
 
 

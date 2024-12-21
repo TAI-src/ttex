@@ -4,6 +4,7 @@ from .. import dummy_log_handler
 import pytest
 import json
 import os
+import copy
 
 
 class DummyConfigurableObject(ConfigurableObject):
@@ -66,3 +67,29 @@ def test_create(mode):
 
     if mode == "json":
         os.remove(config)
+
+
+def test_extra_param_in_config():
+    config = copy.deepcopy(dict_config)
+    config["DummyConfig"]["abc"] = "test"
+    with pytest.raises(AssertionError):
+        ConfigurableObjectFactory.create(
+            DummyConfigurableObject,
+            config,
+            "test",
+            context=globals(),
+            kwargs_test="kwargs_test",
+        )
+
+
+def test_create_args_wrong():
+    config = dict_config
+    with pytest.raises(TypeError):
+        ConfigurableObjectFactory.create(
+            DummyConfigurableObject,
+            config,
+            "test",
+            context=globals(),
+            kwargs_test="kwargs_test",
+            kwargs_test2="test2",
+        )

@@ -8,7 +8,22 @@ from typing import cast, Optional, Dict
 LOGGER_NAME = "DefaultLogger"
 
 
-def get_logging_config(logger_name: str, disable_existing: Optional[bool] = True):
+def get_logging_config(
+    logger_name: str, disable_existing: Optional[bool] = True
+) -> Dict:
+    """
+    Get a default logging configuration dictionary
+
+    Args:
+        * logger_name: str
+            The name of the logger to set up
+        * disable_existing: bool (optional) default=True
+            Whether to disable existing loggers
+
+    Returns:
+        * config_dict: dict
+            A dictionary containing the logging configuration
+    """
     config_dict = {
         "version": 1,
         "disable_existing_loggers": disable_existing,
@@ -34,7 +49,7 @@ def get_logging_config(logger_name: str, disable_existing: Optional[bool] = True
             logger_name: {
                 "level": "WARNING",
                 "handlers": ["console"],
-            },
+            }
         },
         "root": {
             "level": "WARNING",
@@ -53,9 +68,15 @@ def initiate_logger(
     """
     Convenience function to set the logging level of a given logger
 
-    Parameters:
-      * logger: logging.Logger
-      * log_level: The log level to set to in [0,10, 20, 30, 40, 50]
+    Args:
+        * log_level: int
+            The log level to set to in [0,10, 20, 30, 40, 50]
+        * logger_name: str (optional) default=None
+            The name of the logger to set up
+        * disable_existing: bool (optional) default=True
+            Whether to disable existing loggers
+        * logging_config: dict  (optional) default=None
+            A dictionary containing the logging configuration
 
     For more information on log levels see
     https://docs.python.org/3/library/logging.html#logging-levels

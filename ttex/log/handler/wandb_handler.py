@@ -9,7 +9,10 @@ logger = logging.getLogger(LOGGER_NAME)
 
 class WandbHandler(logging.Handler):
     """
-    Handler that will emit results to wandb
+    Handler that will emit results to wandb.
+
+    Attributes:
+        run (Run): The wandb run object.
     """
 
     def __init__(
@@ -18,6 +21,14 @@ class WandbHandler(logging.Handler):
         custom_metrics: Optional[Dict] = None,
         level=logging.NOTSET,
     ):
+        """
+        Initialize the WandbHandler with the given wandb run, custom metrics, and logging level.
+
+        Args:
+            wandb_run (Run): The wandb run object.
+            custom_metrics (Optional[Dict]): A dictionary of custom metrics to define.
+            level (int): The logging level.
+        """
         super().__init__(level)
         self.run = wandb_run
         if custom_metrics:
@@ -27,6 +38,12 @@ class WandbHandler(logging.Handler):
                     self.run.define_metric(metric, step_metric=step_metric)
 
     def emit(self, record):
+        """
+        Emit a log record to wandb.
+
+        Args:
+            record (LogRecord): The log record to emit.
+        """
         msg = record.getMessage()
         step = record.step if hasattr(record, "step") else None
         commit = record.commit if hasattr(record, "commit") else None

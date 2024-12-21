@@ -9,6 +9,16 @@ LOGGER_NAME = "DefaultLogger"
 
 
 def get_logging_config(logger_name: str, disable_existing: Optional[bool] = True):
+    """
+    Get the logging configuration dictionary.
+
+    Args:
+        logger_name (str): The name of the logger.
+        disable_existing (Optional[bool]): Whether to disable existing loggers. Default is True.
+
+    Returns:
+        dict: The logging configuration dictionary.
+    """
     config_dict = {
         "version": 1,
         "disable_existing_loggers": disable_existing,
@@ -51,17 +61,18 @@ def initiate_logger(
     logging_config: Optional[Dict] = None,
 ):
     """
-    Convenience function to set the logging level of a given logger
+    Convenience function to set the logging level of a given logger.
 
-    Parameters:
-      * logger: logging.Logger
-      * log_level: The log level to set to in [0,10, 20, 30, 40, 50]
+    Args:
+        log_level (int): The log level to set to in [0, 10, 20, 30, 40, 50].
+        logger_name (Optional[str]): The name of the logger. Default is None.
+        disable_existing (Optional[bool]): Whether to disable existing loggers. Default is True.
+        logging_config (Optional[Dict]): The logging configuration dictionary. Default is None.
 
     For more information on log levels see
     https://docs.python.org/3/library/logging.html#logging-levels
-    If given log level is not recognised, set to default
+    If given log level is not recognised, set to default.
     """
-
     if not logger_name:
         logger_name = LOGGER_NAME
     if not logging_config:
@@ -74,13 +85,6 @@ def initiate_logger(
     chosen_level_exists = chosen_level != f"Level {log_level}"
     if chosen_level_exists:  # Level exists - so change accordingly
         config["loggers"][logger_name]["level"] = chosen_level
-        # TODO: potential debugging help for level issues
-        # handler_names = config["loggers"][logger_name]["handlers"]
-        # handler_levels = [
-        #    handler["level"]
-        #    for handler_name, handler in logging_config["handler"].items()
-        #    if handler_name in handler_names
-        # ]
 
     logging.config.dictConfig(config)
 

@@ -1,9 +1,10 @@
 from ttex.config import Config, ConfigFactory
-from . import DummyConfig, dict_config
+from . import DummyConfig, dict_config, DummyEnum
 import pytest
 from logging import Handler
 import os
 import json
+import copy
 
 
 def test_get_val():
@@ -19,12 +20,16 @@ def test_get_val():
 
 
 def test_extract_empty():
-    config = Config()
+    config = {}
+    with pytest.raises(AssertionError):
+        ConfigFactory.extract(DummyConfig, config)
+    config = {"a": 5, "b": 2}
     test_config = ConfigFactory.extract(DummyConfig, config)
-    assert test_config.a is None
-    assert test_config.b is None
+    assert test_config.a is not None
+    assert test_config.b is not None
     assert test_config.c is None
     assert test_config.d == 3
+    assert test_config.e == DummyEnum.A
 
 
 def test_extract():
@@ -67,6 +72,14 @@ def test_exctract_class():
     assert "Did not recognise" in str(e.value)
     assert "has no attribute" in str(e.value)
 
+    # Test Enum
+    with pytest.raises(ValueError):
+        ConfigFactory._extract_attr("DummyEnum.A")
+    enum_local = ConfigFactory._extract_attr(
+        "DummyEnum.A", context=globals(), assume_enum=True
+    )
+    assert enum_local == DummyEnum.A
+
 
 @pytest.mark.parametrize("mode", ["extract", "dict", "json"])
 def test_from_dict(mode):
@@ -87,6 +100,7 @@ def test_from_dict(mode):
     assert isinstance(config.b, DummyConfig)
     assert config.b.a == "a2"
     assert config.c == ConfigFactory
+    assert config.e == DummyEnum.B
 
     if mode == "json":
         os.remove(path)
@@ -99,3 +113,10 @@ def test_config_dict_format():
     # Missing definition (not passed in globals)
     with pytest.raises(ValueError):
         ConfigFactory.from_dict(dict_config)
+
+
+def test_wrong_args():
+    conf = copy.deepcopy(dict_config)
+    conf["DummyConfig"]["abc"] = "Test"
+    with pytest.raises(AssertionError):
+        ConfigFactory.from_dict(conf, context=globals())

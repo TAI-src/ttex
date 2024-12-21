@@ -74,4 +74,5 @@ class ConfigurableObjectFactory(ABC):  # pylint: disable=too-few-public-methods
         typed_config = ConfigFactory.extract(
             configurable_object_class.config_class, config
         )
+        logger.debug(f"Passed args {args} and kwargs {kwargs}")
         return configurable_object_class(typed_config, *args, **kwargs)

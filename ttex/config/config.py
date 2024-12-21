@@ -44,27 +44,17 @@ class ConfigFactory(ABC):
     """Provides different convenience methods to create a Config Object"""
 
     @staticmethod
-    def _extract_default(param: Parameter):
-        """Extract default value from a parameter
-
-        If it has a default, return that - else return None
-
-        Args:
-            param (Parameter): The parameter from which the default values
-            are to be extracted
-
-        Returns:
-            param.default (?): The default value if it exists. Else None
-
-        """
-        return param.default if param.default != Parameter.empty else None
-
-    @staticmethod
-    def _extract_attr(full_name: str, context: Optional[Dict] = None):
+    def _extract_attr(
+        full_name: str, context: Optional[Dict] = None, assume_enum: bool = False
+    ):
         # Split the string, will throw value error if there is no .
         module_name = None  # type: Optional[str]
+        enum_val = None
         try:
-            module_name, class_name = full_name.rsplit(".", 1)
+            if assume_enum:
+                module_name, class_name, enum_val = full_name.rsplit(".", 2)
+            else:
+                module_name, class_name = full_name.rsplit(".", 1)
         except ValueError:
             # We do not enforce . - class could already be loaded
             pass
@@ -81,15 +71,34 @@ class ConfigFactory(ABC):
                 raise ValueError(f"Did not recognise {full_name}: AttributeError {e}")
         else:
             # If no module, try loading from globals and context
-            if context and full_name in context:
-                c = context.get(full_name)
-            elif full_name in globals():
-                c = globals()[full_name]
+            if "." in full_name:
+                class_name, enum_val = full_name.rsplit(".", 1)
+            else:
+                class_name = full_name
+            if context and class_name in context:
+                c = context.get(class_name)
+            elif class_name in globals():
+                c = globals()[class_name]
             else:
                 raise ValueError(
-                    f"Did not recognise {full_name}: KeyError Not in context or globals()"
+                    f"Did not recognise {class_name}: KeyError Not in context or globals()"
                 )
+        if enum_val:
+            # We are dealing with an enum if this value exists and all imports worked
+            c = c[enum_val]
+
         return c
+
+    @staticmethod
+    def _try_extract_attr(full_name: str, context: Optional[Dict] = None):
+        try:
+            return ConfigFactory._extract_attr(
+                full_name, context=context, assume_enum=False
+            )
+        except ValueError:
+            return ConfigFactory._extract_attr(
+                full_name, context=context, assume_enum=True
+            )
 
     @staticmethod
     def extract(
@@ -113,24 +122,31 @@ class ConfigFactory(ABC):
         """
         signa = signature(config_class.__init__)
         values = {
-            p.name: config.get(p.name, ConfigFactory._extract_default(p))
+            p.name: config.get(p.name, p.default)
             for _, p in signa.parameters.items()
             if p.name != "self"
         }
+        # Make sure no non-default params are missing
+        assert all([v != Parameter.empty for _, v in values.items()])
+        if isinstance(config, dict):
+            # If we have a dict, we have a potential mismatch of values
+            # check that all passed values are in the signature
+            assert all([k in values for k, _ in config.items()])
+
         for k, v in values.items():
             if isinstance(v, str):
                 try:
                     # For each string, see if it is an attribute
-                    v_attr = ConfigFactory._extract_attr(v, context)
+                    v_attr = ConfigFactory._try_extract_attr(v, context)
                     values[k] = v_attr
                 except ValueError:
-                    # not an attribute, just skip
+                    # failed, but might be an enum
                     continue
             elif isinstance(v, dict) and len(v.keys()) == 1:
                 # 1-key dicts might be configs, try converting
                 key_class = list(v.keys())[0]
                 try:
-                    v_attr = ConfigFactory._extract_attr(key_class, context)
+                    v_attr = ConfigFactory._try_extract_attr(key_class, context)
                     if issubclass(v_attr, Config):
                         # found a config, process values recursively
                         values[k] = ConfigFactory.extract(v_attr, v[key_class], context)

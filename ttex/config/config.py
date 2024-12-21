@@ -46,7 +46,18 @@ class ConfigFactory(ABC):
     @staticmethod
     def _extract_attr(
         full_name: str, context: Optional[Dict] = None, assume_enum: bool = False
-    ):
+    ) -> Type:
+        """
+        Extract attribute from a string
+
+        Args:
+            full_name (str): Full name of the attribute to extract
+            context: A dictionary containing the globals() context from where the config is loaded
+            assume_enum (bool): Whether to assume the last part of the string is an enum value
+
+        Returns:
+            c (Type): The extracted attribute
+        """
         # Split the string, will throw value error if there is no .
         module_name = None  # type: Optional[str]
         enum_val = None
@@ -90,7 +101,17 @@ class ConfigFactory(ABC):
         return c
 
     @staticmethod
-    def _try_extract_attr(full_name: str, context: Optional[Dict] = None):
+    def _try_extract_attr(full_name: str, context: Optional[Dict] = None) -> Type:
+        """Try to extract attribute from a string
+
+        Args:
+            full_name (str): Full name of the attribute to extract
+            context: A dictionary containing the globals() context from where the config is loaded
+
+        Returns:
+            c (Type): The extracted attribute
+
+        """
         try:
             return ConfigFactory._extract_attr(
                 full_name, context=context, assume_enum=False

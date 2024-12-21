@@ -4,8 +4,9 @@ import logging
 import os
 
 from ttex.config.config import Config, ConfigFactory
+from ttex.log import LOGGER_NAME
 
-logger = logging.getLogger("DefaultLogger")
+logger = logging.getLogger(LOGGER_NAME)
 
 
 class ConfigurableObject(ABC):  # pylint: disable=too-few-public-methods

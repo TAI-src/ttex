@@ -5,6 +5,7 @@ from logging import Handler
 import os
 import json
 import copy
+import numpy as np
 
 
 def test_get_val():
@@ -23,7 +24,7 @@ def test_extract_empty():
     config = {}
     with pytest.raises(AssertionError):
         ConfigFactory.extract(DummyConfig, config)
-    config = {"a": 5, "b": 2}
+    config = {"a": (5, 2), "b": 2}
     test_config = ConfigFactory.extract(DummyConfig, config)
     assert test_config.a is not None
     assert test_config.b is not None
@@ -34,14 +35,17 @@ def test_extract_empty():
 
 def test_extract():
     config = Config()
-    config.a = "arg"
-    config.b = 5
+    config.a = [[1, 2, 3], [4, 5, 6]]
+    config.b = np.array([np.array([1, 2, 3]), np.array([4, 5, 6])])
     config.c = "kwarg"
     config.d = 17
 
     test_config = ConfigFactory.extract(DummyConfig, config)
 
-    for arg in ["a", "b", "c", "d"]:
+    for arg in ["a", "b"]:
+        assert np.sum(getattr(test_config, arg)) == np.sum(getattr(config, arg))
+
+    for arg in ["c", "d"]:
         assert getattr(test_config, arg) == getattr(config, arg)
 
 

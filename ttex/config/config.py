@@ -6,6 +6,7 @@ from inspect import signature, Parameter
 import importlib
 import json
 import logging
+import numpy as np
 from ttex.log import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
@@ -114,7 +115,6 @@ class ConfigFactory(ABC):
 
         Returns:
             c (Type): The extracted attribute
-
         """
         try:
             return ConfigFactory._extract_attr(
@@ -154,7 +154,8 @@ class ConfigFactory(ABC):
         logger.debug(values)
 
         # Make sure no non-default params are missing
-        assert all([v != Parameter.empty for _, v in values.items()])
+        non_empty = [np.sum([v != Parameter.empty]) for _, v in values.items()]
+        assert all(non_empty), f"Missing values in config {values}"
         if isinstance(config, dict):
             # If we have a dict, we have a potential mismatch of values
             # check that all passed values are in the signature

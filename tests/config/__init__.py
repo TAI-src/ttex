@@ -23,6 +23,7 @@ class DummyConfig(Config):
         self.c = c
         self.d = d
         self.e = e
+        self.test = "test"
 
 
 class EmptyConfig(Config):

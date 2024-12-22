@@ -115,7 +115,6 @@ class ConfigFactory(ABC):
 
         Returns:
             c (Type): The extracted attribute
-
         """
         try:
             return ConfigFactory._extract_attr(

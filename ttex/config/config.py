@@ -153,6 +153,7 @@ class ConfigFactory(ABC):
             if p.name != "self"
         }
         logger.debug(values)
+
         # Make sure no non-default params are missing
         non_empty = [np.sum([v != Parameter.empty]) for _, v in values.items()]
         assert all(non_empty), f"Missing values in config {values}"

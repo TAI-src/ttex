@@ -33,6 +33,35 @@ def test_extract_empty():
     assert test_config.e == DummyEnum.A
 
 
+def test_extract_value():
+    assert ConfigFactory._extract_value(5) == 5
+    assert ConfigFactory._extract_value("5") == "5"
+    assert ConfigFactory._extract_value([5, 2]) == [5, 2]
+    assert ConfigFactory._extract_value((5, 2)) == (5, 2)
+    assert all(ConfigFactory._extract_value(np.array([5, 2])) == np.array([5, 2]))
+    assert np.all(
+        ConfigFactory._extract_value(np.array([[5, 2], [3, 4]]))
+        == np.array([[5, 2], [3, 4]])
+    )
+    assert ConfigFactory._extract_value("DummyEnum.A", context=globals()) == DummyEnum.A
+    assert isinstance(
+        ConfigFactory._extract_value(
+            {"DummyConfig": {"a": (5, 2), "b": 2}}, context=globals()
+        ),
+        DummyConfig,
+    )
+    assert ConfigFactory._extract_value(
+        ["DummyEnum.A", DummyEnum.B], context=globals()
+    ) == [DummyEnum.A, DummyEnum.B]
+    assert ConfigFactory._extract_value((5, "DummyEnum.A"), context=globals()) == (
+        5,
+        DummyEnum.A,
+    )
+    assert ConfigFactory._extract_value(
+        [(5, "DummyEnum.A"), (6, "DummyEnum.B")], context=globals()
+    ) == [(5, DummyEnum.A), (6, DummyEnum.B)]
+
+
 def test_extract():
     config = Config()
     config.a = [[1, 2, 3], [4, 5, 6]]

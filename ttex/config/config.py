@@ -8,6 +8,8 @@ import json
 import logging
 import numpy as np
 from ttex.log import LOGGER_NAME
+from collections.abc import Iterable
+from typing import Any
 
 logger = logging.getLogger(LOGGER_NAME)
 
@@ -126,6 +128,37 @@ class ConfigFactory(ABC):
             )
 
     @staticmethod
+    def _extract_value(value: Any, context: Optional[Dict] = None) -> Any:
+        if isinstance(value, str):
+            try:
+                # For each string, see if it is an attribute
+                v_attr = ConfigFactory._try_extract_attr(value, context)
+                return v_attr
+            except ValueError:
+                return value
+        elif isinstance(value, dict) and len(value.keys()) == 1:
+            # 1-key dicts might be configs, try converting
+            key_class = list(value.keys())[0]
+            try:
+                v_attr = ConfigFactory._try_extract_attr(key_class, context)
+                if issubclass(v_attr, Config):
+                    # found a config, process values recursively
+                    return ConfigFactory.extract(v_attr, value[key_class], context)
+            except ValueError:
+                return value
+        elif isinstance(value, Iterable) and not isinstance(value, np.ndarray):
+            # If the value is iterable, we need to check each element
+            # not for np arrays, those do not contain classes
+            ret_val = [
+                ConfigFactory._extract_value(v, context=context)
+                for _, v in enumerate(value)
+            ]
+            # return as the type of iterable that was passed
+            return type(value)(ret_val)  # type: ignore[call-arg]
+        else:
+            return value
+
+    @staticmethod
     def extract(
         config_class: Type[T],
         config: Union[Dict, Config],
@@ -162,24 +195,7 @@ class ConfigFactory(ABC):
             assert all([k in values for k, _ in config.items()])
 
         for k, v in values.items():
-            if isinstance(v, str):
-                try:
-                    # For each string, see if it is an attribute
-                    v_attr = ConfigFactory._try_extract_attr(v, context)
-                    values[k] = v_attr
-                except ValueError:
-                    # failed, but might be an enum
-                    continue
-            elif isinstance(v, dict) and len(v.keys()) == 1:
-                # 1-key dicts might be configs, try converting
-                key_class = list(v.keys())[0]
-                try:
-                    v_attr = ConfigFactory._try_extract_attr(key_class, context)
-                    if issubclass(v_attr, Config):
-                        # found a config, process values recursively
-                        values[k] = ConfigFactory.extract(v_attr, v[key_class], context)
-                except ValueError:
-                    continue
+            values[k] = ConfigFactory._extract_value(v, context=context)
         return config_class(**values)
 
     @staticmethod

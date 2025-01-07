@@ -129,6 +129,7 @@ class ConfigFactory(ABC):
 
     @staticmethod
     def _extract_value(value: Any, context: Optional[Dict] = None) -> Any:
+        logger.debug(f"Extracting value {value}")
         if isinstance(value, str):
             try:
                 # For each string, see if it is an attribute
@@ -136,16 +137,21 @@ class ConfigFactory(ABC):
                 return v_attr
             except ValueError:
                 return value
-        elif isinstance(value, dict) and len(value.keys()) == 1:
-            # 1-key dicts might be configs, try converting
-            key_class = list(value.keys())[0]
-            try:
-                v_attr = ConfigFactory._try_extract_attr(key_class, context)
-                if issubclass(v_attr, Config):
-                    # found a config, process values recursively
-                    return ConfigFactory.extract(v_attr, value[key_class], context)
-            except ValueError:
-                return value
+        elif isinstance(value, dict):
+            if len(value.keys()) == 1:
+                # 1-key dicts might be configs, try converting
+                key_class = list(value.keys())[0]
+                try:
+                    v_attr = ConfigFactory._try_extract_attr(key_class, context)
+                    if issubclass(v_attr, Config):
+                        # found a config, process values recursively
+                        return ConfigFactory.extract(v_attr, value[key_class], context)
+                except ValueError:
+                    pass
+            return {
+                k: ConfigFactory._extract_value(v, context=context)
+                for k, v in value.items()
+            }
         elif isinstance(value, Iterable) and not isinstance(value, np.ndarray):
             # If the value is iterable, we need to check each element
             # not for np arrays, those do not contain classes

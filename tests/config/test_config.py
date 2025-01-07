@@ -61,6 +61,17 @@ def test_extract_value():
         [(5, "DummyEnum.A"), (6, "DummyEnum.B")], context=globals()
     ) == [(5, DummyEnum.A), (6, DummyEnum.B)]
 
+    assert ConfigFactory._extract_value({"a": True}) == {"a": True}
+    assert ConfigFactory._extract_value(
+        [("DummyEnum.A", {"a": "DummyEnum.B"})], context=globals()
+    ) == [(DummyEnum.A, {"a": DummyEnum.B})]
+    assert ConfigFactory._extract_value(
+        {"a": "DummyEnum.A", "b": "DummyEnum.B"}, context=globals()
+    ) == {"a": DummyEnum.A, "b": DummyEnum.B}
+    assert ConfigFactory._extract_value(
+        {"a": {"b": "DummyEnum.A"}}, context=globals()
+    ) == {"a": {"b": DummyEnum.A}}
+
 
 def test_extract():
     config = Config()

@@ -194,7 +194,7 @@ class ConfigFactory(ABC):
 
         # Make sure no non-default params are missing
         non_empty = [np.sum([v != Parameter.empty]) for _, v in values.items()]
-        assert all(non_empty), f"Missing values in config {values}"
+        assert all(non_empty), f"Missing values for {config_class} in config {values}"
         if isinstance(config, dict):
             # If we have a dict, we have a potential mismatch of values
             # check that all passed values are in the signature

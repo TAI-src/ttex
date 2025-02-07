@@ -5,7 +5,7 @@ services:
   ttex:
     container_name: ttex
     env_file: .env
-    image: taisrc/ttex
+    image: taisrc/ttex${VER:+:}${VER}
     build:
         context: ..
         dockerfile: docker/Dockerfile
@@ -16,7 +16,7 @@ services:
   wandb_launcher:
     container_name: wandb_launcher
     env_file: .env
-    image: taisrc/wandb:launcher
+    image: taisrc/wandb:launcher${VER:+-}${VER}
     privileged: true
     build:
         context: ..
@@ -27,9 +27,12 @@ services:
   wandb_job:
     container_name: wandb_job
     env_file: .env
-    image: taisrc/wandb:job
+    depends_on:
+     - ttex
+    image: taisrc/wandb:job${VER:+-}${VER}
     build:
         context: ..
+        no_cache: true
         dockerfile: docker/Dockerfile_job
     volumes:
       - ../ttex:/ttex

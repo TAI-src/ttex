@@ -19,3 +19,4 @@ def test_format_coco_record():
     record = COCORecord(**vals)
     expected_output = "1 0 +9.970982969e+00 +8.945098297e+01 +8.945098297e+01 +1.6667e+00 +1.6667e+00"
     assert str(record) == expected_output
+

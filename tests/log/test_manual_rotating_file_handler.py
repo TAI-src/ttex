@@ -17,19 +17,22 @@ class DummyHeader(Header):
 
     @property
     def filepath(self) -> str:
-        return osp.join("dummy_dir", "dummy_file.txt")
+        return osp.join("test_dir", "header_file.txt")
 
 def test_manual_rotating_file_handler():
     """
     Test the ManualRotatingFileHandler by logging a message and checking if it is emitted correctly.
     """
-    handler = ManualRotatingFileHandler(mode="a")
+    handler = ManualRotatingFileHandler(filepath=
+                                        osp.join("test_dir", "test_file.txt"),
+                                        mode="a")
     logger = logging.getLogger("test_manual_rotating_file_handler")
     logger.setLevel(logging.DEBUG)
     
     logger.addHandler(handler)
     
     # Log a test message
+    logger.info(DummyHeader(3.14))
     logger.info(DummyRecord(42))
     
     # Clean up

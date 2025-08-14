@@ -47,7 +47,6 @@ class ManualRotatingFileHandler(BaseRotatingHandler):
         Perform the rollover by closing the current stream and renaming the file.
         """
         assert self.current_filepath is not None, "Current filepath should not be None."
-        print(self.current_filepath)
         os.makedirs(os.path.dirname(self.current_filepath), exist_ok=True)
         if self.stream:
             self.stream.close()

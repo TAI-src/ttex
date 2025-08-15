@@ -40,7 +40,7 @@ def test_coco_logging():
     logger.addHandler(handler)
 
     header = COCOHeader(**coco_header_vals)
-    record = COCORecord(x=[1.0, 2.0], mf=3)
+    record = COCORecord(x=[1.0, 2.0], mf=80)
 
     # Log the header
     logger.info(header)

@@ -118,6 +118,9 @@ class COCOFilter(Filter):
             best_dist_prev = self.best_mf - self.f_opt
             self.best_mf = min(self.best_mf, record.msg.mf)
             best_dist_opt = self.best_mf - self.f_opt
+            assert (
+                best_dist_opt >= 0
+            ), f"best_dist_opt must be non-negative, got {best_dist_opt}."
             imp = best_dist_prev - best_dist_opt
 
             # Check if the record should be emitted based on the triggers

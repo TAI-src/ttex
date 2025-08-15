@@ -1,5 +1,4 @@
 from ttex.log.record import COCORecord, COCOHeader
-import pytest
 
 coco_record_vals = {
     "mf": 89.45098297,
@@ -20,7 +19,7 @@ def test_coco_header_filepath():
     header = COCOHeader(**coco_header_vals)
     expected_filepath = (
         f"{coco_header_vals['algo']}/data_{coco_header_vals['problem']}/"
-        f"dim-{coco_header_vals['dim']}/{coco_header_vals['exp_id']}_"
+        f"{coco_header_vals['exp_id']}_"
         f"{coco_header_vals['problem']}_d{coco_header_vals['dim']}_"
         f"i{coco_header_vals['inst']}.dat"
     )

@@ -1,5 +1,5 @@
 from ttex.log.formatter import JsonFormatter
-from ..utils.dummy_log_handler import DummyLogHandler
+from ...utils.dummy_log_handler import DummyLogHandler
 import logging
 import json
 

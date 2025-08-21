@@ -5,6 +5,7 @@ import os.path as osp
 import pytest
 from typing import Optional
 import shutil
+from uuid import uuid4
 
 
 @pytest.fixture(autouse=True, scope="module")
@@ -26,13 +27,16 @@ class DummyRecord(Record):
 
 
 class DummyHeader(Header):
-    def __init__(self, val: float, filepath: Optional[str] = None):
+    def __init__(
+        self, val: float, filepath: Optional[str] = None, uuid: Optional[str] = None
+    ):
         self.val = val
         if filepath is not None:
             self._filepath = filepath
         else:
             # Default filepath for testing
             self._filepath = osp.join("test_dir", "header_file.txt")
+        self._uuid = str(uuid4()) if uuid is None else uuid
 
     def __str__(self):
         return f"DummyHeader(val={self.val})"
@@ -40,6 +44,11 @@ class DummyHeader(Header):
     @property
     def filepath(self) -> str:
         return self._filepath
+
+    @property
+    def uuid(self) -> str:
+        # Generate a unique UUID for testing purposes
+        return self._uuid
 
 
 def test_should_rollover():
@@ -75,6 +84,33 @@ def test_should_rollover():
     assert handler.shouldRollover(logging.makeLogRecord({"msg": header3}))
     assert handler.current_filepath is not None
     assert handler.next_filepath == header3.filepath
+
+    assert not osp.exists(handler.baseFilename)
+    handler.current_filepath = None
+    handler.next_filepath = None
+
+    handler.close()
+
+
+def test_rollover_key():
+    """
+    Test the rollover key functionality of ManualRotatingFileHandler.
+    It should correctly set the current and next filepaths based on the Header record.
+    """
+    handler = ManualRotatingFileHandler(
+        filepath=osp.join("test_dir", "test_file.txt"), mode="a", key="test_key"
+    )
+    header1 = logging.makeLogRecord({"msg": "test", "test_key": DummyHeader(3.14)})
+    assert not handler.shouldRollover(header1)
+    assert handler.current_filepath is not None
+    assert handler.next_filepath is None
+
+    header2 = DummyHeader(2.71, filepath=osp.join("test_dir", "header_file2.txt"))
+    assert handler.shouldRollover(
+        logging.makeLogRecord({"msg": "header2", "test_key": header2})
+    )
+    assert handler.current_filepath is not None
+    assert handler.next_filepath == header2.filepath
 
     assert not osp.exists(handler.baseFilename)
     handler.current_filepath = None

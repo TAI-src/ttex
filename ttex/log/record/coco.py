@@ -1,8 +1,9 @@
-from ttex.log.record import Record
-from abstract import ABC
+from ttex.log.record import LoggingState
+import numpy as np
+import os.path as osp
 
 
-class COCOLog(ABC):
+class COCOLog:
     pass
 
 
@@ -22,6 +23,7 @@ class COCOEval(COCOLog):
         """
         self.x = x
         self.mf = mf
+        super().__init__()
 
 
 class COCOEnd(COCOLog):
@@ -33,7 +35,7 @@ class COCOStart(COCOLog):
         self,
         fopt: float,
         algo: str,
-        problem: str,
+        problem: int,
         dim: int,
         inst: int,
         exp_id: str,
@@ -45,7 +47,7 @@ class COCOStart(COCOLog):
         Args:
             fopt (float): Optimal function value.
             algo (str): Algorithm name.
-            problem (str): Problem name.
+            problem (int): Problem id.
             dim (int): Dimension of the problem.
             inst (int): Instance number.
             exp_id (str): Experiment ID.
@@ -58,3 +60,29 @@ class COCOStart(COCOLog):
         self.inst = inst
         self.exp_id = exp_id
         self.suite = suite
+        super().__init__()
+
+
+class COCOState(LoggingState):
+    def __init__(self, coco_start: COCOStart):
+        self.f_evals = 0
+        self.g_evals = 0
+        self.best_mf = np.inf
+        self.fopt = coco_start.fopt
+        # TODO: figure out nicer
+        self.dat_filepath = None
+        self.inst = coco_start.inst
+        self.coco_start = coco_start
+        self.best_dist_opt = None
+        self.last_imp = None
+
+    def set_dat_filepath(self, dat_filepath: str, info_filepath: str):
+        self.dat_filepath = osp.relpath(dat_filepath, start=osp.dirname(info_filepath))
+
+    def update(self, coco_eval: COCOEval):
+        self.f_evals += 1
+        best_dist_prev = self.best_mf - self.fopt
+        self.best_mf = min(self.best_mf, coco_eval.mf)
+        self.best_dist_opt = self.best_mf - self.fopt
+        assert self.best_dist_opt >= 0
+        self.last_imp = best_dist_prev - self.best_dist_opt

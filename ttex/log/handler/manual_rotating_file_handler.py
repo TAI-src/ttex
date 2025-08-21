@@ -8,7 +8,14 @@ class ManualRotatingFileHandler(BaseRotatingHandler):
     Custom RotatingFileHandler that allows manual rotation of log files.
     """
 
-    def __init__(self, filepath, mode, encoding=None, errors=None):
+    def __init__(
+        self,
+        filepath,
+        key: str = "msg",
+        mode: str = "a",
+        encoding=None,
+        errors=None,
+    ):
         """
         Initialize the handler with the given filename and mode.
         """
@@ -18,25 +25,28 @@ class ManualRotatingFileHandler(BaseRotatingHandler):
         )
         self.current_filepath = None
         self.next_filepath = None
+        self.key = key
 
     def shouldRollover(self, record):
         """
         Determine if a rollover should occur,
         which is whenever a Header record is logged with a new filepath
         """
-        if (
-            isinstance(record.msg, Header)
-            and record.msg.filepath != self.current_filepath
-        ):
-            if self.current_filepath is None:
-                # This is the first header file,
-                # set the current filepath to the first header's filepath
-                self.current_filepath = record.msg.filepath
-            else:
-                assert (
-                    self.next_filepath is None
-                ), "Next filepath should be None due to previous rollover."
-                self.next_filepath = record.msg.filepath
+        assert hasattr(record, self.key), f"Record must have the key '{self.key}'"
+        record_obj = getattr(record, self.key)
+        if isinstance(record_obj, Header):
+            new_filepath = getattr(record_obj, "filepath")
+            if new_filepath != self.current_filepath:
+                # Rollover condition met
+                if self.current_filepath is None:
+                    # This is the first header file,
+                    # set the current filepath to the first header's filepath
+                    self.current_filepath = new_filepath
+                else:
+                    assert (
+                        self.next_filepath is None
+                    ), "Next filepath should be None due to previous rollover."
+                    self.next_filepath = new_filepath
         assert (
             self.current_filepath is not None
         ), "Current filepath should not be None. First message should always be a Header."

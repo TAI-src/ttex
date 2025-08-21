@@ -1,11 +1,6 @@
-from ttex.log.record import Record, Header, RecordType
+from ttex.log.record import Record, Header
 import os.path as osp
 from uuid import uuid4
-from typing import Type
-
-
-class COCOLog(RecordType):
-    pass
 
 
 class COCOLogRecord(Record):
@@ -52,22 +47,12 @@ class COCOLogRecord(Record):
             x_str=x_str,
         )
 
-    @property
-    def type(self) -> Type[COCOLog]:
-        """
-        Get the type of the COCOLogRecord.
-
-        Returns:
-            Type[COCOLog]: The type of the COCOLogRecord.
-        """
-        return COCOLog
-
 
 class COCOLogHeader(Header):
     template = "% f evaluations | g evaluations | best noise-free fitness - Fopt ({fopt:.12e}) + sum g_i+ | measured fitness | best measured fitness or single-digit g-values | x1 | x2..."
 
     def __init__(
-        self, fopt: float, algo: str, problem: str, dim: int, inst: int, exp_id: str
+        self, fopt: float, algo: str, problem: int, dim: int, inst: int, exp_id: str
     ):
         """
         Initialize a COCO header with the optimal function value.
@@ -112,13 +97,3 @@ class COCOLogHeader(Header):
             str: UUID for the COCO header.
         """
         return self._uuid
-
-    @property
-    def type(self) -> Type[COCOLog]:
-        """
-        Get the type of the COCOLogHeader.
-
-        Returns:
-            Type[COCOLog]: The type of the COCOLogHeader.
-        """
-        return COCOLog

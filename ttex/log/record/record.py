@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Type
 
 
-class RecordType(ABC):
+class LoggingState(ABC):
     pass
 
 
@@ -11,18 +10,6 @@ class Record(ABC):
     Abstract base class for a record in a file.
     This class defines the structure and methods that all record types must implement.
     """
-
-    @property
-    @abstractmethod
-    def type(self) -> Type[RecordType]:
-        """
-        Abstract property to get the type of the record.
-        Must be implemented by subclasses.
-
-        Returns:
-            RecordType: The type of the record.
-        """
-        pass
 
     @abstractmethod
     def __str__(self) -> str:
@@ -35,23 +22,15 @@ class Record(ABC):
         """
         pass
 
+    def emit(self, state: LoggingState) -> bool:
+        return True
 
-class Header(ABC):
+
+class Header(Record):
     """
     Abstract base class for a header in a file.
     This class extends Record and defines the structure and methods that all header types must implement.
     """
-
-    @abstractmethod
-    def __str__(self) -> str:
-        """
-        Abstract method to format the header as a string.
-        Must be implemented by subclasses.
-
-        Returns:
-            str: Formatted header string.
-        """
-        pass
 
     @property
     @abstractmethod
@@ -69,16 +48,4 @@ class Header(ABC):
     @property
     @abstractmethod
     def filepath(self) -> str:
-        pass
-
-    @property
-    @abstractmethod
-    def type(self) -> Type[RecordType]:
-        """
-        Abstract property to get the type of the record.
-        Must be implemented by subclasses.
-
-        Returns:
-            RecordType: The type of the record.
-        """
         pass

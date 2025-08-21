@@ -1,14 +1,8 @@
-from ttextual import Record, Header, RecordType
+from ttex.log.record import Record, Header
 import os.path as osp
-from abc import ABC
-from typing import Type
 
 
-class COCOInfo(RecordType):
-    pass
-
-
-class COCOInfoHeader(Header, ABC):
+class COCOInfoHeader(Header):
     template = "suite = '{suite}', funcId = {funcId}, DIM = {dim}, Precision = {prec:.3e}, algId = '{algId}', coco_version = '{coco_version}', logger = '{logger}', data_format = '{data_format}'\n% {algId}"
 
     def __init__(self, funcId: int, algId: str, dim: int, suite: str):
@@ -31,16 +25,6 @@ class COCOInfoHeader(Header, ABC):
         self.data_format = "bbob-new2"
         self._filepath = osp.join(f"{self.algId}", f"f{funcId}.info")
         self._uuid = f"{algId}_{funcId}_{dim}"
-
-    @property
-    def type(self) -> Type[COCOInfo]:
-        """
-        Get the type of the COCOInfoHeader.
-
-        Returns:
-            COCOInfo: The type of the COCOInfoHeader.
-        """
-        return COCOInfo
 
     @property
     def filepath(self) -> str:
@@ -111,13 +95,3 @@ class COCOInfoRecord(Record):
             f_evals=self.f_evals,
             prec=self.prec,
         )
-
-    @property
-    def type(self) -> Type[COCOInfo]:
-        """
-        Get the type of the COCOInfoRecord.
-
-        Returns:
-            COCOInfo: The type of the COCOInfoRecord.
-        """
-        return COCOInfo

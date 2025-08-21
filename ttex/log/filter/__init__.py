@@ -1,1 +1,2 @@
-from ttex.log.filter.coco_filter import COCOFilter
+from ttex.log.filter.coco_handler_filter import COCOHandlerFilter
+from ttex.log.filter.coco_logger_filter import COCOLoggerFilter

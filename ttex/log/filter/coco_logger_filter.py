@@ -1,10 +1,20 @@
+import numpy as np
 from logging import Filter
 from typing import Optional
-from ttex.log.record import COCOHeader, COCORecord
-import numpy as np
+from ttex.log.record import (
+    COCOStart,
+    COCOEnd,
+    COCOEval,
+    COCOLogRecord,
+    COCOLogHeader,
+    COCOInfoRecord,
+    COCOInfoHeader,
+    COCOLog,
+)
+import os.path as osp
 
 
-class COCOFilter(Filter):
+class COCOLoggerFilter(Filter):
     """
     Filter to allow only COCOHeader and COCORecord messages.
     """
@@ -20,11 +30,12 @@ class COCOFilter(Filter):
         Initialize the COCOFilter with an optional name.
         """
         # TODO: add parameters for triggers
-        self.current_uuid = None
         self.f_evals = 0
         self.g_evals = 0
         self.best_mf = np.inf
         self.f_opt = None
+        self.log_filepath = None
+        self.inst = None
         # TODO: maybe retain past uuids
 
         # Trigger parameters
@@ -96,21 +107,41 @@ class COCOFilter(Filter):
         )
 
     def filter(self, record):
-        """
-        Override the filter method to allow only COCOHeader and COCORecord.
-        """
-        if not isinstance(record.msg, (COCOHeader, COCORecord)):
+        """ """
+        if not isinstance(record.msg, COCOLog):
             return False
 
-        if isinstance(record.msg, COCOHeader) and record.msg.uuid != self.current_uuid:
+        if isinstance(record.msg, COCOStart):
             # If it's a new header, reset the current UUID and evaluations
-            self.current_uuid = record.msg.uuid
             self.f_opt = record.msg.fopt
             self.f_evals = 0
             self.g_evals = 0
             self.best_mf = np.inf
+
+            info_header = COCOInfoHeader(
+                suite=record.msg.suite,
+                funcId=record.msg.problem,
+                dim=record.msg.dim,
+                algId=record.msg.algo,
+            )
+            log_header = COCOLogHeader(
+                fopt=record.msg.fopt,
+                algo=record.msg.algo,
+                problem=record.msg.problem,
+                dim=record.msg.dim,
+                inst=record.msg.inst,
+                exp_id=record.msg.exp_id,
+            )
+            record.info = info_header
+            record.log = log_header
+            # TODO: make path relative from info file
+            self.log_filepath = osp.relpath(
+                log_header.filepath, start=osp.dirname(info_header.filepath)
+            )
+            self.inst = record.msg.inst
+
             return True
-        if isinstance(record.msg, COCORecord):
+        elif isinstance(record.msg, COCOEval):
             assert (
                 self.f_opt is not None
             ), "f_opt must be set in COCOHeader before COCORecord."
@@ -127,12 +158,36 @@ class COCOFilter(Filter):
             if not self.trigger_emit(imp, self.f_evals, best_dist_opt):
                 return False
 
-            ## fill record
-            record.msg.f_evals = self.f_evals
-            record.msg.g_evals = self.g_evals
-            record.msg.best_dist_opt = best_dist_opt
-            record.msg.best_mf = self.best_mf
+            log_record = COCOLogRecord(
+                x=record.msg.x,
+                mf=record.msg.mf,
+                f_evals=self.f_evals,
+                g_evals=self.g_evals,
+                best_dist_opt=best_dist_opt,
+                best_mf=self.best_mf,
+            )
+            record.log = log_record
 
+            return True
+        elif isinstance(record.msg, COCOEnd):
+
+            assert (
+                self.f_opt is not None
+            ), "f_opt must be set in COCOHeader before COCOEnd."
+            assert (
+                self.log_filepath is not None
+            ), "log_filepath must be set in COCOHeader before COCOEnd."
+            assert (
+                self.inst is not None
+            ), "inst must be set in COCOHeader before COCOEnd."
+            ## emit cocoinfo record
+            info_record = COCOInfoRecord(
+                file_path=self.log_filepath,
+                inst=self.inst,
+                f_evals=self.f_evals,
+                prec=self.best_mf - self.f_opt,
+            )
+            record.info = info_record
             return True
 
         return False

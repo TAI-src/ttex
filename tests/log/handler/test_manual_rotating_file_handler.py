@@ -1,6 +1,5 @@
 import logging
 from ttex.log.handler import ManualRotatingFileHandler
-from ttex.log.record import Record, Header
 import os.path as osp
 import pytest
 from typing import Optional
@@ -18,7 +17,7 @@ def remove_test_files():
     shutil.rmtree("test_dir", ignore_errors=True)
 
 
-class DummyRecord(Record):
+class DummyRecord:
     def __init__(self, val: int):
         self.val = val
 
@@ -26,7 +25,7 @@ class DummyRecord(Record):
         return f"DummyRecord(val={self.val})"
 
 
-class DummyHeader(Header):
+class DummyHeader(DummyRecord):
     def __init__(
         self, val: float, filepath: Optional[str] = None, uuid: Optional[str] = None
     ):

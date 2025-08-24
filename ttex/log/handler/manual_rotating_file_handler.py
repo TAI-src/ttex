@@ -1,4 +1,3 @@
-from ttex.log.record import Header
 import os
 from logging.handlers import BaseRotatingHandler
 
@@ -34,7 +33,7 @@ class ManualRotatingFileHandler(BaseRotatingHandler):
         """
         assert hasattr(record, self.key), f"Record must have the key '{self.key}'"
         record_obj = getattr(record, self.key)
-        if isinstance(record_obj, Header):
+        if hasattr(record_obj, "filepath"):
             new_filepath = getattr(record_obj, "filepath")
             if new_filepath != self.current_filepath:
                 # Rollover condition met
@@ -56,6 +55,7 @@ class ManualRotatingFileHandler(BaseRotatingHandler):
         """
         Perform the rollover by closing the current stream and renaming the file.
         """
+        print(self.current_filepath, self.next_filepath)
         assert self.current_filepath is not None, "Current filepath should not be None."
         os.makedirs(os.path.dirname(self.current_filepath), exist_ok=True)
         if self.stream:

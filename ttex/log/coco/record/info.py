@@ -1,30 +1,29 @@
-from ttex.log.record import Record, Header
+from ttex.log.formatter import StrHeader, StrRecord
 import os.path as osp
+from ttex.log.coco import COCOState
 
 
-class COCOInfoHeader(Header):
+class COCOInfoHeader(StrHeader):
     template = "suite = '{suite}', funcId = {funcId}, DIM = {dim}, Precision = {prec:.3e}, algId = '{algId}', coco_version = '{coco_version}', logger = '{logger}', data_format = '{data_format}'\n% {algId}"
 
-    def __init__(self, funcId: int, algId: str, dim: int, suite: str):
+    def __init__(self, state: COCOState):
         """
-        Initialize a COCOInfoHeader with the given parameters.
+        Initialize a COCOInfoHeader with the given COCOState and COCOStart.
 
         Args:
-            funcId (int): Function ID.
-            algId (str): Algorithm ID.
-            dim (int): Dimension of the problem.
-            suite (str): Suite name, default is "bbob".
+            state (COCOState): The current state of the COCO logging.
+            coco_log (COCOStart): The COCO start log containing problem and algorithm details.
         """
-        self.funcId = funcId
-        self.algId = algId
-        self.dim = dim
-        self.suite = suite
+        self.funcId = state.coco_start.problem
+        self.algId = state.coco_start.algo
+        self.dim = state.coco_start.dim
+        self.suite = state.coco_start.suite
         self.prec = 1e-8
         self.coco_version = ""
         self.logger = "bbob"
         self.data_format = "bbob-new2"
-        self._filepath = osp.join(f"{self.algId}", f"f{funcId}.info")
-        self._uuid = f"{algId}_{funcId}_{dim}"
+        self._filepath = osp.join(f"{self.algId}", f"f{self.funcId}.info")
+        self._uuid = f"{self.algId}_{self.funcId}_{self.dim}"
 
     @property
     def filepath(self) -> str:
@@ -65,23 +64,20 @@ class COCOInfoHeader(Header):
         )
 
 
-class COCOInfoRecord(Record):
+class COCOInfoRecord(StrRecord):
     template = "{file_path}, {inst}:{f_evals}|{prec:.1e}"
 
-    def __init__(self, file_path: str, inst: int, f_evals: int, prec: float):
+    def __init__(self, state: COCOState):
         """
-        Initialize a COCOInfoRecord with the given parameters.
+        Initialize a COCOInfoRecord with the given COCOState.
 
         Args:
-            file_path (str): Path to the COCO info file.
-            inst (int): Instance number.
-            f_evals (int): Number of function evaluations.
-            prec (float): Precision value.
+            state (COCOState): The current state of the COCO logging.
         """
-        self.file_path = file_path
-        self.inst = inst
-        self.f_evals = f_evals
-        self.prec = prec
+        self.file_path = state.dat_filepath
+        self.inst = state.inst
+        self.f_evals = state.f_evals
+        self.prec = abs(state.best_mf - state.fopt)
 
     def __str__(self) -> str:
         """

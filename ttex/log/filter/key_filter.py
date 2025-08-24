@@ -1,16 +1,14 @@
 from logging import Filter
-from ttex.log.record import (
-    Header,
-)
 
 
-class COCOHandlerFilter(Filter):
+class KeyFilter(Filter):
     """
-    Filter to allow only COCOHeader and COCORecord messages.
-    This filter is used to ensure that only relevant COCO records are processed.
+    Filter to allow only log records with a specific key and unique UUID.
+    If a record with the same UUID as the last one is encountered, it will be filtered
+    out to avoid duplicate logging.
     """
 
-    def __init__(self, key: str, name: str = "COCOHandlerFilter"):
+    def __init__(self, key: str, name: str = "KeyFilter"):
         """
         Initialize the COCOHandlerFilter with an optional name.
         """
@@ -24,7 +22,8 @@ class COCOHandlerFilter(Filter):
             return False
 
         key_record = getattr(record, self.key, None)
-        if isinstance(key_record, Header):
+        assert key_record is not None
+        if hasattr(key_record, "uuid"):
             if key_record.uuid == self.uuid:
                 # If the UUID is the same, do not log this record
                 return False

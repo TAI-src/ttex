@@ -1,35 +1,21 @@
-from ttex.log.record import Record, Header
 import os.path as osp
 from uuid import uuid4
+from ttex.log.formatter import StrHeader, StrRecord
+from ttex.log.coco import COCOState
 
 
-class COCOLogRecord(Record):
+class COCOLogRecord(StrRecord):
     template = (
         "{f_evals} {g_evals} {best_dist_opt:+.9e} {mf:+.9e} {best_mf:+.9e} {x_str}"
     )
 
-    def __init__(
-        self,
-        x: list[float],
-        mf: float,
-        f_evals: int,
-        g_evals: int,
-        best_dist_opt: float,
-        best_mf: float,
-    ):
-        """
-        Initialize a COCO step with the given parameters.
-
-        Args:
-            x (list): List of decision variable values.
-            mf (float): Measured fitness value.
-        """
-        self.mf = mf
-        self.x = x
-        self.f_evals = f_evals
-        self.g_evals = g_evals
-        self.best_dist_opt = best_dist_opt
-        self.best_mf = best_mf
+    def __init__(self, state: COCOState):
+        self.x = state.last_eval.x
+        self.mf = state.last_eval.mf
+        self.f_evals = state.f_evals
+        self.g_evals = state.g_evals
+        self.best_dist_opt = state.best_dist_opt
+        self.best_mf = state.best_mf
 
     def __str__(self):
         """
@@ -48,26 +34,23 @@ class COCOLogRecord(Record):
         )
 
 
-class COCOLogHeader(Header):
+class COCOLogHeader(StrHeader):
     template = "% f evaluations | g evaluations | best noise-free fitness - Fopt ({fopt:.12e}) + sum g_i+ | measured fitness | best measured fitness or single-digit g-values | x1 | x2..."
 
-    def __init__(
-        self, fopt: float, algo: str, problem: int, dim: int, inst: int, exp_id: str
-    ):
+    def __init__(self, state: COCOState, file_type: str):
         """
         Initialize a COCO header with the optimal function value.
 
         Args:
-            fopt (float): Optimal function value.
+            state (COCOState): The current state of the COCO logging.
         """
-        self.fopt = fopt
-        exp_id = exp_id or str(uuid4())
+        self.fopt = state.fopt
         self._filepath = osp.join(
-            algo,
-            f"data_{problem}",
-            f"{exp_id}_{problem}_d{dim}.dat",
+            state.coco_start.algo,
+            f"data_{state.coco_start.problem}",
+            f"{state.coco_start.exp_id}_{state.coco_start.problem}_d{state.coco_start.dim}.{file_type}",
         )
-        self._uuid = f"{algo}_{problem}_d{dim}_i{inst}_{exp_id}"
+        self._uuid = f"{state.coco_start.algo}_{state.coco_start.problem}_d{state.coco_start.dim}_i{state.inst}_{state.coco_start.exp_id}"
 
     def __str__(self):
         """

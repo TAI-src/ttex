@@ -1,11 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class LoggingState(ABC):
-    pass
-
-
-class Record(ABC):
+class StrRecord(ABC):
     """
     Abstract base class for a record in a file.
     This class defines the structure and methods that all record types must implement.
@@ -22,11 +18,11 @@ class Record(ABC):
         """
         pass
 
-    def emit(self, state: LoggingState) -> bool:
+    def emit(self) -> bool:
         return True
 
 
-class Header(Record):
+class StrHeader(StrRecord):
     """
     Abstract base class for a header in a file.
     This class extends Record and defines the structure and methods that all header types must implement.

@@ -5,7 +5,7 @@ from ttex.log.handler import ManualRotatingFileHandler
 import cocopp
 from ttex.log.formatter import KeyFormatter
 from ttex.log.filter import KeyFilter, EventKeysplitFilter
-from ttex.log.coco import COCOStart, COCOEval, COCOEnd
+from ttex.log.coco import COCOStart, COCOEval, COCOEnd, setup_coco_logger
 import numpy as np
 from cocopp.pproc import DictAlg
 import shutil
@@ -36,9 +36,6 @@ def generate_events(num_evals: int, problem: int, dim: int, inst: int):
     return events
 
 
-# TODO: test multiple instances, dimensions and functions
-
-
 @pytest.fixture(scope="function", autouse=True)
 def cleanup_dummy_files():
     shutil.rmtree("test_algo", ignore_errors=True)
@@ -50,36 +47,6 @@ def cleanup_dummy_files():
     shutil.rmtree("test_algo", ignore_errors=True)
     shutil.rmtree("test_dir", ignore_errors=True)
     shutil.rmtree("ppdata", ignore_errors=True)
-
-
-def def_setup_manual():
-    """
-    Integration test for COCO logging.
-    """
-    # TODO: make this into a default setup to make it easier
-    logger = logging.getLogger("coco_logger1")
-    logger.setLevel(logging.INFO)
-
-    splitter_args = {
-        "trigger_nth": 2,
-    }
-    coco_filter = EventKeysplitFilter(
-        key_splitter_cls="ttex.log.coco.COCOKeySplitter",
-        key_splitter_args=splitter_args,
-    )
-    logger.addFilter(coco_filter)
-
-    # Create a ManualRotatingFileHandler instance for log and info
-    for type_str in ["info", "log_dat", "log_tdat"]:
-        # Make some dummy files that should be deleted after
-        filepath = osp.join("test_dir", f"coco_{type_str}.txt")
-        handler = ManualRotatingFileHandler(filepath=filepath, key=type_str, mode="a")
-        formatter = KeyFormatter(key=type_str)
-        handler.setFormatter(formatter)
-        filter = KeyFilter(key=type_str)
-        handler.addFilter(filter)
-        logger.addHandler(handler)
-    return logger
 
 
 def simulate_once(logger, num_evals: int, problem: int, dim: int, inst: int):
@@ -119,7 +86,7 @@ def check_files_exist(start_record: COCOStart):
 
 
 def test_coco_logging_integration():
-    logger = def_setup_manual()
+    logger = setup_coco_logger(2, "coco_logger1")
     start_records = [None] * 4
     start_records[0] = simulate_once(logger, num_evals=50, problem=3, dim=2, inst=2)
     start_records[1] = simulate_once(logger, num_evals=30, problem=3, dim=2, inst=3)

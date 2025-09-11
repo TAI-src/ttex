@@ -18,12 +18,13 @@ class COCOInfoHeader(StrHeader):
         self.algId = state.coco_start.algo
         self.dim = state.coco_start.dim
         self.suite = state.coco_start.suite
+        self.inst = state.coco_start.inst
         self.prec = 1e-8
         self.coco_version = ""
         self.logger = "bbob"
         self.data_format = "bbob-new2"
-        self._filepath = osp.join(f"{self.algId}", f"f{self.funcId}.info")
-        self._uuid = f"{self.algId}_{self.funcId}_{self.dim}"
+        self._filepath = osp.join(f"{self.algId}", f"f{self.funcId}_i{self.inst}.info")
+        self._uuid = f"{self.algId}_{self.funcId}_{self.dim}_{self.inst}"
 
     @property
     def filepath(self) -> str:

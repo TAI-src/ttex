@@ -9,7 +9,7 @@ def test_coco_log():
     state.update(start_event)
 
     header = COCOLogHeader(state, file_type="dummy")
-    expected_filepath = f"{start_event.algo}/data_{start_event.problem}/{start_event.exp_id}_{start_event.problem}_d{start_event.dim}.dummy"
+    expected_filepath = f"{start_event.algo}/data_{start_event.problem}/{start_event.exp_id}_{start_event.problem}_d{start_event.dim}_i{start_event.inst}.dummy"
 
     assert header.filepath == expected_filepath
 

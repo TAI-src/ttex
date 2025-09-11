@@ -54,17 +54,11 @@ class EventKeysplitFilter(Filter):
     def filter(self, record):
         """ """
 
-        print("Filtering record:", record)
         if not isinstance(record.msg, LogEvent):
             return False
 
         self.state.update(record.msg)
-        print("Updated state:", self.state)
         records = self.key_splitter.process(self.state, record.msg)
-        print("Processed records:", records)
-        for rec in records.values():
-            if hasattr(rec, "filepath"):
-                print(f"Record {rec} has filepath: {rec.filepath}")
         if not records:
             return False
 

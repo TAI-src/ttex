@@ -9,7 +9,7 @@ def test_coco_dat():
     state.update(start_event)
 
     header = COCOdatHeader(state)
-    expected_filepath = f"{start_event.algo}/data_{start_event.problem}/{start_event.exp_id}_{start_event.problem}_d{start_event.dim}.dat"
+    expected_filepath = f"{start_event.algo}/data_{start_event.problem}/{start_event.exp_id}_{start_event.problem}_d{start_event.dim}_i{start_event.inst}.dat"
     assert header.filepath == expected_filepath
 
     ## dummy initialise

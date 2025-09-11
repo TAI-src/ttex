@@ -47,9 +47,9 @@ def cleanup_dummy_files():
 
     yield
 
-    # shutil.rmtree("test_algo", ignore_errors=True)
-    # shutil.rmtree("test_dir", ignore_errors=True)
-    # shutil.rmtree("ppdata", ignore_errors=True)
+    shutil.rmtree("test_algo", ignore_errors=True)
+    shutil.rmtree("test_dir", ignore_errors=True)
+    shutil.rmtree("ppdata", ignore_errors=True)
 
 
 def def_setup_manual():
@@ -99,7 +99,7 @@ def check_files_exist(start_record: COCOStart):
     log_file_base = osp.join(
         f"{start_record.algo}",
         f"data_{start_record.problem}",
-        f"{start_record.exp_id}_{start_record.problem}_d{start_record.dim}",
+        f"{start_record.exp_id}_{start_record.problem}_d{start_record.dim}_i{start_record.inst}",
     )
     assert osp.exists(f"{log_file_base}.dat"), "COCO dat log file not created"
     assert osp.exists(f"{log_file_base}.tdat"), "COCO tdat log file not created"
@@ -112,7 +112,9 @@ def check_files_exist(start_record: COCOStart):
         assert len(lines) > 1, "COCO tdat log file is empty"
 
     assert osp.exists(
-        osp.join(f"{start_record.algo}", f"f{start_record.problem}.info")
+        osp.join(
+            f"{start_record.algo}", f"f{start_record.problem}_i{start_record.inst}.info"
+        )
     ), "COCO info file not created"
 
 
@@ -136,8 +138,9 @@ def test_coco_logging_integration():
     assert isinstance(res, DictAlg)
     print(res)
     result_dict = res[("test_algo", "")][0]
+    print(result_dict)
     assert result_dict.funcId == 3
     assert result_dict.dim == 2
     assert result_dict.algId == "test_algo"
-    assert len(result_dict.instancenumbers) == 1
+    assert len(result_dict.instancenumbers) == 2  # 2,3
     assert result_dict.instancenumbers[0] == 2

@@ -50,7 +50,7 @@ class COCOLogHeader(StrHeader):
             f"data_{state.coco_start.problem}",
             f"{state.coco_start.exp_id}_{state.coco_start.problem}_d{state.coco_start.dim}_i{state.coco_start.inst}.{file_type}",
         )
-        self._uuid = f"{state.coco_start.algo}_{state.coco_start.problem}_d{state.coco_start.dim}_i{state.inst}_{state.coco_start.exp_id}"
+        self._uuid = f"{state.coco_start.algo}_{state.coco_start.problem}_d{state.coco_start.dim}_i{state.coco_start.inst}_{state.coco_start.exp_id}"
 
     def __str__(self):
         """

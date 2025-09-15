@@ -1,7 +1,7 @@
 from logging import Filter
 from ttex.log.formatter import StrRecord
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Dict
 
 
 class LogEvent(ABC):
@@ -9,18 +9,15 @@ class LogEvent(ABC):
 
 
 class LoggingState(ABC):
-    def update(self, event: LogEvent) -> None:
-        ...
+    def update(self, event: LogEvent) -> None: ...
 
 
 class KeySplitter(ABC):
     @abstractmethod
-    def init_logging_state(self) -> LoggingState:
-        ...
+    def init_logging_state(self) -> LoggingState: ...
 
     @abstractmethod
-    def process(self, state: LoggingState, event: LogEvent) -> dict[str, StrRecord]:
-        ...
+    def process(self, state: LoggingState, event: LogEvent) -> Dict[str, StrRecord]: ...
 
 
 class EventKeysplitFilter(Filter):
@@ -31,7 +28,7 @@ class EventKeysplitFilter(Filter):
     def __init__(
         self,
         key_splitter_cls: str,
-        key_splitter_args: Optional[dict] = None,
+        key_splitter_args: Optional[Dict] = None,
         name: str = "",
     ):
         """

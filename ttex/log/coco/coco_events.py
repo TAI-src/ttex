@@ -1,11 +1,12 @@
 from uuid import uuid4
 from ttex.log.filter import LogEvent
 from dataclasses import dataclass
+from typing import List
 
 
 @dataclass(frozen=True)
 class COCOEval(LogEvent):
-    x: list[float]  # point in search space
+    x: List[float]  # point in search space
     mf: float  # measured fitness
 
 

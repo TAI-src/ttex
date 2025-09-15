@@ -13,15 +13,12 @@ class ManualRotatingFileHandler(BaseRotatingHandler):
         key: str = "msg",
         mode: str = "a",
         encoding=None,
-        errors=None,
     ):
         """
         Initialize the handler with the given filename and mode.
         """
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
-        super().__init__(
-            filepath, delay=True, mode=mode, encoding=encoding, errors=errors
-        )
+        super().__init__(filepath, delay=True, mode=mode, encoding=encoding)
         self.current_filepath = None
         self.next_filepath = None
         self.key = key

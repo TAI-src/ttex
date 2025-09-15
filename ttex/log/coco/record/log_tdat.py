@@ -1,10 +1,10 @@
 from ttex.log.coco.record import COCOLogRecord, COCOLogHeader
 from ttex.log.coco import COCOState
-from typing import Optional
+from typing import Optional, List
 
 
 class COCOtdatRecord(COCOLogRecord):
-    def emit(self, trigger_targets: Optional[list[float]]) -> bool:  # type: ignore[override]
+    def emit(self, trigger_targets: Optional[List[float]]) -> bool:  # type: ignore[override]
         if not trigger_targets:
             return False
         assert (

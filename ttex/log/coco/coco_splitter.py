@@ -11,11 +11,12 @@ from ttex.log.coco.record import (
     COCOtdatRecord,
 )
 from cocopp.testbedsettings import SuiteClass
+from typing import List, Optional, Dict
 
 
 class COCOKeySplitter(KeySplitter):
     def __init__(
-        self, trigger_nth: int = 1, trigger_targets: list[float] | None = None
+        self, trigger_nth: int = 1, trigger_targets: List[float] | None = None
     ):
         self.trigger_nth = trigger_nth
         self.start_trigger_targets = (
@@ -35,9 +36,9 @@ class COCOKeySplitter(KeySplitter):
             self.trigger_targets = self.start_trigger_targets.copy()
         self.trigger_targets.sort(reverse=True)
 
-    def process(self, state: LoggingState, event: LogEvent) -> dict[str, StrRecord]:
+    def process(self, state: LoggingState, event: LogEvent) -> Dict[str, StrRecord]:
         assert isinstance(state, COCOState)
-        return_dict: dict[str, StrRecord] = {}
+        return_dict: Dict[str, StrRecord] = {}
 
         if isinstance(event, COCOStart):
             self._reset_triggers(event.suite)

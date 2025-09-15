@@ -133,6 +133,9 @@ def capture_snapshot(
         "DOCKER_PWD",
         "GPG_KEY",
         "WANDBOX_API_KEY",
+        "DOCKERHUB_TOKEN",
+        "DOCKERHUB_USERNAME",
+        "CID_PAT",
     ]
     if extra_sensitive_keys:
         sensitive_keys.extend(extra_sensitive_keys)

@@ -13,7 +13,7 @@ def test_capture_snapshot():
     for key in expected_keys:
         assert key in snapshot
     # Check that sensitive environment variables are redacted
-    assert snapshot.get("env_vars", {}).get("DOCKER_USER_NAME") == "<REDACTED>"
+    assert snapshot.get("env_vars", {}).get("GPG_KEY") == "<REDACTED>"
     assert snapshot.get("env_vars", {}).get("TERM") == "<REDACTED>"
     # Check that the extra info is included
     assert snapshot.get("custom_info", {}).get("test_key") == "test_value"

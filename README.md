@@ -1,5 +1,5 @@
 # ttex
-Tracking Tools for (jaix) EXperiments
+Tracking Tools for (jaix) EXperiments. Published packaged on [PyPI](https://pypi.org/project/tai-ttex/)
 
 ## Wandb launching
 

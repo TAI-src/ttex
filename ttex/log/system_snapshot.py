@@ -4,7 +4,7 @@ import json
 import platform
 import subprocess
 import shutil
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Dict, List
 
@@ -139,7 +139,7 @@ def capture_snapshot(
         sensitive_keys = list(set(sensitive_keys))
 
     snapshot = {
-        "timestamp": datetime.now(UTC).isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "python": get_python_info(),
         "os": get_os_info(),
         "cpu": get_cpu_info(),

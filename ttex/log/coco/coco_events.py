@@ -1,7 +1,7 @@
 from uuid import uuid4
-from ttex.log.filter import LogEvent
 from dataclasses import dataclass
 from typing import List
+from ttex.log.filter import LogEvent
 
 
 @dataclass(frozen=True)

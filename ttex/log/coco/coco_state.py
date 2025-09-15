@@ -40,7 +40,7 @@ class COCOState(LoggingState):
         best_dist_prev = self.best_mf - self.fopt
         self.best_mf = min(self.best_mf, coco_eval.mf)
         self.best_dist_opt = self.best_mf - self.fopt
-        assert self.best_dist_opt >= 0
+        assert self.best_dist_opt is not None and self.best_dist_opt >= 0
         self.last_imp = best_dist_prev - self.best_dist_opt
         self.last_eval = coco_eval
 

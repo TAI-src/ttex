@@ -11,12 +11,12 @@ from ttex.log.coco.record import (
     COCOtdatRecord,
 )
 from cocopp.testbedsettings import SuiteClass
-from typing import List, Optional, Dict
+from typing import List, Dict, Optional
 
 
 class COCOKeySplitter(KeySplitter):
     def __init__(
-        self, trigger_nth: int = 1, trigger_targets: List[float] | None = None
+        self, trigger_nth: int = 1, trigger_targets: Optional[List[float]] = None
     ):
         self.trigger_nth = trigger_nth
         self.start_trigger_targets = (

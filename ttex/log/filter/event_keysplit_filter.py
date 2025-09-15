@@ -10,17 +10,17 @@ class LogEvent(ABC):
 
 class LoggingState(ABC):
     def update(self, event: LogEvent) -> None:
-        ...
+        pass
 
 
 class KeySplitter(ABC):
     @abstractmethod
     def init_logging_state(self) -> LoggingState:
-        ...
+        pass
 
     @abstractmethod
     def process(self, state: LoggingState, event: LogEvent) -> Dict[str, StrRecord]:
-        ...
+        pass
 
 
 class EventKeysplitFilter(Filter):

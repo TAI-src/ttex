@@ -1,10 +1,6 @@
 # integration test for coco logging
-import logging
 import os.path as osp
-from ttex.log.handler import ManualRotatingFileHandler
 import cocopp
-from ttex.log.formatter import KeyFormatter
-from ttex.log.filter import KeyFilter, EventKeysplitFilter
 from ttex.log.coco import COCOStart, COCOEval, COCOEnd, setup_coco_logger
 import numpy as np
 from cocopp.pproc import DictAlg

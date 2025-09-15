@@ -37,7 +37,7 @@ The COCO Logger supports the following logging events:
 ```python
 @dataclass(frozen=True)
 class COCOEval(LogEvent):
-    x: list[float]  # point in search space
+    x: List[float]  # point in search space
     mf: float  # measured fitness
 
 

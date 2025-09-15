@@ -2,6 +2,7 @@ from ttex.log.filter import LoggingState, LogEvent
 from ttex.log.coco import COCOEval, COCOStart, COCOEnd
 import numpy as np
 import os.path as osp
+from typing import Optional
 
 
 class COCOState(LoggingState):
@@ -29,8 +30,8 @@ class COCOState(LoggingState):
         self.fopt = coco_start.fopt
         self.inst = coco_start.inst
         self.coco_start = coco_start
-        self.best_dist_opt = None
-        self.last_imp = None
+        self.best_dist_opt: Optional[float] = None
+        self.last_imp: Optional[float] = None
         self._needs_start = False
 
     def _update_eval(self, coco_eval: COCOEval) -> None:

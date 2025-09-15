@@ -1,5 +1,6 @@
 from ttex.log.coco import COCOEnd, COCOEval, COCOStart, COCOState
 from ttex.log.filter import KeySplitter, LogEvent
+from ttex.log.filter.event_keysplit_filter import LoggingState
 from ttex.log.formatter import StrRecord
 from ttex.log.coco.record import (
     COCOInfoHeader,
@@ -34,8 +35,9 @@ class COCOKeySplitter(KeySplitter):
             self.trigger_targets = self.start_trigger_targets.copy()
         self.trigger_targets.sort(reverse=True)
 
-    def process(self, state: COCOState, event: LogEvent) -> dict[str, list[StrRecord]]:
-        return_dict = {}
+    def process(self, state: LoggingState, event: LogEvent) -> dict[str, StrRecord]:
+        assert isinstance(state, COCOState)
+        return_dict: dict[str, StrRecord] = {}
 
         if isinstance(event, COCOStart):
             self._reset_triggers(event.suite)

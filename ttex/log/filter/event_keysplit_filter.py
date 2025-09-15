@@ -9,18 +9,15 @@ class LogEvent(ABC):
 
 
 class LoggingState(ABC):
-    def update(self, event: LogEvent) -> None:
-        ...
+    def update(self, event: LogEvent) -> None: ...
 
 
 class KeySplitter(ABC):
     @abstractmethod
-    def init_logging_state(self) -> LoggingState:
-        ...
+    def init_logging_state(self) -> LoggingState: ...
 
     @abstractmethod
-    def process(self, state: LoggingState, event: LogEvent) -> dict[str, StrRecord]:
-        ...
+    def process(self, state: LoggingState, event: LogEvent) -> dict[str, StrRecord]: ...
 
 
 class EventKeysplitFilter(Filter):
@@ -53,7 +50,7 @@ class EventKeysplitFilter(Filter):
         module = __import__(module_path, fromlist=[class_name])
         return getattr(module, class_name)
 
-    def filter(self, record):
+    def filter(self, record) -> bool:
         """ """
 
         if not isinstance(record.msg, LogEvent):

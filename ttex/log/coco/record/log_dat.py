@@ -3,7 +3,7 @@ from ttex.log.coco import COCOState
 
 
 class COCOdatRecord(COCOLogRecord):
-    def emit(self, trigger_nth: int) -> bool:
+    def emit(self, trigger_nth: int) -> bool:  # type: ignore[override]
         """
         Check if the record should be emitted based on the trigger_nth condition.
         """

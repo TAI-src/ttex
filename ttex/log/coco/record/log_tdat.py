@@ -4,7 +4,7 @@ from typing import Optional
 
 
 class COCOtdatRecord(COCOLogRecord):
-    def emit(self, trigger_targets: Optional[list[float]]) -> bool:
+    def emit(self, trigger_targets: Optional[list[float]]) -> bool:  # type: ignore[override]
         if not trigger_targets:
             return False
         assert (

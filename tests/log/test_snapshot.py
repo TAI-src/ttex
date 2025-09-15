@@ -5,7 +5,9 @@ import os
 def test_capture_snapshot():
     file_name = "test_snapshot.json"
     snapshot = capture_snapshot(
-        file_name, extra_info={"test_key": "test_value"}, extra_sensitive_keys=["TERM"]
+        file_name,
+        extra_info={"test_key": "test_value"},
+        extra_sensitive_keys=["HOSTNAME"],
     )
     assert isinstance(snapshot, dict)
     # Check for some expected keys in the snapshot
@@ -14,7 +16,7 @@ def test_capture_snapshot():
         assert key in snapshot
     # Check that sensitive environment variables are redacted
     assert snapshot.get("env_vars", {}).get("GPG_KEY") == "<REDACTED>"
-    assert snapshot.get("env_vars", {}).get("TERM") == "<REDACTED>"
+    assert snapshot.get("env_vars", {}).get("HOSTNAME") == "<REDACTED>"
     # Check that the extra info is included
     assert snapshot.get("custom_info", {}).get("test_key") == "test_value"
     # Check that the file is created

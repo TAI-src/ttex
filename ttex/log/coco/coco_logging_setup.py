@@ -5,10 +5,12 @@ from ttex.log.handler import ManualRotatingFileHandler
 from ttex.log.formatter import KeyFormatter
 from ttex.log.filter import KeyFilter, EventKeysplitFilter
 
+from typing import Optional, List
+
 
 def setup_coco_logger(
     name: str = "coco_logger",
-    base_evaluation_triggers=None,
+    base_evaluation_triggers: Optional[List[int]] = None,
     number_evaluation_triggers: int = 20,
 ) -> logging.Logger:
     # TODO: make this into a default setup to make it easier

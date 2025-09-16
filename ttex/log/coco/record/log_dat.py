@@ -16,7 +16,7 @@ class COCOdatRecord(COCOLogRecord):
             last_dat_emit and self.f_evals > last_dat_emit
         ):  # Emit the last evaluation unless already done
             return True
-        if self.f_evals == 1 and not last_dat_emit:
+        if self.f_evals == 1 and last_dat_emit is None:
             # Always emit the first evaluation (unless it is also the last)
             return True
         if trigger_nth <= 0:

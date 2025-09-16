@@ -8,7 +8,7 @@ from ttex.log.filter import KeyFilter, EventKeysplitFilter
 
 def setup_coco_logger(
     name: str = "coco_logger",
-    base_evaluation_triggers=[1, 2, 5],
+    base_evaluation_triggers=None,
     number_evaluation_triggers: int = 20,
 ) -> logging.Logger:
     # TODO: make this into a default setup to make it easier

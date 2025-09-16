@@ -18,7 +18,7 @@ class COCOKeySplitter(KeySplitter):
     def __init__(
         self,
         trigger_targets: Optional[List[float]] = None,
-        base_evaluation_triggers: List[int] = [1, 2, 5],
+        base_evaluation_triggers: Optional[List[int]] = None,
         number_evaluation_triggers: int = 20,
     ):
         self.start_trigger_targets = (

@@ -47,6 +47,7 @@ class COCOdatRecord(COCOLogRecord):
             return False
         for base in base_evaluation_triggers:
             scaled_eval = f_evals / (dimension * base)
+            assert scaled_eval > 0, "scaled_eval must be positive"
             # check if scaled_eval is a power of 10
             if math.log10(scaled_eval).is_integer():
                 return True
@@ -54,7 +55,7 @@ class COCOdatRecord(COCOLogRecord):
 
     def emit(  # type: ignore[override]
         self,
-        base_evaluation_triggers: List[int] = [1, 2, 5],
+        base_evaluation_triggers: Optional[List[int]] = None,
         number_evaluation_triggers: int = 20,
         last_dat_emit: Optional[int] = None,  # only pass when emitting the last record
     ) -> bool:  # type: ignore[override]
@@ -62,6 +63,8 @@ class COCOdatRecord(COCOLogRecord):
         Check if the record should be emitted based on the trigger_nth condition.
         """
         assert self.f_evals > 0, "f_evals must be positive to determine emission"
+        if base_evaluation_triggers is None:
+            base_evaluation_triggers = [1, 2, 5]
         if (
             last_dat_emit and self.f_evals > last_dat_emit
         ):  # Emit the last evaluation unless already done

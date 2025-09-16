@@ -1,5 +1,5 @@
 from ttex.log.coco.record import COCOtdatRecord, COCOtdatHeader
-from ..test_coco_events import coco_start_params, eval_params
+from ..test_coco_events import coco_start_params, random_eval_params
 from ttex.log.coco import COCOState, COCOStart, COCOEval
 
 
@@ -13,7 +13,7 @@ def test_coco_dat():
     assert header.filepath == expected_filepath
 
     ## dummy initialise
-    eval_event = COCOEval(**eval_params)
+    eval_event = COCOEval(**random_eval_params(dim=coco_start_params["dim"]))
     state.update(eval_event)
     record = COCOtdatRecord(state)
 

@@ -37,6 +37,7 @@ class COCOState(LoggingState):
 
     def _update_eval(self, coco_eval: COCOEval) -> None:
         assert not self._needs_start, "COCOStart must be processed before COCOEval"
+        assert len(coco_eval.x) == self.coco_start.dim
         self.f_evals += 1
         best_dist_prev = self.best_mf - self.fopt
         self.best_mf = min(self.best_mf, coco_eval.mf)

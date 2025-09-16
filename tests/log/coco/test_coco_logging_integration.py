@@ -82,7 +82,7 @@ def check_files_exist(start_record: COCOStart):
 
 
 def test_coco_logging_integration():
-    logger = setup_coco_logger(2, "coco_logger1")
+    logger = setup_coco_logger("coco_logger1")
     start_records = [None] * 4
     start_records[0] = simulate_once(logger, num_evals=50, problem=3, dim=2, inst=2)
     start_records[1] = simulate_once(logger, num_evals=30, problem=3, dim=2, inst=3)
@@ -99,9 +99,7 @@ def test_coco_logging_integration():
     ## check with cocopp
     res = cocopp.main("test_algo")
     assert isinstance(res, DictAlg)
-    print(res)
     result_dict = res[("test_algo", "")][0]
-    print(result_dict)
     assert result_dict.funcId == 3
     assert result_dict.dim == 2
     assert result_dict.algId == "test_algo"

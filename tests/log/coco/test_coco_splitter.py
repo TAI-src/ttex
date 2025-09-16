@@ -1,5 +1,6 @@
 from ttex.log.coco import COCOKeySplitter, COCOState, COCOStart, COCOEval, COCOEnd
 import pytest
+from .test_coco_events import random_eval_params
 
 
 def get_started_state(splitter: COCOKeySplitter):
@@ -28,7 +29,7 @@ def test_process_coco_start():
 
 
 def test_trigger_target_resetting():
-    splitter = COCOKeySplitter(trigger_nth=1, trigger_targets=[0.5, 0.6])
+    splitter = COCOKeySplitter(trigger_targets=[0.5, 0.6])
     state, _ = get_started_state(splitter)
     assert splitter.trigger_targets == [0.6, 0.5]
     assert splitter.start_trigger_targets == [0.5, 0.6]
@@ -39,34 +40,36 @@ def test_trigger_target_resetting():
 
 
 def test_no_targets():
-    splitter = COCOKeySplitter(trigger_nth=1)
+    splitter = COCOKeySplitter()
     state, _ = get_started_state(splitter)
     assert splitter.trigger_targets == []
 
 
 def test_reset_trigger_bbob():
-    splitter = COCOKeySplitter(trigger_nth=1)
+    splitter = COCOKeySplitter()
     splitter._reset_triggers("bbob")
     assert len(splitter.trigger_targets) > 0
 
 
 def test_process_coco_eval():
-    splitter = COCOKeySplitter(trigger_nth=1, trigger_targets=[0.5])
+    splitter = COCOKeySplitter(trigger_targets=[0.5])
     state, _ = get_started_state(splitter)
 
-    eval_event = COCOEval(x=[1.0, 2.0, 3.0], mf=0.5)
+    eval_params = random_eval_params(dim=10)
+    eval_params["mf"] = 0.5
+    eval_event = COCOEval(**eval_params)
     state.update(eval_event)
     result = splitter.process(state, eval_event)
 
     assert "log_dat" in result
     assert "log_tdat" in result
     assert state.f_evals == 1
-    assert state.best_mf == 0.5
+    assert state.best_mf == eval_params["mf"]
     assert state.last_dat_emit == state.f_evals
 
 
 def test_process_coco_end_assert():
-    splitter = COCOKeySplitter(trigger_nth=20)
+    splitter = COCOKeySplitter()
     state, _ = get_started_state(splitter)
 
     end_event = COCOEnd()
@@ -77,17 +80,22 @@ def test_process_coco_end_assert():
 
 @pytest.mark.parametrize("add_last", [True, False])
 def test_process_coco_end_default(add_last):
-    splitter = COCOKeySplitter(trigger_nth=20)
+    splitter = COCOKeySplitter()
     state, _ = get_started_state(splitter)
-    eval_event = COCOEval(x=[1.0, 2.0, 3.0], mf=0.5)
+    eval_params = random_eval_params(dim=10)
+    eval_event = COCOEval(**eval_params)
     state.update(eval_event)  # Add an eval to avoid assert
     splitter.process(state, eval_event)
+    log_dat_emitted = True
     if add_last:
-        eval_event = COCOEval(x=[1.0, 2.0, 3.0], mf=0.3)
-        state.update(
-            eval_event
-        )  # Add another eval so we have one that is not already emitted
-        splitter.process(state, eval_event)
+        # Keep adding evals until log_dat is not emitted
+        while log_dat_emitted:
+            eval_event = COCOEval(**eval_params)
+            state.update(
+                eval_event
+            )  # Add another eval so we have one that is not already emitted
+            result = splitter.process(state, eval_event)
+            log_dat_emitted = "log_dat" in result
     end_event = COCOEnd()
     state.update(end_event)
     result = splitter.process(state, end_event)
@@ -95,31 +103,15 @@ def test_process_coco_end_default(add_last):
     assert (
         state._needs_start is True
     )  # After COCOEnd, state should require a new start event
-    assert ("log_dat" in result) == add_last
-    assert "log_tdat" not in result
-
-
-def test_process_coco_eval_with_trigger_nth():
-    splitter = COCOKeySplitter(trigger_nth=3, trigger_targets=[0.5, 0.3])
-    state, _ = get_started_state(splitter)
-    eval_event = COCOEval(x=[1.0, 2.0, 3.0], mf=0.5)
-    state.update(eval_event)  # First eval, always triggers log_dat
-    result = splitter.process(state, eval_event)
     assert "log_dat" in result
-    assert "log_tdat" in result
-    eval_event = COCOEval(x=[1.0, 2.0, 3.0], mf=0.3)
-    state.update(eval_event)  # Second eval, should not trigger log_dat
-    result = splitter.process(state, eval_event)
-    assert "log_dat" not in result
-    assert "log_tdat" in result
-    assert state.f_evals == 2
-    assert state.last_dat_emit == 1
 
 
 def test_process_coco_eval_with_trigger_targets():
-    splitter = COCOKeySplitter(trigger_nth=1, trigger_targets=[0.5, 0.6])
+    splitter = COCOKeySplitter(trigger_targets=[0.5, 0.6])
     state, _ = get_started_state(splitter)
-    eval_event = COCOEval(x=[1.0, 2.0, 3.0], mf=0.7)
+    eval_params = random_eval_params(dim=10)
+    eval_params["mf"] = 0.7
+    eval_event = COCOEval(**eval_params)
     state.update(eval_event)  # Worse than targets, should not trigger log_tdat
     result = splitter.process(state, eval_event)
     assert "log_dat" in result

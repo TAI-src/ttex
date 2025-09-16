@@ -41,8 +41,23 @@ def test_coco_info():
     end_event = COCOEnd(**end_params)
     state.update(end_event)  # Update state with end event
     record = COCOInfoRecord(state)
-    print(str(record))
     expected_output = (
         f"data_f1/dummy.dat, {start_event.inst}:{evals}|{state.best_dist_opt:.1e}"
     )
     assert str(record) == expected_output
+
+
+def test_with_alg_info():
+    state = COCOState()
+    start_params = coco_start_params.copy()
+    start_params["algo_info"] = "test info"
+    start_event = COCOStart(**start_params)
+    state.update(start_event)  # Update state with start event
+
+    header = COCOInfoHeader(state)
+    expected_header = (
+        f"suite = '{state.coco_start.suite}', funcId = {state.coco_start.problem}, DIM = {state.coco_start.dim}, Precision = 1.000e-08, "
+        f"algId = '{state.coco_start.algo}', coco_version = '{header.coco_version}', logger = '{header.logger}', "
+        f"data_format = '{header.data_format}'\n% {state.coco_start.algo_info}"
+    )
+    assert str(header) == expected_header

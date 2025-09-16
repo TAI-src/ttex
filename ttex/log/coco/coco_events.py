@@ -24,6 +24,7 @@ class COCOStart(LogEvent):
     inst: int  # instance id
     suite: str  # suite name
     exp_id: str = str(uuid4())  # experiment id, defaults to random uuid
+    algo_info: str = ""  # additional algorithm info
 
 
 # TODO: Handling for and testing with unknown optimum

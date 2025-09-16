@@ -32,3 +32,9 @@ def test_coco_dat():
     assert record.emit(1)
     record.f_evals = 3
     assert record.emit(1)
+
+    # Test last emit
+    state.last_dat_emit = 2
+    record.f_evals = 3
+    assert not record.emit(2)
+    assert record.emit(2, last_dat_emit=state.last_dat_emit)

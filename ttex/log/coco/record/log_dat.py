@@ -4,7 +4,7 @@ from typing import Optional
 
 
 class COCOdatRecord(COCOLogRecord):
-    def emit(
+    def emit(  # type: ignore[override]
         self,
         trigger_nth: int,
         last_dat_emit: Optional[int] = None,  # only pass when emitting the last record

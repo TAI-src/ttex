@@ -5,7 +5,6 @@ import math
 
 
 class COCOdatRecord(COCOLogRecord):
-
     @staticmethod
     def trigger_nth(number_evaluation_triggers: int, f_evals: int) -> bool:
         """

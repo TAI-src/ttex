@@ -1,5 +1,5 @@
 from ttex.log.coco.record import COCOInfoHeader, COCOInfoRecord
-from ..test_coco_events import coco_start_params, eval_params, end_params
+from ..test_coco_events import coco_start_params, end_params, random_eval_params
 from ttex.log.coco import COCOState, COCOStart, COCOEval, COCOEnd
 import os.path as osp
 
@@ -35,7 +35,7 @@ def test_coco_info():
 
     evals = 3
     for _ in range(evals):
-        eval_event = COCOEval(**eval_params)
+        eval_event = COCOEval(**random_eval_params(dim=coco_start_params["dim"]))
         state.update(eval_event)  # Update state with eval event
 
     end_event = COCOEnd(**end_params)

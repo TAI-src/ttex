@@ -1,5 +1,4 @@
 import os.path as osp
-from uuid import uuid4
 from ttex.log.formatter import StrHeader, StrRecord
 from ttex.log.coco import COCOState
 
@@ -14,6 +13,7 @@ class COCOLogRecord(StrRecord):
             state, "last_eval"
         ), "COCOLogRecord requires at least one COCOEval event"
         self.x = state.last_eval.x
+        self.dim = len(self.x)
         self.mf = state.last_eval.mf
         self.f_evals = state.f_evals
         self.g_evals = state.g_evals

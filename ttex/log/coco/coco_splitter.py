@@ -16,12 +16,16 @@ from typing import List, Dict, Optional
 
 class COCOKeySplitter(KeySplitter):
     def __init__(
-        self, trigger_nth: int = 1, trigger_targets: Optional[List[float]] = None
+        self,
+        trigger_targets: Optional[List[float]] = None,
+        base_evaluation_triggers: Optional[List[int]] = None,
+        number_evaluation_triggers: int = 20,
     ):
-        self.trigger_nth = trigger_nth
         self.start_trigger_targets = (
             trigger_targets if trigger_targets is not None else []
         )
+        self.base_evaluation_triggers = base_evaluation_triggers
+        self.number_evaluation_triggers = number_evaluation_triggers
 
     def _reset_triggers(self, suite: str):
         if not self.start_trigger_targets:
@@ -55,7 +59,11 @@ class COCOKeySplitter(KeySplitter):
         elif isinstance(event, COCOEval):
             log_dat_record = COCOdatRecord(state)
             log_tdat_record = COCOtdatRecord(state)
-            if log_dat_record.emit(self.trigger_nth, last_dat_emit=None):
+            if log_dat_record.emit(
+                base_evaluation_triggers=self.base_evaluation_triggers,
+                number_evaluation_triggers=self.number_evaluation_triggers,
+                last_dat_emit=None,
+            ):
                 # explicitly not the last eval
                 return_dict["log_dat"] = log_dat_record
                 state.last_dat_emit = state.f_evals
@@ -64,7 +72,11 @@ class COCOKeySplitter(KeySplitter):
         elif isinstance(event, COCOEnd):
             # Emit last evaluation if not already done
             log_dat_record = COCOdatRecord(state)
-            if log_dat_record.emit(self.trigger_nth, state.last_dat_emit):
+            if log_dat_record.emit(
+                base_evaluation_triggers=self.base_evaluation_triggers,
+                number_evaluation_triggers=self.number_evaluation_triggers,
+                last_dat_emit=state.last_dat_emit,
+            ):
                 return_dict["log_dat"] = log_dat_record
             info_record = COCOInfoRecord(state)
             if info_record.emit():

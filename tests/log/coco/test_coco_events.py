@@ -2,6 +2,7 @@ from ttex.log.coco import COCOEval, COCOEnd, COCOStart
 from ttex.log.filter import LogEvent
 import pytest
 from dataclasses import FrozenInstanceError
+import random
 
 coco_start_params = {
     "fopt": 0.1,
@@ -12,6 +13,14 @@ coco_start_params = {
     "suite": "test_suite",
     "exp_id": "test_exp_id",
 }
+
+
+def random_eval_params(dim):
+    return {
+        "x": [random.uniform(-5, 5) for _ in range(dim)],
+        "mf": random.uniform(0, 10),
+    }
+
 
 eval_params = {
     "x": [1.0, 2.0, 3.0],

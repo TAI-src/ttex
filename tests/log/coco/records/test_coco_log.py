@@ -5,7 +5,9 @@ from ttex.log.coco import COCOState, COCOStart, COCOEval
 
 def test_coco_log():
     state = COCOState()
-    start_event = COCOStart(**coco_start_params)
+    new_start_params = coco_start_params.copy()
+    new_start_params["dim"] = 3  # for testing
+    start_event = COCOStart(**new_start_params)
     state.update(start_event)
 
     header = COCOLogHeader(state, file_type="dummy")

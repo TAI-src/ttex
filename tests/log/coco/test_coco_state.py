@@ -1,5 +1,5 @@
 from ttex.log.coco import COCOState, COCOStart, COCOEval, COCOEnd
-from .test_coco_events import coco_start_params, eval_params, end_params
+from .test_coco_events import coco_start_params, end_params, random_eval_params
 import pytest
 import os.path as osp
 
@@ -37,6 +37,7 @@ def test_coco_state_start():
 
 def test_ordered_error():
     state = COCOState()
+    eval_params = random_eval_params(dim=coco_start_params["dim"])
     eval_event = COCOEval(**eval_params)
 
     # Update state with eval event
@@ -50,6 +51,7 @@ def test_coco_state_eval():
     state = COCOState()
     start_event = COCOStart(**coco_start_params)
     state.update(start_event)
+    eval_params = random_eval_params(dim=coco_start_params["dim"])
     eval_event = COCOEval(**eval_params)
     state.update(eval_event)
     assert state.f_evals == 1

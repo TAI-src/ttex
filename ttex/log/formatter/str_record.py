@@ -18,7 +18,7 @@ class StrRecord(ABC):
         """
         pass
 
-    def emit(self, **kwargs) -> bool:
+    def emit(self) -> bool:
         return True
 
 

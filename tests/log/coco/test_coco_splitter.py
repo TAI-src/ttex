@@ -1,4 +1,5 @@
 from ttex.log.coco import COCOKeySplitter, COCOState, COCOStart, COCOEval, COCOEnd
+import pytest
 
 
 def get_started_state(splitter: COCOKeySplitter):
@@ -61,20 +62,41 @@ def test_process_coco_eval():
     assert "log_tdat" in result
     assert state.f_evals == 1
     assert state.best_mf == 0.5
+    assert state.last_dat_emit == state.f_evals
 
 
-def test_process_coco_end():
-    splitter = COCOKeySplitter()
+def test_process_coco_end_assert():
+    splitter = COCOKeySplitter(trigger_nth=20)
     state, _ = get_started_state(splitter)
 
     end_event = COCOEnd()
     state.update(end_event)
-    result = splitter.process(state, end_event)
+    with pytest.raises(AssertionError):
+        splitter.process(state, end_event)
 
+
+@pytest.mark.parametrize("add_last", [True, False])
+def test_process_coco_end_default(add_last):
+    splitter = COCOKeySplitter(trigger_nth=20)
+    state, _ = get_started_state(splitter)
+    eval_event = COCOEval(x=[1.0, 2.0, 3.0], mf=0.5)
+    state.update(eval_event)  # Add an eval to avoid assert
+    splitter.process(state, eval_event)
+    if add_last:
+        eval_event = COCOEval(x=[1.0, 2.0, 3.0], mf=0.3)
+        state.update(
+            eval_event
+        )  # Add another eval so we have one that is not already emitted
+        splitter.process(state, eval_event)
+    end_event = COCOEnd()
+    state.update(end_event)
+    result = splitter.process(state, end_event)
     assert "info" in result
     assert (
         state._needs_start is True
     )  # After COCOEnd, state should require a new start event
+    assert ("log_dat" in result) == add_last
+    assert "log_tdat" not in result
 
 
 def test_process_coco_eval_with_trigger_nth():
@@ -90,6 +112,8 @@ def test_process_coco_eval_with_trigger_nth():
     result = splitter.process(state, eval_event)
     assert "log_dat" not in result
     assert "log_tdat" in result
+    assert state.f_evals == 2
+    assert state.last_dat_emit == 1
 
 
 def test_process_coco_eval_with_trigger_targets():

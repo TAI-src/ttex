@@ -8,6 +8,7 @@ from typing import Optional
 class COCOState(LoggingState):
     def __init__(self):
         self._needs_start = True
+        self.last_dat_emit = 0
         super().__init__()
 
     def update(self, event: LogEvent) -> None:

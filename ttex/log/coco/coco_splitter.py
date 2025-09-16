@@ -55,11 +55,17 @@ class COCOKeySplitter(KeySplitter):
         elif isinstance(event, COCOEval):
             log_dat_record = COCOdatRecord(state)
             log_tdat_record = COCOtdatRecord(state)
-            if log_dat_record.emit(self.trigger_nth):
+            if log_dat_record.emit(self.trigger_nth, last_dat_emit=None):
+                # explicitly not the last eval
                 return_dict["log_dat"] = log_dat_record
+                state.last_dat_emit = state.f_evals
             if log_tdat_record.emit(self.trigger_targets):
                 return_dict["log_tdat"] = log_tdat_record
         elif isinstance(event, COCOEnd):
+            # Emit last evaluation if not already done
+            log_dat_record = COCOdatRecord(state)
+            if log_dat_record.emit(self.trigger_nth, state.last_dat_emit):
+                return_dict["log_dat"] = log_dat_record
             info_record = COCOInfoRecord(state)
             if info_record.emit():
                 return_dict["info"] = info_record

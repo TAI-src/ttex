@@ -10,6 +10,9 @@ class COCOLogRecord(StrRecord):
     )
 
     def __init__(self, state: COCOState):
+        assert hasattr(
+            state, "last_eval"
+        ), "COCOLogRecord requires at least one COCOEval event"
         self.x = state.last_eval.x
         self.mf = state.last_eval.mf
         self.f_evals = state.f_evals

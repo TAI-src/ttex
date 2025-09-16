@@ -4,7 +4,7 @@ from ttex.log.coco import COCOState
 
 
 class COCOInfoHeader(StrHeader):
-    template = "suite = '{suite}', funcId = {funcId}, DIM = {dim}, Precision = {prec:.3e}, algId = '{algId}', coco_version = '{coco_version}', logger = '{logger}', data_format = '{data_format}'\n% {algId}"
+    template = "suite = '{suite}', funcId = {funcId}, DIM = {dim}, Precision = {prec:.3e}, algId = '{algId}', coco_version = '{coco_version}', logger = '{logger}', data_format = '{data_format}'\n% {alg_info}"
 
     def __init__(self, state: COCOState):
         """
@@ -16,6 +16,9 @@ class COCOInfoHeader(StrHeader):
         """
         self.funcId = state.coco_start.problem
         self.algId = state.coco_start.algo
+        self.alg_info = (
+            state.coco_start.algo_info if state.coco_start.algo_info else self.algId
+        )
         self.dim = state.coco_start.dim
         self.suite = state.coco_start.suite
         self.inst = state.coco_start.inst
@@ -62,6 +65,7 @@ class COCOInfoHeader(StrHeader):
             coco_version=self.coco_version,
             logger=self.logger,
             data_format=self.data_format,
+            alg_info=self.alg_info,
         )
 
 

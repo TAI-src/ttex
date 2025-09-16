@@ -7,11 +7,13 @@ import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Dict, List
+import shlex
 
 
 def run_cmd(cmd: str, parse: str = "raw", split_char=":") -> dict:
     try:
-        output = subprocess.check_output(cmd, shell=True, text=True).strip()
+        # shlex is for input sanitation
+        output = subprocess.check_output(shlex.split(cmd), text=True).strip()
 
         if parse == "lines":
             return {"success": True, "lines": output.splitlines()}
@@ -59,15 +61,23 @@ def get_memory_info():
 
 
 def get_gpu_info():
-    return {"gpu": run_cmd("lspci | grep -i 'vga\\|3d\\|2d'")}
+    if shutil.which("lspci"):
+        return {"gpu": run_cmd("lspci | grep -i 'vga\\|3d\\|2d'")}
+    elif shutil.which("nvidia-smi"):
+        return {"gpu": run_cmd("nvidia-smi", parse="lines")}
+    else:
+        return {"gpu": "No GPU information available"}
 
 
 def get_compiler_info():
-    return {
-        "gcc": run_cmd("gcc --version", parse="lines"),
-        "g++": run_cmd("g++ --version", parse="lines"),
-        "clang": run_cmd("clang --version", parse="lines"),
-    }
+    return_dict = {}
+    if shutil.which("gcc"):
+        return_dict["gcc"] = run_cmd("gcc --version", parse="lines")
+    if shutil.which("g++"):
+        return_dict["g++"] = run_cmd("g++ --version", parse="lines")
+    if shutil.which("clang"):
+        return_dict["clang"] = run_cmd("clang --version", parse="lines")
+    return return_dict
 
 
 def get_env_vars(sensitive_keys=None):
@@ -84,7 +94,9 @@ def check_git():
         return False
     try:
         subprocess.check_output(
-            "git rev-parse --is-inside-work-tree", shell=True, text=True
+            ["git", "rev-parse", "--is-inside-work-tree"],
+            text=True,
+            stderr=subprocess.DEVNULL,  # Suppress error output
         )
         return True
     except subprocess.CalledProcessError:

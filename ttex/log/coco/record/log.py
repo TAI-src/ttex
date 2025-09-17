@@ -1,6 +1,7 @@
 import os.path as osp
 from ttex.log.formatter import StrHeader, StrRecord
 from ttex.log.coco import COCOState
+import math
 
 
 class COCOLogRecord(StrRecord):
@@ -19,6 +20,22 @@ class COCOLogRecord(StrRecord):
         self.g_evals = state.g_evals
         self.best_dist_opt = state.best_dist_opt
         self.best_mf = state.best_mf
+        self.last_imp = state.last_imp
+
+    @staticmethod
+    def get_exp_bin(n_bins, val):
+        """
+        Get the exponential bin for a given value.
+        There are n_bins between each power of 10.
+        Args:
+            n_bins (int): Number of bins between each power of 10.
+            val (float): The value to bin.
+        Returns:
+            float: The binned value.
+        """
+        exponent = math.ceil(n_bins * math.log10(val))
+        value = 10 ** (exponent / n_bins)
+        return value
 
     def __str__(self):
         """

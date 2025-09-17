@@ -17,8 +17,7 @@ class COCOState(LoggingState):
         elif isinstance(event, COCOEval):
             self._update_eval(event)
         elif isinstance(event, COCOEnd):
-            self._needs_start = True
-            # COCOEnd does not require any specific state update
+            self._update_end(event)
         else:
             raise ValueError(
                 "COCOState can only process COCOStart, COCOEval, and COCOEnd events"
@@ -34,6 +33,7 @@ class COCOState(LoggingState):
         self.best_dist_opt: Optional[float] = None
         self.last_imp: Optional[float] = None
         self._needs_start = False
+        self.last_tdat_emit = 0
 
     def _update_eval(self, coco_eval: COCOEval) -> None:
         assert not self._needs_start, "COCOStart must be processed before COCOEval"
@@ -45,6 +45,9 @@ class COCOState(LoggingState):
         assert self.best_dist_opt is not None and self.best_dist_opt >= 0
         self.last_imp = best_dist_prev - self.best_dist_opt
         self.last_eval = coco_eval
+
+    def _update_end(self, coco_end: COCOEnd) -> None:
+        self._needs_start = True
 
     def set_dat_filepath(self, dat_filepath: str, info_filepath: str):
         self.dat_filepath = osp.relpath(dat_filepath, start=osp.dirname(info_filepath))

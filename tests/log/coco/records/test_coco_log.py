@@ -1,6 +1,7 @@
 from ttex.log.coco.record import COCOLogHeader, COCOLogRecord
 from ..test_coco_events import coco_start_params, eval_params
 from ttex.log.coco import COCOState, COCOStart, COCOEval
+import math
 
 
 def test_coco_log():
@@ -24,3 +25,19 @@ def test_coco_log():
     record = COCOLogRecord(state)
     expected_output = "1 0 +6.000000000e-01 +5.000000000e-01 +5.000000000e-01 +1.0000e+00 +2.0000e+00 +3.0000e+00"
     assert str(record) == expected_output
+
+
+def test_get_exp_bin(n_bins=10):
+    # 10 bins between 1 and 10 means each bin is a factor of 10^(1/10) ~ 1.2589
+    # Test a few values to ensure they fall into the correct bins
+    for exp in range(3, 50):
+        value = 10 ** (exp / n_bins)
+        assert math.isclose(
+            COCOLogRecord.get_exp_bin(n_bins, value), value
+        ), f"Failed at value: {value}"
+
+        next_value = 10 ** ((exp + 1) / n_bins)
+        mid_value = (value + next_value) / 2
+        assert math.isclose(
+            COCOLogRecord.get_exp_bin(n_bins, mid_value), next_value
+        ), f"Failed at mid value: {mid_value}"

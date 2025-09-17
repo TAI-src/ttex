@@ -36,6 +36,7 @@ def test_coco_info():
     evals = 3
     for _ in range(evals):
         eval_event = COCOEval(**random_eval_params(dim=coco_start_params["dim"]))
+        print(eval_event)
         state.update(eval_event)  # Update state with eval event
 
     end_event = COCOEnd(**end_params)

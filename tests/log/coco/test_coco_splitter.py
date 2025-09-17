@@ -65,7 +65,7 @@ def test_process_coco_eval():
     assert "log_tdat" in result
     assert state.f_evals == 1
     assert state.best_mf == eval_params["mf"]
-    assert state.last_dat_emit == state.f_evals
+    assert state.last_tdat_emit == state.f_evals
 
 
 def test_process_coco_end_assert():
@@ -86,16 +86,16 @@ def test_process_coco_end_default(add_last):
     eval_event = COCOEval(**eval_params)
     state.update(eval_event)  # Add an eval to avoid assert
     splitter.process(state, eval_event)
-    log_dat_emitted = True
+    log_tdat_emitted = True
     if add_last:
         # Keep adding evals until log_dat is not emitted
-        while log_dat_emitted:
+        while log_tdat_emitted:
             eval_event = COCOEval(**eval_params)
             state.update(
                 eval_event
             )  # Add another eval so we have one that is not already emitted
             result = splitter.process(state, eval_event)
-            log_dat_emitted = "log_dat" in result
+            log_tdat_emitted = "log_tdat" in result
     end_event = COCOEnd()
     state.update(end_event)
     result = splitter.process(state, end_event)
@@ -103,17 +103,17 @@ def test_process_coco_end_default(add_last):
     assert (
         state._needs_start is True
     )  # After COCOEnd, state should require a new start event
-    assert "log_dat" in result
+    assert ("log_tdat" in result) == add_last
 
 
 def test_process_coco_eval_with_trigger_targets():
     splitter = COCOKeySplitter(trigger_targets=[0.5, 0.6])
     state, _ = get_started_state(splitter)
     eval_params = random_eval_params(dim=10)
-    eval_params["mf"] = 0.7
+    eval_params["mf"] = 0.6
     eval_event = COCOEval(**eval_params)
-    state.update(eval_event)  # Worse than targets, should not trigger log_tdat
+    state.update(eval_event)  # On target, should trigger
     result = splitter.process(state, eval_event)
-    assert "log_dat" in result
-    assert "log_tdat" in result
+    assert "log_dat" in result  # because it is target triggered
+    assert "log_tdat" in result  # because it is the first eval
     assert splitter.trigger_targets == [0.5]  # 0.6 should be popped

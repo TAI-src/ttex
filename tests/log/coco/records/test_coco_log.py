@@ -15,12 +15,12 @@ def test_coco_log():
 
     assert header.filepath == expected_filepath
 
-    expected_header = "% f evaluations | g evaluations | best noise-free fitness - Fopt (1.000000000000e-01) + sum g_i+ | measured fitness | best measured fitness or single-digit g-values | x1 | x2..."
+    expected_header = "% f evaluations | g evaluations | best noise-free fitness - Fopt (-1.000000000000e-01) + sum g_i+ | measured fitness | best measured fitness or single-digit g-values | x1 | x2..."
     assert str(header) == expected_header
 
     eval_event = COCOEval(**eval_params)
     state.update(eval_event)
 
     record = COCOLogRecord(state)
-    expected_output = "1 0 +4.000000000e-01 +5.000000000e-01 +5.000000000e-01 +1.0000e+00 +2.0000e+00 +3.0000e+00"
+    expected_output = "1 0 +6.000000000e-01 +5.000000000e-01 +5.000000000e-01 +1.0000e+00 +2.0000e+00 +3.0000e+00"
     assert str(record) == expected_output

@@ -45,8 +45,10 @@ class COCOtdatRecord(COCOLogRecord):
         if dimension <= 0:
             return False
         for base in base_evaluation_triggers:
+            assert base > 0, "base evaluation triggers must be positive"
             scaled_eval = f_evals / (dimension * base)
-            assert scaled_eval > 0, "scaled_eval must be positive"
+            if scaled_eval < 1:  # if f_evals is less than dimension * base, skip
+                continue
             # check if scaled_eval is a power of 10
             if math.log10(scaled_eval).is_integer():
                 return True

@@ -5,7 +5,6 @@ import math
 
 
 class COCOdatRecord(COCOLogRecord):
-
     @staticmethod
     def ceil_to_target(value: float, improvement_step: float = 1e-5) -> float:
         return math.ceil(value / improvement_step) * improvement_step

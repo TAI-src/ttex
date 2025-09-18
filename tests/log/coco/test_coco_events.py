@@ -4,15 +4,17 @@ import pytest
 from dataclasses import FrozenInstanceError
 import random
 
-coco_start_params = {
-    "fopt": -0.1,  # so it is less than mf in eval_params
-    "algo": "test_algo",
-    "problem": 1,
-    "dim": 10,
-    "inst": 1,
-    "suite": "test_suite",
-    "exp_id": "test_exp_id",
-}
+
+def get_coco_start_params(fopt: bool = True):
+    return {
+        "fopt": -0.1 if fopt else None,  # so it is less than mf in eval_params
+        "algo": "test_algo",
+        "problem": 1,
+        "dim": 10,
+        "inst": 1,
+        "suite": "test_suite",
+        "exp_id": "test_exp_id",
+    }
 
 
 def random_eval_params(dim):
@@ -30,7 +32,11 @@ eval_params = {
 end_params = {}
 
 
-def test_coco_start():
+@pytest.mark.parametrize(
+    "coco_start_params",
+    [get_coco_start_params(fopt=True), get_coco_start_params(fopt=False)],
+)
+def test_coco_start(coco_start_params):
     event = COCOStart(**coco_start_params)
     assert isinstance(event, LogEvent)
     assert event.fopt == coco_start_params["fopt"]
@@ -46,7 +52,11 @@ def test_coco_start():
         event.exp_id = "custom_id"
 
 
-def test_coco_start_custom_exp_id():
+@pytest.mark.parametrize(
+    "coco_start_params",
+    [get_coco_start_params(fopt=True), get_coco_start_params(fopt=False)],
+)
+def test_coco_start_custom_exp_id(coco_start_params):
     custom_exp_id = "custom_id"
     start_params = coco_start_params.copy()
     start_params["exp_id"] = custom_exp_id

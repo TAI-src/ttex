@@ -6,7 +6,7 @@ import math
 
 class COCOLogRecord(StrRecord):
     template = (
-        "{f_evals} {g_evals} {best_dist_opt:+.9e} {mf:+.9e} {best_mf:+.9e} {x_str}"
+        "{f_evals} {g_evals} {best_diff_opt:+.9e} {mf:+.9e} {best_mf:+.9e} {x_str}"
     )
 
     def __init__(self, state: COCOState):
@@ -18,7 +18,7 @@ class COCOLogRecord(StrRecord):
         self.mf = state.last_eval.mf
         self.f_evals = state.f_evals
         self.g_evals = state.g_evals
-        self.best_dist_opt = state.best_dist_opt
+        self.best_diff_opt = state.best_diff_opt
         self.best_mf = state.best_mf
         self.last_imp = state.last_imp
 
@@ -51,7 +51,7 @@ class COCOLogRecord(StrRecord):
         return COCOLogRecord.template.format(
             f_evals=self.f_evals,
             g_evals=self.g_evals,
-            best_dist_opt=self.best_dist_opt,
+            best_diff_opt=self.best_diff_opt,
             mf=self.mf,
             best_mf=self.best_mf,
             x_str=x_str,
@@ -83,7 +83,9 @@ class COCOLogHeader(StrHeader):
         Returns:
             str: Formatted header string.
         """
-        return COCOLogHeader.template.format(fopt=self.fopt)
+        return COCOLogHeader.template.format(
+            fopt=self.fopt if self.fopt is not None else float("nan")
+        )
 
     @property
     def filepath(self):

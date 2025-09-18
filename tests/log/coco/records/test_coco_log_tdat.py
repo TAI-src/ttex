@@ -1,5 +1,5 @@
 from ttex.log.coco.record import COCOtdatRecord, COCOtdatHeader
-from ..test_coco_events import coco_start_params, random_eval_params
+from ..test_coco_events import get_coco_start_params, random_eval_params
 from ttex.log.coco import COCOState, COCOStart, COCOEval
 import pytest
 import math
@@ -52,7 +52,11 @@ def test_base_eval():
         assert not COCOtdatRecord.base_eval([1, 2, 5], 3, ntval)
 
 
-def test_coco_dat():
+@pytest.mark.parametrize(
+    "coco_start_params",
+    [get_coco_start_params(fopt=True), get_coco_start_params(fopt=False)],
+)
+def test_coco_dat(coco_start_params):
     state = COCOState()
     start_event = COCOStart(**coco_start_params)
     state.update(start_event)
@@ -95,7 +99,11 @@ def test_coco_dat():
     assert record.emit(last_tdat_emit=record.f_evals - 1)
 
 
-def test_codo_dat_no_double_emit_last():
+@pytest.mark.parametrize(
+    "coco_start_params",
+    [get_coco_start_params(fopt=True), get_coco_start_params(fopt=False)],
+)
+def test_codo_dat_no_double_emit_last(coco_start_params):
     state = COCOState()
     start_event = COCOStart(**coco_start_params)
     state.update(start_event)

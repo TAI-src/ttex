@@ -1,10 +1,15 @@
 from ttex.log.coco.record import COCOInfoHeader, COCOInfoRecord
-from ..test_coco_events import coco_start_params, end_params, random_eval_params
+from ..test_coco_events import get_coco_start_params, end_params, random_eval_params
 from ttex.log.coco import COCOState, COCOStart, COCOEval, COCOEnd
 import os.path as osp
+import pytest
 
 
-def test_coco_info():
+@pytest.mark.parametrize(
+    "coco_start_params",
+    [get_coco_start_params(fopt=True), get_coco_start_params(fopt=False)],
+)
+def test_coco_info(coco_start_params):
     state = COCOState()
     start_event = COCOStart(**coco_start_params)
     state.update(start_event)  # Update state with start event
@@ -40,14 +45,19 @@ def test_coco_info():
 
     end_event = COCOEnd(**end_params)
     state.update(end_event)  # Update state with end event
+    state.best_target = 0.9  # dummy best target for testing
     record = COCOInfoRecord(state)
     expected_output = (
-        f"data_f1/dummy.dat, {start_event.inst}:{evals}|{state.best_dist_opt:.1e}"
+        f"data_f1/dummy.dat, {start_event.inst}:{evals}|{state.best_target:.1e}"
     )
     assert str(record) == expected_output
 
 
-def test_with_alg_info():
+@pytest.mark.parametrize(
+    "coco_start_params",
+    [get_coco_start_params(fopt=True), get_coco_start_params(fopt=False)],
+)
+def test_with_alg_info(coco_start_params):
     state = COCOState()
     start_params = coco_start_params.copy()
     start_params["algo_info"] = "test info"

@@ -60,6 +60,7 @@ class COCOKeySplitter(KeySplitter):
                 target_precision=self.target_precision,
             ):
                 return_dict["log_dat"] = log_dat_record
+                state.best_target = log_dat_record.best_target
         elif isinstance(event, COCOEnd):
             # Emit last evaluation if not already done
             log_tdat_record = COCOtdatRecord(state)

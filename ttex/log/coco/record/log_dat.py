@@ -1,6 +1,5 @@
 from ttex.log.coco.record import COCOLogRecord, COCOLogHeader
 from ttex.log.coco import COCOState
-from typing import Optional, List
 import math
 
 
@@ -26,6 +25,7 @@ class COCOdatRecord(COCOLogRecord):
         )
         if new_target_reached < prev_target_reached:
             # New target reached.
+            self.best_target = new_target_reached
             return True
         else:
             return False
@@ -33,20 +33,28 @@ class COCOdatRecord(COCOLogRecord):
     def log_target_trigger(
         self, number_target_triggers: int, target_precision: float = 1e-8
     ) -> bool:
-        if self.best_dist_opt is None or self.best_dist_opt < target_precision:
+        assert (
+            self.best_diff_opt is not None
+        ), "best_diff_opt must be set to check for log targets"
+        if self.best_diff_opt < target_precision:
             # No best distance to optimum recorded or already within precision of optimum
             return False
         else:  # Check if a new target has been reached based on the last improvement.
             assert (
                 self.last_imp is not None and self.last_imp > 0
             ), "last_imp must be positive to check for target triggers"
+
             new_value = COCOLogRecord.get_exp_bin(
-                number_target_triggers, self.best_dist_opt
+                number_target_triggers, self.best_diff_opt
             )
             prev_value = COCOLogRecord.get_exp_bin(
-                number_target_triggers, self.best_dist_opt + self.last_imp
+                number_target_triggers, self.best_diff_opt + self.last_imp
             )
-            return new_value < prev_value
+            if new_value < prev_value:
+                self.best_target = new_value
+                return True
+            else:
+                return False
 
     def emit(
         self,
@@ -54,24 +62,39 @@ class COCOdatRecord(COCOLogRecord):
         number_target_triggers: int = 20,
         target_precision: float = 1e-8,
     ) -> bool:  # type: ignore[override]
+        """
+        Determine if the current record should be emitted based on target triggers.
+        If possible, uses log target triggers, otherwise uses linear targets based on improvement
+        Args:
+            improvement_step (float): Step size for improvement targets.
+            number_target_triggers (int): Number of target triggers between each power of 10.
+            target_precision (float): Precision threshold for considering proximity to the optimum.
+        Returns:
+            bool: True if the record should be emitted, False otherwise.
+        """
         assert self.f_evals > 0, "No evaluations have been recorded"
         if self.f_evals == 1:
             # Always log the first evaluation
+            self.reason = "first"
+            self.best_target = (
+                self.mf
+            )  # This is not super meaningful, but we need to set it to something just for info logging
             return True
-        if self.last_imp is None or self.last_imp <= 0:
+        elif self.last_imp is None or self.last_imp <= 0:
+            self.reason = "noimp"
             # No improvement in the last evaluation, therefore has not hit any new targets
             return False
-        if improvement_step > 0:
-            improvement_trigger = self.improvement_trigger(improvement_step)
-        else:
-            improvement_trigger = False
-        if number_target_triggers > 0 and target_precision > 0:
-            log_target_trigger = self.log_target_trigger(
-                number_target_triggers, target_precision
-            )
-        else:
-            log_target_trigger = False
-        return improvement_trigger or log_target_trigger
+        elif (
+            number_target_triggers > 0 and target_precision > 0
+        ):  # Prefer log target triggers if possible
+            self.reason = "target"
+            return self.log_target_trigger(number_target_triggers, target_precision)
+        elif improvement_step > 0:
+            self.reason = "imp"
+            return self.improvement_trigger(improvement_step)
+        # No valid triggers set, so never emit
+        self.reason = "notrg"
+        return False
 
 
 class COCOdatHeader(COCOLogHeader):

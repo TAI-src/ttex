@@ -27,7 +27,8 @@ def test_coco_log():
     assert str(record) == expected_output
 
 
-def test_get_exp_bin(n_bins=10):
+def test_get_exp_bin():
+    n_bins = 10
     # 10 bins between 1 and 10 means each bin is a factor of 10^(1/10) ~ 1.2589
     # Test a few values to ensure they fall into the correct bins
     for exp in range(3, 50):

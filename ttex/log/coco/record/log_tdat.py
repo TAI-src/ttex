@@ -22,7 +22,7 @@ class COCOtdatRecord(COCOLogRecord):
         """
         if number_evaluation_triggers <= 0:
             return False
-        value = COCOtdatRecord.get_exp_bin(number_evaluation_triggers, f_evals)
+        value = COCOLogRecord.get_exp_bin(number_evaluation_triggers, f_evals)
         return f_evals == math.floor(value)
 
     @staticmethod

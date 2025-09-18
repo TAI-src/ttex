@@ -23,7 +23,7 @@ class COCOLogRecord(StrRecord):
         self.last_imp = state.last_imp
 
     @staticmethod
-    def get_exp_bin(n_bins, val):
+    def get_exp_bin(n_bins: int, val: float) -> float:
         """
         Get the exponential bin for a given value.
         There are n_bins between each power of 10.
@@ -33,6 +33,10 @@ class COCOLogRecord(StrRecord):
         Returns:
             float: The binned value.
         """
+        if val <= 0:
+            raise ValueError("Value must be positive")
+        if n_bins <= 0:
+            raise ValueError("Number of bins must be positive")
         exponent = math.ceil(n_bins * math.log10(val))
         value = 10 ** (exponent / n_bins)
         return value

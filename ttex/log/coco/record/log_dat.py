@@ -40,10 +40,10 @@ class COCOdatRecord(COCOLogRecord):
             assert (
                 self.last_imp is not None and self.last_imp > 0
             ), "last_imp must be positive to check for target triggers"
-            new_value = COCOdatRecord.get_exp_bin(
+            new_value = COCOLogRecord.get_exp_bin(
                 number_target_triggers, self.best_dist_opt
             )
-            prev_value = COCOdatRecord.get_exp_bin(
+            prev_value = COCOLogRecord.get_exp_bin(
                 number_target_triggers, self.best_dist_opt + self.last_imp
             )
             return new_value < prev_value

@@ -20,9 +20,10 @@ class COCOtdatRecord(COCOLogRecord):
         Returns:
             bool: True if the trigger condition is met, False otherwise.
         """
-        exponent = math.ceil(number_evaluation_triggers * math.log10(f_evals))
-        value = math.floor(10 ** (exponent / number_evaluation_triggers))
-        return f_evals == value
+        if number_evaluation_triggers <= 0:
+            return False
+        value = COCOLogRecord.get_exp_bin(number_evaluation_triggers, f_evals)
+        return f_evals == math.floor(value)
 
     @staticmethod
     def base_eval(

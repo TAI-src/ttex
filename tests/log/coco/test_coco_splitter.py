@@ -28,39 +28,16 @@ def test_process_coco_start():
     assert state.dat_filepath is not None
 
 
-def test_trigger_target_resetting():
-    splitter = COCOKeySplitter(trigger_targets=[0.5, 0.6])
-    state, _ = get_started_state(splitter)
-    assert splitter.trigger_targets == [0.6, 0.5]
-    assert splitter.start_trigger_targets == [0.5, 0.6]
-    splitter.trigger_targets.pop(0)  # Simulate popping a target
-    assert splitter.trigger_targets == [0.5]
-    state, _ = get_started_state(splitter)
-    assert splitter.trigger_targets == [0.6, 0.5]  # Should be reset
-
-
-def test_no_targets():
-    splitter = COCOKeySplitter()
-    state, _ = get_started_state(splitter)
-    assert splitter.trigger_targets == []
-
-
-def test_reset_trigger_bbob():
-    splitter = COCOKeySplitter()
-    splitter._reset_triggers("bbob")
-    assert len(splitter.trigger_targets) > 0
-
-
 def test_process_coco_eval():
-    splitter = COCOKeySplitter(trigger_targets=[0.5])
+    splitter = COCOKeySplitter()
     state, _ = get_started_state(splitter)
 
     eval_params = random_eval_params(dim=10)
-    eval_params["mf"] = 0.5
     eval_event = COCOEval(**eval_params)
     state.update(eval_event)
     result = splitter.process(state, eval_event)
 
+    # First eval should always emit both records
     assert "log_dat" in result
     assert "log_tdat" in result
     assert state.f_evals == 1
@@ -106,14 +83,25 @@ def test_process_coco_end_default(add_last):
     assert ("log_tdat" in result) == add_last
 
 
-def test_process_coco_eval_with_trigger_targets():
-    splitter = COCOKeySplitter(trigger_targets=[0.5, 0.6])
+def test_val_passthrough():
+    splitter = COCOKeySplitter(
+        number_evaluation_triggers=0,
+        number_target_triggers=0,
+        improvement_steps=0,
+        base_evaluation_triggers=[],
+    )
     state, _ = get_started_state(splitter)
+
     eval_params = random_eval_params(dim=10)
-    eval_params["mf"] = 0.6
     eval_event = COCOEval(**eval_params)
-    state.update(eval_event)  # On target, should trigger
+    state.update(eval_event)
     result = splitter.process(state, eval_event)
-    assert "log_dat" in result  # because it is target triggered
-    assert "log_tdat" in result  # because it is the first eval
-    assert splitter.trigger_targets == [0.5]  # 0.6 should be popped
+    # First eval should always emit both records
+    assert "log_dat" in result
+    assert "log_tdat" in result
+    for _ in range(10):
+        eval_event = COCOEval(**eval_params)
+        state.update(eval_event)
+        result = splitter.process(state, eval_event)
+        assert "log_dat" not in result
+        assert "log_tdat" not in result

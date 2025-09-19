@@ -10,42 +10,29 @@ from ttex.log.coco.record import (
     COCOdatHeader,
     COCOdatRecord,
 )
-from cocopp.testbedsettings import SuiteClass
 from typing import List, Dict, Optional
 
 
 class COCOKeySplitter(KeySplitter):
     def __init__(
         self,
-        trigger_targets: Optional[List[float]] = None,
         base_evaluation_triggers: Optional[List[int]] = None,
         number_evaluation_triggers: int = 20,
+        improvement_steps: float = 1e-5,
+        number_target_triggers: int = 20,
+        target_precision: float = 1e-8,
     ):
-        self.start_trigger_targets = (
-            trigger_targets if trigger_targets is not None else []
-        )
         self.base_evaluation_triggers = base_evaluation_triggers
         self.number_evaluation_triggers = number_evaluation_triggers
-
-    def _reset_triggers(self, suite: str):
-        if not self.start_trigger_targets:
-            try:
-                suite_class = SuiteClass(suite)
-                self.trigger_targets = list(
-                    suite_class.settings["pprldmany_target_values"]
-                )
-            except ValueError:
-                self.trigger_targets = []
-        else:
-            self.trigger_targets = self.start_trigger_targets.copy()
-        self.trigger_targets.sort(reverse=True)
+        self.improvement_steps = improvement_steps
+        self.number_target_triggers = number_target_triggers
+        self.target_precision = target_precision
 
     def process(self, state: LoggingState, event: LogEvent) -> Dict[str, StrRecord]:
         assert isinstance(state, COCOState)
         return_dict: Dict[str, StrRecord] = {}
 
         if isinstance(event, COCOStart):
-            self._reset_triggers(event.suite)
             info_header = COCOInfoHeader(state)
             log_tdat_header = COCOtdatHeader(state)
             log_dat_header = COCOdatHeader(state)
@@ -67,8 +54,18 @@ class COCOKeySplitter(KeySplitter):
                 # explicitly not the last eval
                 return_dict["log_tdat"] = log_tdat_record
                 state.last_tdat_emit = state.f_evals
-            if log_dat_record.emit(self.trigger_targets):
+            if log_dat_record.emit(
+                improvement_step=self.improvement_steps,
+                number_target_triggers=self.number_target_triggers,
+                target_precision=self.target_precision,
+            ):
                 return_dict["log_dat"] = log_dat_record
+                # Update best target reached for COCOInfoRecord
+                assert hasattr(
+                    log_dat_record, "best_target"
+                ), "log_dat_record must have best_target attribute"
+                assert log_dat_record.best_target is not None, "best_target must be set"
+                state.best_target = log_dat_record.best_target
         elif isinstance(event, COCOEnd):
             # Emit last evaluation if not already done
             log_tdat_record = COCOtdatRecord(state)

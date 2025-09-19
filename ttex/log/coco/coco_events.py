@@ -1,6 +1,6 @@
 from uuid import uuid4
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 from ttex.log.filter import LogEvent
 
 
@@ -17,7 +17,6 @@ class COCOEnd(LogEvent):
 
 @dataclass(frozen=True)
 class COCOStart(LogEvent):
-    fopt: float  # optimal fitness value
     algo: str  # algorithm name
     problem: int  # problem id
     dim: int  # search space dimension
@@ -25,6 +24,8 @@ class COCOStart(LogEvent):
     suite: str  # suite name
     exp_id: str = str(uuid4())  # experiment id, defaults to random uuid
     algo_info: str = ""  # additional algorithm info
+    fopt: Optional[float] = None  # optimal fitness value (if known)
 
 
-# TODO: Handling for and testing with unknown optimum
+# TODO: potentially add a transform to know the "inner function" fitness value
+# for appropriate comparison of targets across instances

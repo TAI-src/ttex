@@ -14,6 +14,9 @@ class COCOInfoHeader(StrHeader):
             state (COCOState): The current state of the COCO logging.
             coco_log (COCOStart): The COCO start log containing problem and algorithm details.
         """
+        assert (
+            state.coco_start is not None
+        ), "COCOStart event must be processed before header"
         self.funcId = state.coco_start.problem
         self.algId = state.coco_start.algo
         self.alg_info = (
@@ -22,7 +25,7 @@ class COCOInfoHeader(StrHeader):
         self.dim = state.coco_start.dim
         self.suite = state.coco_start.suite
         self.inst = state.coco_start.inst
-        self.prec = 1e-8
+        self.prec = 1e-8  # TODO: At some point make this configurable
         self.coco_version = ""
         self.logger = "bbob"
         self.data_format = "bbob-new2"
@@ -70,7 +73,7 @@ class COCOInfoHeader(StrHeader):
 
 
 class COCOInfoRecord(StrRecord):
-    template = "{file_path}, {inst}:{f_evals}|{prec:.1e}"
+    template = "{file_path}, {inst}:{f_evals}|{best_target:.1e}"
 
     def __init__(self, state: COCOState):
         """
@@ -82,7 +85,7 @@ class COCOInfoRecord(StrRecord):
         self.file_path = state.dat_filepath
         self.inst = state.inst
         self.f_evals = state.f_evals
-        self.prec = abs(state.best_mf - state.fopt)
+        self.best_target = state.best_target
 
     def __str__(self) -> str:
         """
@@ -94,5 +97,7 @@ class COCOInfoRecord(StrRecord):
             file_path=self.file_path,
             inst=self.inst,
             f_evals=self.f_evals,
-            prec=self.prec,
+            best_target=(
+                self.best_target if self.best_target is not None else float("nan")
+            ),
         )

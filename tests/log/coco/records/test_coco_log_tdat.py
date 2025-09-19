@@ -103,7 +103,7 @@ def test_coco_dat(coco_start_params):
     "coco_start_params",
     [get_coco_start_params(fopt=True), get_coco_start_params(fopt=False)],
 )
-def test_codo_dat_no_double_emit_last(coco_start_params):
+def test_coco_dat_no_double_emit_last(coco_start_params):
     state = COCOState()
     start_event = COCOStart(**coco_start_params)
     state.update(start_event)

@@ -14,9 +14,9 @@ class COCOdatRecord(COCOLogRecord):
         """
         super().__init__(state)
         self.reason: Optional[str] = None
-        self.best_target: Optional[float] = (
-            None  # Best target reached (from .dat logging)
-        )
+        self.best_target: Optional[
+            float
+        ] = None  # Best target reached (from .dat logging)
 
     @staticmethod
     def ceil_to_target(value: float, improvement_step: float = 1e-5) -> float:

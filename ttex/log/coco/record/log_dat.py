@@ -1,6 +1,7 @@
 from ttex.log.coco.record import COCOLogRecord, COCOLogHeader
 from ttex.log.coco import COCOState
 import math
+from typing import Optional
 
 
 class COCOdatRecord(COCOLogRecord):
@@ -33,6 +34,7 @@ class COCOdatRecord(COCOLogRecord):
     def log_target_trigger(
         self, number_target_triggers: int, target_precision: float = 1e-8
     ) -> bool:
+        assert hasattr(self, "best_diff_opt"), "best_diff_opt attribute missing"
         assert (
             self.best_diff_opt is not None
         ), "best_diff_opt must be set to check for log targets"
@@ -73,6 +75,7 @@ class COCOdatRecord(COCOLogRecord):
             bool: True if the record should be emitted, False otherwise.
         """
         assert self.f_evals > 0, "No evaluations have been recorded"
+        self.best_target: Optional[float] = None  # Reset best target
         if self.f_evals == 1:
             # Always log the first evaluation
             self.reason = "first"

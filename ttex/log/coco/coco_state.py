@@ -9,7 +9,7 @@ class COCOState(LoggingState):
     def __init__(self):
         self._needs_start = True
         self.last_tdat_emit = 0
-        self.best_target = None
+        self.best_target: Optional[float] = None
         super().__init__()
 
     def update(self, event: LogEvent) -> None:
@@ -32,9 +32,9 @@ class COCOState(LoggingState):
         self.inst = coco_start.inst  # Problem instance number
         self.coco_start = coco_start  # Store the COCOStart event
         self.best_diff_opt: Optional[float] = None  # Best difference to optimal value
-        self.last_imp: Optional[
-            float
-        ] = None  # Improvement of best_mf since last evaluation
+        self.last_imp: Optional[float] = (
+            None  # Improvement of best_mf since last evaluation
+        )
         self._needs_start = False  # State now expects new COCOStart event
         self.last_tdat_emit = 0  # Last evaluation count when .tdat was emitted
         self.best_target = None  # Best target reached (from .dat logging)

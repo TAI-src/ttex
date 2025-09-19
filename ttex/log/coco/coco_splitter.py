@@ -60,6 +60,11 @@ class COCOKeySplitter(KeySplitter):
                 target_precision=self.target_precision,
             ):
                 return_dict["log_dat"] = log_dat_record
+                # Update best target reached for COCOInfoRecord
+                assert hasattr(
+                    log_dat_record, "best_target"
+                ), "log_dat_record must have best_target attribute"
+                assert log_dat_record.best_target is not None, "best_target must be set"
                 state.best_target = log_dat_record.best_target
         elif isinstance(event, COCOEnd):
             # Emit last evaluation if not already done

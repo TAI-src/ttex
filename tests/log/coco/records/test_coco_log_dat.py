@@ -34,7 +34,7 @@ def test_improvement_trigger(coco_start_params):
     assert not record.improvement_trigger(
         precision
     )  # new target reached = 0.3, so no new target
-    assert not hasattr(record, "best_target")
+    assert record.best_target is None
 
     record = COCOdatRecord(state)
     record.mf = 0.2  # prev best mf = 0.3, so last target reached = 0.3
@@ -50,7 +50,7 @@ def test_improvement_trigger(coco_start_params):
     assert not record.improvement_trigger(
         precision
     )  # new target reached = 0.2, so no new target
-    assert not hasattr(record, "best_target")
+    assert record.best_target is None
 
 
 @pytest.mark.parametrize(
@@ -77,14 +77,14 @@ def test_log_target_trigger(coco_start_params):
     record.best_diff_opt = 9
     record.last_imp = 1  # so prev best_dist_opt = 10, prev target = 10
     assert not record.log_target_trigger(n_triggers)
-    assert not hasattr(record, "best_target")
+    assert record.best_target is None
 
     record = COCOdatRecord(state)
     # Check we stop logging when within precision of optimum
     record.best_diff_opt = 1e-9
     record.last_imp = 1
     assert not record.log_target_trigger(n_triggers, target_precision=1e-8)
-    assert not hasattr(record, "best_target")
+    assert record.best_target is None
 
 
 @pytest.mark.parametrize(

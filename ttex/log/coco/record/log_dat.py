@@ -5,6 +5,19 @@ from typing import Optional
 
 
 class COCOdatRecord(COCOLogRecord):
+    def __init__(self, state: COCOState):
+        """
+        Initialize a COCO dat record with the current state.
+
+        Args:
+            state (COCOState): The current state of the COCO logging.
+        """
+        super().__init__(state)
+        self.reason: Optional[str] = None
+        self.best_target: Optional[float] = (
+            None  # Best target reached (from .dat logging)
+        )
+
     @staticmethod
     def ceil_to_target(value: float, improvement_step: float = 1e-5) -> float:
         return math.ceil(value / improvement_step) * improvement_step
@@ -34,7 +47,6 @@ class COCOdatRecord(COCOLogRecord):
     def log_target_trigger(
         self, number_target_triggers: int, target_precision: float = 1e-8
     ) -> bool:
-        assert hasattr(self, "best_diff_opt"), "best_diff_opt attribute missing"
         assert (
             self.best_diff_opt is not None
         ), "best_diff_opt must be set to check for log targets"
@@ -75,7 +87,6 @@ class COCOdatRecord(COCOLogRecord):
             bool: True if the record should be emitted, False otherwise.
         """
         assert self.f_evals > 0, "No evaluations have been recorded"
-        self.best_target: Optional[float] = None  # Reset best target
         if self.f_evals == 1:
             # Always log the first evaluation
             self.reason = "first"

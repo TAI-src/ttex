@@ -14,6 +14,9 @@ class COCOInfoHeader(StrHeader):
             state (COCOState): The current state of the COCO logging.
             coco_log (COCOStart): The COCO start log containing problem and algorithm details.
         """
+        assert (
+            state.coco_start is not None
+        ), "COCOStart event must be processed before header"
         self.funcId = state.coco_start.problem
         self.algId = state.coco_start.algo
         self.alg_info = (

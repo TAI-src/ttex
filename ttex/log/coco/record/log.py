@@ -13,6 +13,7 @@ class COCOLogRecord(StrRecord):
         assert hasattr(
             state, "last_eval"
         ), "COCOLogRecord requires at least one COCOEval event"
+        assert state.last_eval is not None
         self.x = state.last_eval.x
         self.dim = len(self.x)
         self.mf = state.last_eval.mf
@@ -69,6 +70,9 @@ class COCOLogHeader(StrHeader):
             state (COCOState): The current state of the COCO logging.
         """
         self.fopt = state.fopt
+        assert (
+            state.coco_start is not None
+        ), "COCOStart event must be processed before header"
         self._filepath = osp.join(
             state.coco_start.algo,
             f"data_{state.coco_start.problem}",

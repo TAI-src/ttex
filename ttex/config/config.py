@@ -43,6 +43,38 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
         """
         raise NotImplementedError
 
+    def _setup(self):
+        """
+        Setup the config
+        """
+        return True
+
+    def setup(self):
+        """
+        Setup the config and any sub-configs
+        """
+        success = True
+        for v in self.__dict__.values():
+            if isinstance(v, Config):
+                success = v.setup() and success
+        return self._setup() and success
+
+    def _teardown(self):
+        """
+        Teardown the config
+        """
+        return True
+
+    def teardown(self):
+        """
+        Teardown the config and any sub-configs
+        """
+        success = True
+        for v in self.__dict__.values():
+            if isinstance(v, Config):
+                success = v.teardown() and success
+        return self._teardown() and success
+
 
 T = TypeVar("T", bound=Config)
 

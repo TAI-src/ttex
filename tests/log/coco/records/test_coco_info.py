@@ -16,12 +16,17 @@ def test_coco_info(coco_start_params):
 
     header = COCOInfoHeader(state)
     ## filepath
-    expected_filepath = (
-        f"{start_event.algo}/f{start_event.problem}_i{start_event.inst}.info"
+    expected_filepath = osp.join(
+        f"{start_event.exp_id}",
+        f"{start_event.algo}",
+        f"f{start_event.problem}_i{start_event.inst}.info",
     )
     assert header.filepath == expected_filepath
     dummy_dat_filepath = osp.join(
-        f"{start_event.algo}/data_f{start_event.problem}", "dummy.dat"
+        f"{start_event.exp_id}",
+        f"{start_event.algo}",
+        f"data_f{start_event.problem}",
+        "dummy.dat",
     )
     state.set_dat_filepath(dummy_dat_filepath, header.filepath)
 

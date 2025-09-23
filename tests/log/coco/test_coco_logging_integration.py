@@ -34,15 +34,13 @@ def generate_events(num_evals: int, problem: int, dim: int, inst: int):
 
 @pytest.fixture(scope="function", autouse=True)
 def cleanup_dummy_files():
-    shutil.rmtree("test_algo", ignore_errors=True)
+    shutil.rmtree("test_exp_id", ignore_errors=True)
     shutil.rmtree("test_dir", ignore_errors=True)
-    shutil.rmtree("ppdata", ignore_errors=True)
 
     yield
 
-    shutil.rmtree("test_algo", ignore_errors=True)
     shutil.rmtree("test_dir", ignore_errors=True)
-    shutil.rmtree("ppdata", ignore_errors=True)
+    shutil.rmtree("test_exp_id", ignore_errors=True)
 
 
 def simulate_once(logger, num_evals: int, problem: int, dim: int, inst: int):
@@ -60,9 +58,10 @@ def check_files_exist(start_record: COCOStart):
         assert not osp.exists(filepath), f"{type_str} dummy log file retained"
     # Check if the log files are created
     log_file_base = osp.join(
+        f"{start_record.exp_id}",
         f"{start_record.algo}",
         f"data_{start_record.problem}",
-        f"{start_record.exp_id}_{start_record.problem}_d{start_record.dim}_i{start_record.inst}",
+        f"f{start_record.problem}_d{start_record.dim}_i{start_record.inst}",
     )
     assert osp.exists(f"{log_file_base}.dat"), "COCO dat log file not created"
     assert osp.exists(f"{log_file_base}.tdat"), "COCO tdat log file not created"
@@ -76,7 +75,9 @@ def check_files_exist(start_record: COCOStart):
 
     assert osp.exists(
         osp.join(
-            f"{start_record.algo}", f"f{start_record.problem}_i{start_record.inst}.info"
+            f"{start_record.exp_id}",
+            f"{start_record.algo}",
+            f"f{start_record.problem}_i{start_record.inst}.info",
         )
     ), "COCO info file not created"
 
@@ -97,7 +98,7 @@ def test_coco_logging_integration():
         assert isinstance(start_rec, COCOStart)
         check_files_exist(start_rec)
     ## check with cocopp
-    res = cocopp.main("test_algo")
+    res = cocopp.main("-o test_exp_id/ppdata test_exp_id/test_algo")
     assert isinstance(res, DictAlg)
     result_dict = res[("test_algo", "")][0]
     assert result_dict.funcId == 3

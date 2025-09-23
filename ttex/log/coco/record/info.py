@@ -1,6 +1,7 @@
 from ttex.log.formatter import StrHeader, StrRecord
 import os.path as osp
 from ttex.log.coco import COCOState
+from uuid import uuid4
 
 
 class COCOInfoHeader(StrHeader):
@@ -30,7 +31,7 @@ class COCOInfoHeader(StrHeader):
         self.logger = "bbob"
         self.data_format = "bbob-new2"
         self._filepath = osp.join(f"{self.algId}", f"f{self.funcId}_i{self.inst}.info")
-        self._uuid = f"{self.algId}_{self.funcId}_{self.dim}_{self.inst}"
+        self._uuid = str(uuid4())  # always emit header
 
     @property
     def filepath(self) -> str:

@@ -2,6 +2,7 @@ import os.path as osp
 from ttex.log.formatter import StrHeader, StrRecord
 from ttex.log.coco import COCOState
 import math
+from uuid import uuid4
 
 
 class COCOLogRecord(StrRecord):
@@ -78,7 +79,7 @@ class COCOLogHeader(StrHeader):
             f"data_{state.coco_start.problem}",
             f"{state.coco_start.exp_id}_{state.coco_start.problem}_d{state.coco_start.dim}_i{state.coco_start.inst}.{file_type}",
         )
-        self._uuid = f"{state.coco_start.algo}_{state.coco_start.problem}_d{state.coco_start.dim}_i{state.coco_start.inst}_{state.coco_start.exp_id}"
+        self._uuid = str(uuid4())  # always emit header
 
     def __str__(self):
         """

@@ -26,10 +26,7 @@ def test_coco_info(coco_start_params):
     state.set_dat_filepath(dummy_dat_filepath, header.filepath)
 
     ## uuid
-    expected_uuid = (
-        f"{start_event.algo}_{start_event.problem}_{start_event.dim}_{start_event.inst}"
-    )
-    assert header.uuid == expected_uuid
+    assert header.uuid is not None and len(header.uuid) > 0
 
     expected_header = (
         f"suite = '{state.coco_start.suite}', funcId = {state.coco_start.problem}, DIM = {state.coco_start.dim}, Precision = 1.000e-08, "

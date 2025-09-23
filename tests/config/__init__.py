@@ -29,9 +29,11 @@ class DummyConfig(Config):
 
     def _setup(self):
         self._stp = True
+        return True
 
     def _teardown(self):
         self._tdwn = True
+        return True
 
 
 class EmptyConfig(Config):

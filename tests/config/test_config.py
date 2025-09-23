@@ -173,13 +173,13 @@ def test_setup_teardown():
     assert not config._stp
     assert not config._tdwn
 
-    config.setup()
+    assert config.setup()
     assert config._stp
     assert isinstance(config.b, DummyConfig)
     assert config.b._stp
     assert not config._tdwn
 
-    config.teardown()
+    assert config.teardown()
     assert config._stp
     assert config.b._stp
     assert config._tdwn

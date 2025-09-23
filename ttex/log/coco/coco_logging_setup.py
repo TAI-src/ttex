@@ -52,3 +52,13 @@ def setup_coco_logger(
             handler.addFilter(filter)
             logger.addHandler(handler)
     return logger
+
+
+def teardown_coco_logger(name: str = "coco_logger") -> None:
+    logger = logging.getLogger(name)
+    for handler in logger.handlers[:]:
+        handler.close()
+        logger.removeHandler(handler)
+    for filter in logger.filters[:]:
+        logger.removeFilter(filter)
+    logger._coco_setup = False  # type: ignore[attr-defined] # Reset setup flag

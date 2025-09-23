@@ -1,7 +1,13 @@
 # integration test for coco logging
 import os.path as osp
 import cocopp
-from ttex.log.coco import COCOStart, COCOEval, COCOEnd, setup_coco_logger
+from ttex.log.coco import (
+    COCOStart,
+    COCOEval,
+    COCOEnd,
+    setup_coco_logger,
+    teardown_coco_logger,
+)
 import numpy as np
 from cocopp.pproc import DictAlg
 import shutil
@@ -90,9 +96,7 @@ def test_coco_logging_integration():
     start_records[2] = simulate_once(logger, num_evals=30, problem=3, dim=3, inst=4)
     start_records[3] = simulate_once(logger, num_evals=30, problem=5, dim=2, inst=2)
     # Close handlers and remove from logger
-    for handler in logger.handlers[:]:
-        handler.close()
-        logger.removeHandler(handler)
+    teardown_coco_logger("coco_logger1")  # Ensure handlers are closed
     # Check files exist for first start record
     for start_rec in start_records:
         assert isinstance(start_rec, COCOStart)

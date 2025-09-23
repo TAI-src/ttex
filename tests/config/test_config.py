@@ -164,3 +164,23 @@ def test_wrong_args():
     conf["DummyConfig"]["abc"] = "Test"
     with pytest.raises(AssertionError):
         ConfigFactory.from_dict(conf, context=globals())
+
+
+def test_setup_teardown():
+    config = ConfigFactory.extract(
+        DummyConfig, dict_config["DummyConfig"], context=globals()
+    )
+    assert not config._stp
+    assert not config._tdwn
+
+    assert config.setup()
+    assert config._stp
+    assert isinstance(config.b, DummyConfig)
+    assert config.b._stp
+    assert not config._tdwn
+
+    assert config.teardown()
+    assert config._stp
+    assert config.b._stp
+    assert config._tdwn
+    assert config.b._tdwn

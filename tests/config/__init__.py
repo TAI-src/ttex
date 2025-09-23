@@ -24,6 +24,16 @@ class DummyConfig(Config):
         self.d = d
         self.e = e
         self.test = "test"
+        self._tdwn = False
+        self._stp = False
+
+    def _setup(self):
+        self._stp = True
+        return True
+
+    def _teardown(self):
+        self._tdwn = True
+        return True
 
 
 class EmptyConfig(Config):

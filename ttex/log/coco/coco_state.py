@@ -9,12 +9,12 @@ class COCOState(LoggingState):
     def __init__(self):
         self._needs_start = True
         self.last_tdat_emit = 0
-        self.best_target: Optional[float] = (
-            None  # Best target reached (from .dat logging)
-        )
-        self.dat_filepath: Optional[str] = (
-            None  # Path to the .dat file (relative to info file)
-        )
+        self.best_target: Optional[
+            float
+        ] = None  # Best target reached (from .dat logging)
+        self.dat_filepath: Optional[
+            str
+        ] = None  # Path to the .dat file (relative to info file)
         self.coco_start: Optional[COCOStart] = None  # The last COCOStart event
         self.f_evals = 0  # Number of function evaluations
         self.g_evals = 0  # Number of constraint evaluations (not currently supported)
@@ -23,9 +23,9 @@ class COCOState(LoggingState):
         self.inst: Optional[int] = None  # Problem instance number
         self.last_eval: Optional[COCOEval] = None  # The last COCOEval event
         self.best_diff_opt: Optional[float] = None  # Best difference to optimal value
-        self.last_imp: Optional[float] = (
-            None  # Improvement of best_mf since last evaluation
-        )
+        self.last_imp: Optional[
+            float
+        ] = None  # Improvement of best_mf since last evaluation
         super().__init__()
 
     def update(self, event: LogEvent) -> None:

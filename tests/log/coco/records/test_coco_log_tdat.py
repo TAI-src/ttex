@@ -3,6 +3,7 @@ from ..test_coco_events import get_coco_start_params, random_eval_params
 from ttex.log.coco import COCOState, COCOStart, COCOEval
 import pytest
 import math
+import os.path as osp
 
 
 def correct_n_triggers(number_of_triggers=20):
@@ -62,8 +63,13 @@ def test_coco_dat(coco_start_params):
     state.update(start_event)
 
     header = COCOtdatHeader(state)
-    expected_filepath = f"{start_event.algo}/data_{start_event.problem}/{start_event.exp_id}_{start_event.problem}_d{start_event.dim}_i{start_event.inst}.tdat"
-    assert header.filepath == expected_filepath
+    expected_file_path = osp.join(
+        f"{start_event.exp_id}",
+        f"{start_event.algo}",
+        f"data_{start_event.problem}",
+        f"f{start_event.problem}_d{start_event.dim}_i{start_event.inst}.tdat",
+    )
+    assert header.filepath == expected_file_path
 
     ## dummy initialise
     eval_event = COCOEval(**random_eval_params(dim=coco_start_params["dim"]))

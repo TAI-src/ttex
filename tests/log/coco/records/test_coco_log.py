@@ -3,6 +3,7 @@ from ..test_coco_events import get_coco_start_params, eval_params
 from ttex.log.coco import COCOState, COCOStart, COCOEval
 import math
 import pytest
+import os.path as osp
 
 
 @pytest.mark.parametrize(
@@ -17,7 +18,12 @@ def test_coco_log(coco_start_params):
     state.update(start_event)
 
     header = COCOLogHeader(state, file_type="dummy")
-    expected_filepath = f"{start_event.algo}/data_{start_event.problem}/{start_event.exp_id}_{start_event.problem}_d{start_event.dim}_i{start_event.inst}.dummy"
+    expected_filepath = osp.join(
+        f"{start_event.exp_id}",
+        f"{start_event.algo}",
+        f"data_{start_event.problem}",
+        f"f{start_event.problem}_d{start_event.dim}_i{start_event.inst}.dummy",
+    )
 
     assert header.filepath == expected_filepath
 

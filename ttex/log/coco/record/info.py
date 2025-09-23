@@ -26,11 +26,16 @@ class COCOInfoHeader(StrHeader):
         self.dim = state.coco_start.dim
         self.suite = state.coco_start.suite
         self.inst = state.coco_start.inst
+        self.exp_id = state.coco_start.exp_id
         self.prec = 1e-8  # TODO: At some point make this configurable
         self.coco_version = ""
         self.logger = "bbob"
         self.data_format = "bbob-new2"
-        self._filepath = osp.join(f"{self.algId}", f"f{self.funcId}_i{self.inst}.info")
+        self._filepath = osp.join(
+            f"{self.exp_id}",
+            f"{self.algId}",
+            f"f{self.funcId}_i{self.inst}.info",
+        )
         self._uuid = str(uuid4())  # always emit header
 
     @property

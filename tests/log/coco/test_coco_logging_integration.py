@@ -12,10 +12,13 @@ import numpy as np
 from cocopp.pproc import DictAlg
 import shutil
 import pytest
+from typing import Optional
 
 
-def get_dummy_start_params(problem: int = 3, dim: int = 2, inst: int = 2) -> dict:
-    return {
+def get_dummy_start_params(
+    problem: int = 3, dim: Optional[int] = 2, inst: Optional[int] = 2
+) -> dict:
+    return_dict = {
         "fopt": np.random.randn() * 100,
         "algo": "test_algo",
         "problem": problem,
@@ -24,13 +27,22 @@ def get_dummy_start_params(problem: int = 3, dim: int = 2, inst: int = 2) -> dic
         "suite": "bbob",
         "exp_id": "test_exp_id",
     }
+    if dim is None:
+        del return_dict["dim"]
+    if inst is None:
+        del return_dict["inst"]
+    return return_dict
 
 
-def generate_events(num_evals: int, problem: int, dim: int, inst: int):
+def generate_events(
+    num_evals: int, problem: int, dim: Optional[int], inst: Optional[int]
+):
     events = []
     start_record = COCOStart(**get_dummy_start_params(problem, dim, inst))
     events.append(start_record)
     for _ in range(num_evals):
+        if dim is None:
+            dim = np.random.randint(2, 6)
         x = np.random.rand(dim)
         mf = np.random.rand() + start_record.fopt
         events.append(COCOEval(x=x.tolist(), mf=mf))
@@ -49,7 +61,13 @@ def cleanup_dummy_files():
     shutil.rmtree("test_exp_id", ignore_errors=True)
 
 
-def simulate_once(logger, num_evals: int, problem: int, dim: int, inst: int):
+def simulate_once(
+    logger,
+    num_evals: int,
+    problem: int,
+    dim: Optional[int] = None,
+    inst: Optional[int] = None,
+):
     events = generate_events(num_evals, problem, dim, inst)
     for event in events:
         logger.info(event)
@@ -110,3 +128,14 @@ def test_coco_logging_integration():
     assert result_dict.algId == "test_algo"
     assert len(result_dict.instancenumbers) == 2  # 2,3
     assert result_dict.instancenumbers[0] == 2
+
+
+def test_coco_logging_integration_no_dim_inst():
+    logger = setup_coco_logger("coco_logger2")
+    start_record = simulate_once(logger, num_evals=20, problem=4)
+    # Close handlers and remove from logger
+    teardown_coco_logger("coco_logger2")  # Ensure handlers are closed
+    # Check files exist for first start record
+    assert isinstance(start_record, COCOStart)
+    check_files_exist(start_record)
+    # TODO: This won't work with cocopp as dim and inst are not set

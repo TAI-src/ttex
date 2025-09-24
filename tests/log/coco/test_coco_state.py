@@ -116,3 +116,21 @@ def test_coco_state_set_dat_filepath():
 
     expected_path = osp.join("dir", "test_dat.txt")
     assert state.dat_filepath == expected_path
+
+
+def test_without_dim():
+    state = COCOState()
+    start_params = get_coco_start_params(fopt=False)
+    del start_params["dim"]  # Remove dim to test without it
+    start_event = COCOStart(**start_params)
+    state.update(start_event)
+
+    eval_params = random_eval_params(dim=3)
+    eval_event = COCOEval(**eval_params)
+    state.update(eval_event)
+
+    assert state.f_evals == 1
+    assert state.g_evals == 0
+    assert state.best_mf == eval_params["mf"]
+    assert state.last_imp is not None
+    assert state.last_eval == eval_event

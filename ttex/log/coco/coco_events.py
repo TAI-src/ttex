@@ -19,12 +19,12 @@ class COCOEnd(LogEvent):
 class COCOStart(LogEvent):
     algo: str  # algorithm name
     problem: int  # problem id
-    dim: int  # search space dimension
-    inst: int  # instance id
     suite: str  # suite name
     exp_id: str = str(uuid4())  # experiment id, defaults to random uuid
     algo_info: str = ""  # additional algorithm info
     fopt: Optional[float] = None  # optimal fitness value (if known)
+    dim: int = 0  # search space dimension
+    inst: int = 0  # instance id
 
 
 # TODO: potentially add a transform to know the "inner function" fitness value

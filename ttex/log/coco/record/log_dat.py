@@ -14,9 +14,9 @@ class COCOdatRecord(COCOLogRecord):
         """
         super().__init__(state)
         self.reason: Optional[str] = None
-        self.best_target: Optional[
-            float
-        ] = None  # Best target reached (from .dat logging)
+        self.best_target: Optional[float] = (
+            None  # Best target reached (from .dat logging)
+        )
 
     @staticmethod
     def ceil_to_target(value: float, improvement_step: float = 1e-5) -> float:
@@ -86,8 +86,9 @@ class COCOdatRecord(COCOLogRecord):
         Returns:
             bool: True if the record should be emitted, False otherwise.
         """
-        assert self.f_evals > 0, "No evaluations have been recorded"
-        if self.f_evals == 1:
+        if self.f_evals <= 0:
+            return False
+        elif self.f_evals == 1:
             # Always log the first evaluation
             self.reason = "first"
             self.best_target = (

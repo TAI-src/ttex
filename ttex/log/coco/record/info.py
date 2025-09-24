@@ -93,6 +93,13 @@ class COCOInfoRecord(StrRecord):
         self.f_evals = state.f_evals
         self.best_target = state.best_target
 
+    def emit(self) -> bool:  # type: ignore[override]
+        # Only emit if there has been at least one function evaluation
+        if self.f_evals > 0:
+            return True
+        else:
+            return False
+
     def __str__(self) -> str:
         """
         Format the COCOInfoRecord as a string.

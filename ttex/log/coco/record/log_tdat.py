@@ -64,7 +64,8 @@ class COCOtdatRecord(COCOLogRecord):
         """
         Check if the record should be emitted based on the trigger_nth condition.
         """
-        assert self.f_evals > 0, "f_evals must be positive to determine emission"
+        if self.f_evals <= 0:
+            return False
         if base_evaluation_triggers is None:
             base_evaluation_triggers = [1, 2, 5]
         if last_tdat_emit is not None:

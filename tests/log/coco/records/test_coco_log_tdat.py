@@ -84,8 +84,7 @@ def test_coco_dat(coco_start_params):
     correct_triggers = sorted(list(set(correct_base_trigg + correct_n_trigg)))
 
     record.f_evals = 0
-    with pytest.raises(AssertionError):
-        record.emit()
+    assert not record.emit()
 
     record.f_evals = 1
     assert record.emit()  # first eval always

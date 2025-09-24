@@ -86,8 +86,9 @@ class COCOdatRecord(COCOLogRecord):
         Returns:
             bool: True if the record should be emitted, False otherwise.
         """
-        assert self.f_evals > 0, "No evaluations have been recorded"
-        if self.f_evals == 1:
+        if self.f_evals <= 0:
+            return False
+        elif self.f_evals == 1:
             # Always log the first evaluation
             self.reason = "first"
             self.best_target = (

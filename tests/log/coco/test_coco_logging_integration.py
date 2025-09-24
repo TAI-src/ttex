@@ -41,9 +41,8 @@ def generate_events(
     start_record = COCOStart(**get_dummy_start_params(problem, dim, inst))
     events.append(start_record)
     for _ in range(num_evals):
-        if dim is None:
-            dim = np.random.randint(2, 6)
-        x = np.random.rand(dim)
+        curr_dim = dim if dim is not None else np.random.randint(2, 6)
+        x = np.random.rand(curr_dim)
         mf = np.random.rand() + start_record.fopt
         events.append(COCOEval(x=x.tolist(), mf=mf))
     events.append(COCOEnd())

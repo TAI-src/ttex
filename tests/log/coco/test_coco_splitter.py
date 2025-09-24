@@ -3,13 +3,13 @@ import pytest
 from .test_coco_events import random_eval_params
 
 
-def get_started_state(splitter: COCOKeySplitter):
+def get_started_state(splitter: COCOKeySplitter, dim=10):
     state = COCOState()
     start_event = COCOStart(
         fopt=0.1,
         algo="test_algo",
         problem=1,
-        dim=10,
+        dim=dim,
         inst=1,
         suite="test_suite",
         exp_id="test_exp_id",
@@ -105,3 +105,22 @@ def test_val_passthrough():
         result = splitter.process(state, eval_event)
         assert "log_dat" not in result
         assert "log_tdat" not in result
+
+
+def test_changing_dim():
+    splitter = COCOKeySplitter()
+    state, _ = get_started_state(splitter, dim=0)
+
+    eval_params = random_eval_params(dim=10)
+    eval_event = COCOEval(**eval_params)
+    state.update(eval_event)
+    result = splitter.process(state, eval_event)
+    assert "log_tdat" in result
+    assert result["log_tdat"].dim == 10
+
+    eval_params = random_eval_params(dim=20)
+    eval_event = COCOEval(**eval_params)
+    state.update(eval_event)
+    result = splitter.process(state, eval_event)
+    assert "log_tdat" in result
+    assert result["log_tdat"].dim == 20

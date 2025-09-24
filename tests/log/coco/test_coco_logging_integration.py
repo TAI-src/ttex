@@ -13,6 +13,7 @@ from cocopp.pproc import DictAlg
 import shutil
 import pytest
 from typing import Optional
+from ttex.log.coco.run_cocopp import MinimalTestbed, suite_to_testbed
 
 
 def get_dummy_start_params(
@@ -24,7 +25,7 @@ def get_dummy_start_params(
         "problem": problem,
         "dim": dim,
         "inst": inst,
-        "suite": "bbob",
+        "suite": "minimal",
         "exp_id": "test_exp_id",
     }
     if dim is None:
@@ -106,6 +107,13 @@ def check_files_exist(start_record: COCOStart):
 
 
 def test_coco_logging_integration():
+    from cocopp.testbedsettings import get_testbed_from_suite
+
+    print(get_testbed_from_suite("minimal"))
+    assert get_testbed_from_suite("minimal") in globals()
+    import cocopp.testbedsettings as tbs
+
+    setattr(tbs, "MinimalTestbed", MinimalTestbed)
     logger = setup_coco_logger("coco_logger1")
     start_records = [None] * 4
     start_records[0] = simulate_once(logger, num_evals=50, problem=3, dim=2, inst=2)
@@ -137,4 +145,5 @@ def test_coco_logging_integration_no_dim_inst():
     # Check files exist for first start record
     assert isinstance(start_record, COCOStart)
     check_files_exist(start_record)
+    res = cocopp.main("-o test_exp_id/ppdata test_exp_id/test_algo")
     # TODO: This won't work with cocopp as dim and inst are not set

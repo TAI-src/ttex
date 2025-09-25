@@ -57,7 +57,7 @@ def test_base_eval():
     "coco_start_params",
     [get_coco_start_params(fopt=True), get_coco_start_params(fopt=False)],
 )
-def test_coco_dat(coco_start_params):
+def test_coco_tdat(coco_start_params):
     state = COCOState()
     start_event = COCOStart(**coco_start_params)
     state.update(start_event)
@@ -65,6 +65,7 @@ def test_coco_dat(coco_start_params):
     header = COCOtdatHeader(state)
     expected_file_path = osp.join(
         f"{start_event.exp_id}",
+        f"{start_event.suite}",
         f"{start_event.algo}",
         f"data_{start_event.problem}",
         f"f{start_event.problem}_d{start_event.dim}_i{start_event.inst}.tdat",

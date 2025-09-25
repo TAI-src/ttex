@@ -42,7 +42,6 @@ class COCOtdatRecord(COCOLogRecord):
         Returns:
             bool: True if the trigger condition is met, False otherwise.
         """
-
         if dimension <= 0:
             return False
         for base in base_evaluation_triggers:

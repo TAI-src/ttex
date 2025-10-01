@@ -11,6 +11,8 @@ def setup_wandb_logger(
     custom_metrics: Optional[Dict] = None,
     snapshot: bool = True,
     snapshot_sensitive_keys: Optional[List[str]] = None,
+    project: Optional[str] = None,
+    group: Optional[str] = None,
     name: str = "wandb_logger",
     level: int = logging.INFO,
 ) -> logging.Logger:
@@ -25,6 +27,8 @@ def setup_wandb_logger(
             custom_metrics=custom_metrics,
             snapshot=snapshot,
             snapshot_sensitive_keys=snapshot_sensitive_keys,
+            project=project,
+            group=group,
             level=level,
         )
         wandb_handler.setLevel(level)
@@ -74,15 +78,15 @@ def _get_wandb_handler(name: str = "wandb_logger") -> Optional[WandbHandler]:
 
 def log_wandb_init(
     run_config: Dict,
-    project: Optional[str] = None,
-    group: Optional[str] = None,
     logger_name: str = "wandb_logger",
 ) -> Optional[wandb.sdk.wandb_run.Run]:
     handler = _get_wandb_handler(name=logger_name)
     if handler is None:
         logger.warning("WandbHandler not found")
         return None
-    run = WandbHandler.wandb_init(run_config=run_config, project=project, group=group)
+    run = WandbHandler.wandb_init(
+        run_config=run_config, project=handler.project, group=handler.group
+    )
     handler.run = run
     return handler.run
 

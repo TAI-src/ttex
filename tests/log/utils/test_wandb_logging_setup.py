@@ -12,6 +12,7 @@ import logging
 import pytest
 import os
 import shutil
+import wandb
 
 
 @pytest.fixture(autouse=True)
@@ -27,6 +28,8 @@ def online_mode_env_var():
 @pytest.fixture(autouse=True, scope="module")
 def cleanup_wandb_dirs():
     yield
+    if wandb.run is not None:
+        wandb.finish()
     shutil.rmtree("wandb", ignore_errors=True)
 
 
@@ -99,31 +102,34 @@ def test_setup_teardown_wandb_logger():
 
 
 def test_log_wandb_init():
-    wandb_logger = setup_wandb_logger(name="wandb_logger2", snapshot=False)
+    wandb_logger = setup_wandb_logger(
+        name="wandb_logger2", project="ci-cd", group="test_group", snapshot=False
+    )
 
     run_config = {"param1": 10, "param2": "value"}
     run = log_wandb_init(
         run_config=run_config,
-        project="ci-cd",
-        group="test_group",
         logger_name="wandb_logger2",
     )
     assert run is not None
 
     wandb_handler = _get_wandb_handler(name="wandb_logger2")
+    assert wandb_handler is not None
     assert wandb_handler.run is run
+    assert wandb_handler.project == "ci-cd"
+    assert wandb_handler.group == "test_group"
 
     wandb_logger.info("This is a test log message after wandb init.")
     teardown_wandb_logger(name="wandb_logger2")
 
 
 def test_log_wandb_artifact():
-    setup_wandb_logger(name="wandb_logger3", snapshot=False)
+    setup_wandb_logger(
+        name="wandb_logger3", project="ci-cd", group="test_group", snapshot=False
+    )
     run_config = {"param1": 10, "param2": "value"}
     run = log_wandb_init(
         run_config=run_config,
-        project="ci-cd",
-        group="test_group",
         logger_name="wandb_logger3",
     )
     assert run is not None
@@ -150,14 +156,14 @@ def test_log_wandb_artifact():
 
 def test_public_get_wandb_logger():
     assert get_wandb_logger(name="wandb_logger4") is None
-    wandb_logger = setup_wandb_logger(name="wandb_logger4", snapshot=False)
+    wandb_logger = setup_wandb_logger(
+        name="wandb_logger4", project="ci-cd", group="test_group", snapshot=False
+    )
     assert get_wandb_logger(name="wandb_logger4") is None  # No run yet
 
     run_config = {"param1": 10, "param2": "value"}
     run = log_wandb_init(
         run_config=run_config,
-        project="ci-cd",
-        group="test_group",
         logger_name="wandb_logger4",
     )
     assert run is not None

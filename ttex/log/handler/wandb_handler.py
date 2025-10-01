@@ -20,6 +20,8 @@ class WandbHandler(logging.Handler):
         custom_metrics: Optional[Dict] = None,
         snapshot: bool = True,
         snapshot_sensitive_keys: Optional[List[str]] = None,
+        project: Optional[str] = None,
+        group: Optional[str] = None,
         level=logging.NOTSET,
     ):
         """
@@ -33,6 +35,8 @@ class WandbHandler(logging.Handler):
         self.snapshot_sensitive_keys = snapshot_sensitive_keys
         self._run: Optional[Run] = None
         self.custom_metrics = custom_metrics if custom_metrics else {}
+        self.project = project
+        self.group = group
 
     @property
     def run(self):

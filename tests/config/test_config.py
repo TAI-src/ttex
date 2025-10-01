@@ -88,6 +88,9 @@ def test_extract():
     for arg in ["c", "d"]:
         assert getattr(test_config, arg) == getattr(config, arg)
 
+    with pytest.raises(NotImplementedError):
+        test_config.to_dict()  # Due to hack
+
 
 def test_exctract_class():
     ex_class = ConfigFactory._extract_attr("ttex.log.handler.WandbHandler")
@@ -146,6 +149,7 @@ def test_from_dict(mode):
     assert config.c == ConfigFactory
     assert config.e == DummyEnum.B
 
+    assert config.to_dict() == dict_config["DummyConfig"]
     if mode == "json":
         os.remove(path)
 

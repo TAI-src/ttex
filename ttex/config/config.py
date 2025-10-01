@@ -29,6 +29,7 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
         """
         # TODO could add something that auto-adds all the values to the dict
         # TODO consider if this should be a dictionary or a namedtuple or sth
+        self._to_dict: Optional[Dict] = None
 
     def get(self, key: str, default=None):
         """Get a specific value from the config dict.
@@ -37,11 +38,15 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
         """
         return self.__dict__.get(key, default)
 
-    def to_dict(self):
+    def to_dict(self) -> Dict:
         """
         Convert the config to a dictionary
         """
-        raise NotImplementedError
+        # TODO: implement a generic to_dict method. This is just a hack in case we already have a dict at creation
+        if hasattr(self, "_to_dict") and self._to_dict is not None:
+            return self._to_dict
+        else:
+            raise NotImplementedError
 
     def _setup(self):
         """
@@ -234,7 +239,10 @@ class ConfigFactory(ABC):
 
         for k, v in values.items():
             values[k] = ConfigFactory._extract_value(v, context=context)
-        return config_class(**values)
+        return_config = config_class(**values)  # type: ignore[call-arg]
+        if isinstance(config, Dict):
+            return_config._to_dict = config  # type: ignore[attr-defined]
+        return return_config
 
     @staticmethod
     def from_dict(dict_config: Dict, context: Optional[Dict] = None) -> Config:

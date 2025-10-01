@@ -31,7 +31,7 @@ class WandbHandler(logging.Handler):
         super().__init__(level)
         self.snapshot = snapshot
         self.snapshot_sensitive_keys = snapshot_sensitive_keys
-        self._run = None
+        self._run: Optional[Run] = None
         self.custom_metrics = custom_metrics if custom_metrics else {}
 
     @property
@@ -41,6 +41,8 @@ class WandbHandler(logging.Handler):
     @run.setter
     def run(self, value: Run):
         self._run = value
+        assert self._run is not None, "Wandb run cannot be None"
+        # Define custom metrics if any
         for step_metric, metrics in self.custom_metrics.items():
             self._run.define_metric(step_metric)
             for metric in metrics:

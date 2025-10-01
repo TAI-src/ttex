@@ -77,7 +77,7 @@ def log_wandb_init(
     project: Optional[str] = None,
     group: Optional[str] = None,
     logger_name: str = "wandb_logger",
-) -> wandb.sdk.wandb_run.Run:
+) -> Optional[wandb.sdk.wandb_run.Run]:
     handler = _get_wandb_handler(name=logger_name)
     if handler is None:
         logger.warning("WandbHandler not found")
@@ -97,7 +97,7 @@ def log_wandb_artifact(
     handler = _get_wandb_handler(name=logger_name)
     if handler is None or not getattr(handler, "run", None):
         logger.warning("WandbHandler not found or not initialized with wandb run")
-        return
+        return None
     return WandbHandler.create_wandb_artifact(
         run=handler.run,
         artifact_name=artifact_name,

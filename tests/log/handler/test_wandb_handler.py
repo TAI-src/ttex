@@ -34,18 +34,28 @@ def test_wandb_init():
     run.finish()
 
 
-def test_create_wandb_artifact():
+@pytest.mark.parametrize("art_is_file", [True, False])
+def test_create_wandb_artifact(art_is_file):
     run = wandb.init(project="ci-cd", config={})
 
-    # Test with a valid path
-    temp_file_path = os.path.join("/tmp", "test_artifact.txt")
+    folder = osp.join("/tmp", "art_test")
+    os.makedirs(folder, exist_ok=True)
+    if not art_is_file:
+        # Create a directory as the artifact
+        temp_art_path = os.path.join(folder, "test_artifact_dir")
+        os.makedirs(temp_art_path, exist_ok=True)
+        folder = temp_art_path
+    # Create a file inside the directory
+    temp_file_path = os.path.join(folder, "file_in_dir.txt")
     with open(temp_file_path, "w") as f:
-        f.write("This is a test artifact.")
+        f.write("This is a file inside the artifact directory.")
+    if art_is_file:
+        temp_art_path = temp_file_path
 
     artifact = WandbHandler.create_wandb_artifact(
         run=run,
         artifact_name="test_artifact",
-        local_path=temp_file_path,
+        local_path=temp_art_path,
         artifact_type="test_type",
         description="Test artifact creation",
     )
@@ -54,9 +64,13 @@ def test_create_wandb_artifact():
 
     # Check that the artifact contains the file
     files = [f.name for f in artifact.manifest.entries.values()]
-    assert len(files) > 0
+    assert len(files) == 1
+    if art_is_file:
+        assert files[0] == f"test_artifact_{run.id}"
+    else:
+        assert files[0] == osp.join(f"test_artifact_{run.id}", "file_in_dir.txt")
     run.finish()
-    os.remove(temp_file_path)
+    shutil.rmtree(osp.join("/tmp", "art_test"), ignore_errors=True)
 
 
 def test_log_snapshot():

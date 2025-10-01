@@ -105,7 +105,7 @@ class WandbHandler(logging.Handler):
             name=artifact_name, type=artifact_type, description=description
         )
 
-        if osp.exists(local_path):
+        if osp.isfile(local_path):
             artifact.add_file(local_path=local_path, name=artifact_name)
         elif osp.isdir(local_path):
             artifact.add_dir(local_path=local_path, name=artifact_name)

@@ -5,14 +5,13 @@ from ttex.log.coco import (
     COCOStart,
     COCOEval,
     COCOEnd,
-    setup_coco_logger,
-    teardown_coco_logger,
 )
 import numpy as np
 from cocopp.pproc import DictAlg
 import shutil
 import pytest
 from typing import Optional
+from ttex.log.utils.coco_logging_setup import teardown_coco_logger, setup_coco_logger
 
 
 def get_dummy_start_params(

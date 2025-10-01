@@ -28,7 +28,8 @@ def online_mode_env_var():
 @pytest.fixture(autouse=True, scope="module")
 def cleanup_wandb_dirs():
     yield
-    wandb.finish()
+    if wandb.run is not None:
+        wandb.finish()
     shutil.rmtree("wandb", ignore_errors=True)
 
 

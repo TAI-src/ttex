@@ -163,3 +163,4 @@ cython_debug/
 
 # Wandb offline
 */wandb/*
+test_snapshot.json

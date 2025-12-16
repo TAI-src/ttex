@@ -30,6 +30,7 @@ run_config = launch.load_wandb_config()
 wandb job create -p $project -e $entity -n $job_name -a $job_alias image $image
 ```
 
+
 ### Set up execution environment
 
 On the environment where the jobs will be executed, we need to start a listener for new jobs.

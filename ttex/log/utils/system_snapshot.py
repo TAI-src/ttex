@@ -72,7 +72,9 @@ def get_gpu_info():
             "gpu": run_cmd(
                 "lspci",
                 parse="lines",
-                filter_fn=lambda line: any(s in line.lower() for s in ("vga", "3d", "2d")),
+                filter_fn=lambda line: any(
+                    s in line.lower() for s in ("vga", "3d", "2d")
+                ),
             )
         }
     else:

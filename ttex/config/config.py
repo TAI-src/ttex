@@ -62,13 +62,17 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
 
     def _setup(self, ctx: Optional[ContextProtocol] = None) -> bool:
         """
-        Setup the config
+        Setup the config (private version for override)
         """
         return True
 
     def setup(self, ctx: Optional[ContextProtocol] = None) -> bool:
         """
         Setup the config and any sub-configs
+        ctx: Optional[ContextProtocol]
+            Context to use during setup
+        Returns:
+            success (bool): Whether setup was successful
         """
         success = True
         for v in self.__dict__.values():
@@ -78,13 +82,17 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
 
     def _teardown(self, ctx: Optional[ContextProtocol] = None) -> bool:
         """
-        Teardown the config
+        Teardown the config (private version for override)
         """
         return True
 
     def teardown(self, ctx: Optional[ContextProtocol] = None) -> bool:
         """
         Teardown the config and any sub-configs
+        ctx: Optional[ContextProtocol]
+            Context to use during teardown
+        Returns:
+            success (bool): Whether teardown was successful
         """
         success = True
         for v in self.__dict__.values():

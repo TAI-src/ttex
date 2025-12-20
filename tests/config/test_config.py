@@ -1,5 +1,5 @@
 from ttex.config import Config, ConfigFactory
-from . import DummyConfig, dict_config, DummyEnum
+from . import DummyConfig, dict_config, DummyEnum, DummyContext
 import pytest
 from logging import Handler
 import os
@@ -171,20 +171,48 @@ def test_wrong_args():
 
 
 def test_setup_teardown():
+    ctx: DummyContext = DummyContext()
     config = ConfigFactory.extract(
         DummyConfig, dict_config["DummyConfig"], context=globals()
     )
     assert not config._stp
     assert not config._tdwn
 
-    assert config.setup()
+    assert config.setup(ctx)
     assert config._stp
     assert isinstance(config.b, DummyConfig)
     assert config.b._stp
     assert not config._tdwn
+    assert config.ctx == ctx
 
-    assert config.teardown()
+    assert config.teardown(ctx)
     assert config._stp
     assert config.b._stp
     assert config._tdwn
     assert config.b._tdwn
+
+    assert config.ctx is None
+
+
+def test_dummy_context():
+    ctx: DummyContext = DummyContext()
+    ctx.set("test_key", "test_value")
+    assert ctx.get("test_key") == "test_value"
+    assert ctx.get("non_existing_key") is None
+
+    ctx.freeze()
+    with pytest.raises(RuntimeError):
+        ctx.set("another_key", "another_value")
+
+    with pytest.raises(RuntimeError):
+        ctx.set("test_key", "new_value")
+    assert ctx.get("test_key") == "test_value"
+
+
+def test_ctx_setter_getter():
+    ctx: DummyContext = DummyContext()
+    config = ConfigFactory.extract(
+        DummyConfig, dict_config["DummyConfig"], context=globals()
+    )
+    config.set_context(ctx)
+    assert config.get_context() == ctx

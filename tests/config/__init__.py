@@ -46,10 +46,12 @@ class DummyConfig(Config):
 
     def _setup(self, ctx: DummyContext):
         self._stp = True
+        self.ctx = ctx
         return True
 
     def _teardown(self, ctx: DummyContext):
         self._tdwn = True
+        self.ctx = None
         return True
 
 

@@ -16,12 +16,12 @@ logger = logging.getLogger(LOGGER_NAME)
 class ContextProtocol(Protocol):
     """Protocol for context object used in config extraction"""
 
-    def get(self, key: str, default: Any = None) -> Any:
-        """Get a value from the context object"""
+    def set(self, key: str, value: Any = None) -> None:
+        """Set a default value in the context object"""
         ...
 
-    def setdefault(self, key: str, default: Any = None) -> Any:
-        """Set a default value in the context object"""
+    def get(self, key: str, default: Any = None) -> Any:
+        """Get a value from the context object"""
         ...
 
 
@@ -98,6 +98,25 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
             if isinstance(v, Config):
                 success = v.teardown(ctx=ctx) and success
         return self._teardown(ctx=ctx) and success
+
+    def set_context(self, ctx: ContextProtocol) -> None:
+        """
+        Set context for this config and any sub-configs
+        ctx: ContextProtocol
+            Context to set
+        """
+        for v in self.__dict__.values():
+            if isinstance(v, Config):
+                v.set_context(ctx)
+        self._ctx = ctx
+
+    def get_context(self) -> ContextProtocol:
+        """
+        Get context for this config and any sub-configs
+        ctx: ContextProtocol
+            Context to get from
+        """
+        return self._ctx
 
 
 T = TypeVar("T", bound=Config)

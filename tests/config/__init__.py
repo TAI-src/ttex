@@ -9,7 +9,7 @@ class DummyContext:
         self._data: dict[str, Any] = {}
         self._frozen = False
 
-    def set(self, key: str, value: Any) -> None:
+    def set(self, key: str, value: Any = None) -> None:
         if self._frozen:
             raise RuntimeError("Cannot modify frozen context")
         self._data[key] = value

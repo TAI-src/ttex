@@ -106,17 +106,20 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
         ctx: ContextProtocol
             Context to set
         """
-        for v in self.__dict__.values():
+        for name, v in self.__dict__.items():
+            # Skip private attributes (including the stored context itself)
+            if name.startswith("_"):
+                continue
             if isinstance(v, Config):
                 v.set_context(ctx)
         self._ctx = ctx
 
     def get_context(self) -> Optional[ContextProtocol]:
         """
-        Get context for this config and any sub-configs
-        Returns:
-            ctx (ContextProtocol): The context
+        Get the context associated with this config instance.
 
+        Returns:
+            Optional[ContextProtocol]: The context stored on this config, or None if no context has been set.
         """
         return self._ctx
 

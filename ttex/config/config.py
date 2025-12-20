@@ -1,7 +1,7 @@
 """Config class and ConfigFactory to create one from different sources"""
 
 from abc import ABC
-from typing import TypeVar, Type, Union, Dict, Optional, Protocol
+from typing import TypeVar, Type, Union, Dict, Optional, Protocol, Any
 from inspect import signature, Parameter
 import importlib
 import json
@@ -9,20 +9,19 @@ import logging
 import numpy as np
 from ttex.log import LOGGER_NAME
 from collections.abc import Iterable
-from typing import Any
 
 logger = logging.getLogger(LOGGER_NAME)
 
 
 class ContextProtocol(Protocol):
-    """Protocol for context dictionaries used in config extraction"""
+    """Protocol for context object used in config extraction"""
 
     def get(self, key: str, default: Any = None) -> Any:
-        """Get a value from the context dictionary"""
+        """Get a value from the context object"""
         ...
 
     def setdefault(self, key: str, default: Any = None) -> Any:
-        """Set a default value in the context dictionary"""
+        """Set a default value in the context object"""
         ...
 
 

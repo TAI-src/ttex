@@ -16,12 +16,12 @@ logger = logging.getLogger(LOGGER_NAME)
 class ContextProtocol(Protocol):
     """Protocol for context object used in config extraction"""
 
-    def get(self, key: str, default: Any = None) -> Any:
-        """Get a value from the context object"""
+    def set(self, key: str, value: Any = None) -> None:
+        """Set a value in the context object"""
         ...
 
-    def setdefault(self, key: str, default: Any = None) -> Any:
-        """Set a default value in the context object"""
+    def get(self, key: str, default: Any = None) -> Any:
+        """Get a value from the context object"""
         ...
 
 
@@ -41,6 +41,7 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
         # TODO could add something that auto-adds all the values to the dict
         # TODO consider if this should be a dictionary or a namedtuple or sth
         self._to_dict: Optional[Dict] = None
+        self._ctx: Optional[ContextProtocol] = None
 
     def get(self, key: str, default=None):
         """Get a specific value from the config dict.
@@ -98,6 +99,29 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
             if isinstance(v, Config):
                 success = v.teardown(ctx=ctx) and success
         return self._teardown(ctx=ctx) and success
+
+    def set_context(self, ctx: ContextProtocol) -> None:
+        """
+        Set context for this config and any sub-configs
+        ctx: ContextProtocol
+            Context to set
+        """
+        for name, v in self.__dict__.items():
+            # Skip private attributes (including the stored context itself)
+            if name.startswith("_"):
+                continue
+            if isinstance(v, Config):
+                v.set_context(ctx)
+        self._ctx = ctx
+
+    def get_context(self) -> Optional[ContextProtocol]:
+        """
+        Get the context associated with this config instance.
+
+        Returns:
+            Optional[ContextProtocol]: The context stored on this config, or None if no context has been set.
+        """
+        return self._ctx
 
 
 T = TypeVar("T", bound=Config)

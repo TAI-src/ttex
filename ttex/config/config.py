@@ -1,7 +1,7 @@
 """Config class and ConfigFactory to create one from different sources"""
 
 from abc import ABC
-from typing import TypeVar, Type, Union, Dict, Optional
+from typing import TypeVar, Type, Union, Dict, Optional, Protocol
 from inspect import signature, Parameter
 import importlib
 import json
@@ -12,6 +12,18 @@ from collections.abc import Iterable
 from typing import Any
 
 logger = logging.getLogger(LOGGER_NAME)
+
+
+class ContextProtocol(Protocol):
+    """Protocol for context dictionaries used in config extraction"""
+
+    def get(self, key: str, default: Any = None) -> Any:
+        """Get a value from the context dictionary"""
+        ...
+
+    def setdefault(self, key: str, default: Any = None) -> Any:
+        """Set a default value in the context dictionary"""
+        ...
 
 
 # TODO config with separate levels for keys
@@ -48,37 +60,37 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
         else:
             raise NotImplementedError
 
-    def _setup(self):
+    def _setup(self, ctx: Optional[ContextProtocol] = None) -> bool:
         """
         Setup the config
         """
         return True
 
-    def setup(self):
+    def setup(self, ctx: Optional[ContextProtocol] = None) -> bool:
         """
         Setup the config and any sub-configs
         """
         success = True
         for v in self.__dict__.values():
             if isinstance(v, Config):
-                success = v.setup() and success
-        return self._setup() and success
+                success = v.setup(ctx=ctx) and success
+        return self._setup(ctx=ctx) and success
 
-    def _teardown(self):
+    def _teardown(self, ctx: Optional[ContextProtocol] = None) -> bool:
         """
         Teardown the config
         """
         return True
 
-    def teardown(self):
+    def teardown(self, ctx: Optional[ContextProtocol] = None) -> bool:
         """
         Teardown the config and any sub-configs
         """
         success = True
         for v in self.__dict__.values():
             if isinstance(v, Config):
-                success = v.teardown() and success
-        return self._teardown() and success
+                success = v.teardown(ctx=ctx) and success
+        return self._teardown(ctx=ctx) and success
 
 
 T = TypeVar("T", bound=Config)

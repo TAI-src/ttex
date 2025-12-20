@@ -214,5 +214,10 @@ def test_ctx_setter_getter():
     config = ConfigFactory.extract(
         DummyConfig, dict_config["DummyConfig"], context=globals()
     )
+    ctx.set("test", 1)
     config.set_context(ctx)
     assert config.get_context() == ctx
+    assert config.get_context().get("test") == 1
+    # check is recursively set
+    assert config.b.get_context() == ctx
+    assert config.b.get_context().get("test") == 1

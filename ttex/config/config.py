@@ -17,7 +17,7 @@ class ContextProtocol(Protocol):
     """Protocol for context object used in config extraction"""
 
     def set(self, key: str, value: Any = None) -> None:
-        """Set a default value in the context object"""
+        """Set a value in the context object"""
         ...
 
     def get(self, key: str, default: Any = None) -> Any:
@@ -41,6 +41,7 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
         # TODO could add something that auto-adds all the values to the dict
         # TODO consider if this should be a dictionary or a namedtuple or sth
         self._to_dict: Optional[Dict] = None
+        self._ctx: Optional[ContextProtocol] = None
 
     def get(self, key: str, default=None):
         """Get a specific value from the config dict.
@@ -110,11 +111,12 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
                 v.set_context(ctx)
         self._ctx = ctx
 
-    def get_context(self) -> ContextProtocol:
+    def get_context(self) -> Optional[ContextProtocol]:
         """
         Get context for this config and any sub-configs
-        ctx: ContextProtocol
-            Context to get from
+        Returns:
+            ctx (ContextProtocol): The context
+
         """
         return self._ctx
 

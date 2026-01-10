@@ -1,5 +1,5 @@
 from ttex.config import ConfigurableObject, ConfigurableObjectFactory, ConfigFactory
-from . import DummyConfig, EmptyConfig, dict_config
+from . import DummyConfig, EmptyConfig, dict_config, DummyContext
 from .. import dummy_log_handler
 import pytest
 import json
@@ -40,8 +40,11 @@ def test_wrong_config_class():
 
 @pytest.mark.parametrize("mode", ["config", "dict", "json"])
 def test_create(mode):
+    ctx: DummyContext = DummyContext()
     if mode == "config":
         config = DummyConfig(a=1, b=2, c=3, d=5)
+        ctx.set("ctx_test", 1)
+        config.set_context(ctx)
     elif mode == "dict":
         config = dict_config
     else:
@@ -57,6 +60,10 @@ def test_create(mode):
         context=globals(),
         kwargs_test="kwargs_test",
     )
+    # if was config, set context is preserved
+    if mode == "config":
+        ctx = conf_obj.config.get_context()
+        assert ctx.get("ctx_test") == 1
 
     assert isinstance(conf_obj, DummyConfigurableObject)
     # apply config

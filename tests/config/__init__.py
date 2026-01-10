@@ -43,6 +43,7 @@ class DummyConfig(Config):
         self.test = "test"
         self._tdwn = False
         self._stp = False
+        super().__init__()
 
     def _setup(self, ctx: DummyContext):
         self._stp = True

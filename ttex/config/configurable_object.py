@@ -80,6 +80,5 @@ class ConfigurableObjectFactory(ABC):  # pylint: disable=too-few-public-methods
             ctx = config.get_context()
             if ctx is not None:
                 typed_config.set_context(ctx)
-        print(typed_config.__dict__)
         logger.debug(f"Passed args {args} and kwargs {kwargs}")
         return configurable_object_class(typed_config, *args, **kwargs)

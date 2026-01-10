@@ -75,9 +75,5 @@ class ConfigurableObjectFactory(ABC):  # pylint: disable=too-few-public-methods
         typed_config = ConfigFactory.extract(
             configurable_object_class.config_class, config
         )
-        # Preserve context if available
-        if isinstance(config, Config) and config.get_context() is not None:
-            typed_config.set_context(config.get_context())
-        print(typed_config.__dict__)
         logger.debug(f"Passed args {args} and kwargs {kwargs}")
         return configurable_object_class(typed_config, *args, **kwargs)

@@ -33,6 +33,7 @@ class COCOInfoHeader(StrHeader):
         self.data_format = "bbob-new2"
         self._filepath = osp.join(
             f"{self.exp_id}",
+            f"{self.suite}",
             f"{self.algId}",
             f"f{self.funcId}_i{self.inst}.info",
         )

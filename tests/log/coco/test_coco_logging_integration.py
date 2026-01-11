@@ -5,8 +5,6 @@ from ttex.log.coco import (
     COCOStart,
     COCOEval,
     COCOEnd,
-    setup_coco_logger,
-    teardown_coco_logger,
 )
 import numpy as np
 from cocopp.pproc import DictAlg
@@ -14,6 +12,7 @@ import shutil
 import pytest
 from typing import Optional
 from ttex.log.coco.run_cocopp import MinimalTestbed, suite_to_testbed
+from ttex.log.utils.coco_logging_setup import teardown_coco_logger, setup_coco_logger
 
 
 def get_dummy_start_params(
@@ -83,6 +82,7 @@ def check_files_exist(start_record: COCOStart):
     # Check if the log files are created
     log_file_base = osp.join(
         f"{start_record.exp_id}",
+        f"{start_record.suite}",
         f"{start_record.algo}",
         f"data_{start_record.problem}",
         f"f{start_record.problem}_d{start_record.dim}_i{start_record.inst}",
@@ -100,6 +100,7 @@ def check_files_exist(start_record: COCOStart):
     assert osp.exists(
         osp.join(
             f"{start_record.exp_id}",
+            f"{start_record.suite}",
             f"{start_record.algo}",
             f"f{start_record.problem}_i{start_record.inst}.info",
         )
@@ -127,7 +128,9 @@ def test_coco_logging_integration():
         assert isinstance(start_rec, COCOStart)
         check_files_exist(start_rec)
     ## check with cocopp
-    res = cocopp.main("-o test_exp_id/ppdata test_exp_id/test_algo")
+    res = cocopp.main(
+        f"-o test_exp_id/ppdata test_exp_id/{start_records[0].suite}/test_algo"
+    )
     assert isinstance(res, DictAlg)
     result_dict = res[("test_algo", "")][0]
     assert result_dict.funcId == 3

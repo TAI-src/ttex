@@ -1,7 +1,7 @@
 """Config class and ConfigFactory to create one from different sources"""
 
 from abc import ABC
-from typing import TypeVar, Type, Union, Dict, Optional
+from typing import TypeVar, Type, Union, Dict, Optional, Protocol, Any
 from inspect import signature, Parameter
 import importlib
 import json
@@ -9,9 +9,20 @@ import logging
 import numpy as np
 from ttex.log import LOGGER_NAME
 from collections.abc import Iterable
-from typing import Any
 
 logger = logging.getLogger(LOGGER_NAME)
+
+
+class ContextProtocol(Protocol):
+    """Protocol for context object used in config extraction"""
+
+    def set(self, key: str, value: Any = None) -> None:
+        """Set a value in the context object"""
+        ...
+
+    def get(self, key: str, default: Any = None) -> Any:
+        """Get a value from the context object"""
+        ...
 
 
 # TODO config with separate levels for keys
@@ -29,6 +40,8 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
         """
         # TODO could add something that auto-adds all the values to the dict
         # TODO consider if this should be a dictionary or a namedtuple or sth
+        self._to_dict: Optional[Dict] = None
+        self._ctx: Optional[ContextProtocol] = None
 
     def get(self, key: str, default=None):
         """Get a specific value from the config dict.
@@ -37,43 +50,78 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
         """
         return self.__dict__.get(key, default)
 
-    def to_dict(self):
+    def to_dict(self) -> Dict:
         """
         Convert the config to a dictionary
         """
-        raise NotImplementedError
+        # TODO: implement a generic to_dict method. This is just a hack in case we already have a dict at creation
+        if hasattr(self, "_to_dict") and self._to_dict is not None:
+            return self._to_dict
+        else:
+            raise NotImplementedError
 
-    def _setup(self):
+    def _setup(self, ctx: Optional[ContextProtocol] = None) -> bool:
         """
-        Setup the config
+        Setup the config (private version for override)
         """
         return True
 
-    def setup(self):
+    def setup(self, ctx: Optional[ContextProtocol] = None) -> bool:
         """
         Setup the config and any sub-configs
+        ctx: Optional[ContextProtocol]
+            Context to use during setup
+        Returns:
+            success (bool): Whether setup was successful
         """
         success = True
         for v in self.__dict__.values():
             if isinstance(v, Config):
-                success = v.setup() and success
-        return self._setup() and success
+                success = v.setup(ctx=ctx) and success
+        return self._setup(ctx=ctx) and success
 
-    def _teardown(self):
+    def _teardown(self, ctx: Optional[ContextProtocol] = None) -> bool:
         """
-        Teardown the config
+        Teardown the config (private version for override)
         """
         return True
 
-    def teardown(self):
+    def teardown(self, ctx: Optional[ContextProtocol] = None) -> bool:
         """
         Teardown the config and any sub-configs
+        ctx: Optional[ContextProtocol]
+            Context to use during teardown
+        Returns:
+            success (bool): Whether teardown was successful
         """
         success = True
         for v in self.__dict__.values():
             if isinstance(v, Config):
-                success = v.teardown() and success
-        return self._teardown() and success
+                success = v.teardown(ctx=ctx) and success
+        return self._teardown(ctx=ctx) and success
+
+    def set_context(self, ctx: ContextProtocol) -> None:
+        """
+        Set context for this config and any sub-configs
+        ctx: ContextProtocol
+            Context to set
+        """
+        for name, v in self.__dict__.items():
+            # Skip private attributes (including the stored context itself)
+            if name.startswith("_"):
+                continue
+            if isinstance(v, Config):
+                v.set_context(ctx)
+        self._ctx = ctx
+
+    def get_context(self) -> Optional[ContextProtocol]:
+        """
+        Get the context associated with this config instance.
+
+        Returns:
+            Optional[ContextProtocol]: The context stored on this config, or None if no context has been set.
+        """
+        return self._ctx
 
 
 T = TypeVar("T", bound=Config)
@@ -234,7 +282,10 @@ class ConfigFactory(ABC):
 
         for k, v in values.items():
             values[k] = ConfigFactory._extract_value(v, context=context)
-        return config_class(**values)
+        return_config = config_class(**values)  # type: ignore[call-arg]
+        if isinstance(config, Dict):
+            return_config._to_dict = config  # type: ignore[attr-defined]
+        return return_config
 
     @staticmethod
     def from_dict(dict_config: Dict, context: Optional[Dict] = None) -> Config:

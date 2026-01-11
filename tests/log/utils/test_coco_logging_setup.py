@@ -1,4 +1,4 @@
-from ttex.log.coco import setup_coco_logger, teardown_coco_logger
+from ttex.log.utils.coco_logging_setup import setup_coco_logger, teardown_coco_logger
 
 
 def test_setup_teardown_coco_logger():

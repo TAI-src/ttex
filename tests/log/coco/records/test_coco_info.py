@@ -18,12 +18,14 @@ def test_coco_info(coco_start_params):
     ## filepath
     expected_filepath = osp.join(
         f"{start_event.exp_id}",
+        f"{start_event.suite}",
         f"{start_event.algo}",
         f"f{start_event.problem}_i{start_event.inst}.info",
     )
     assert header.filepath == expected_filepath
     dummy_dat_filepath = osp.join(
         f"{start_event.exp_id}",
+        f"{start_event.suite}",
         f"{start_event.algo}",
         f"data_f{start_event.problem}",
         "dummy.dat",

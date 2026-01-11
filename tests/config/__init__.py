@@ -1,7 +1,24 @@
 from ttex.config import Config
 from .. import dummy_log_handler
-from typing import Union, List, Tuple
+from typing import Union, List, Tuple, Any
 from enum import Enum
+
+
+class DummyContext:
+    def __init__(self):
+        self._data: dict[str, Any] = {}
+        self._frozen = False
+
+    def set(self, key: str, value: Any = None) -> None:
+        if self._frozen:
+            raise RuntimeError("Cannot modify frozen context")
+        self._data[key] = value
+
+    def get(self, key: str, default: Any = None) -> Any:
+        return self._data.get(key, default)
+
+    def freeze(self) -> None:
+        self._frozen = True
 
 
 class DummyEnum(Enum):
@@ -26,13 +43,16 @@ class DummyConfig(Config):
         self.test = "test"
         self._tdwn = False
         self._stp = False
+        super().__init__()
 
-    def _setup(self):
+    def _setup(self, ctx: DummyContext):
         self._stp = True
+        self.ctx = ctx
         return True
 
-    def _teardown(self):
+    def _teardown(self, ctx: DummyContext):
         self._tdwn = True
+        self.ctx = None
         return True
 
 

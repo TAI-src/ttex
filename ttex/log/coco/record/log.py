@@ -76,6 +76,7 @@ class COCOLogHeader(StrHeader):
         ), "COCOStart event must be processed before header"
         self._filepath = osp.join(
             state.coco_start.exp_id,
+            state.coco_start.suite,
             state.coco_start.algo,
             f"data_{state.coco_start.problem}",
             f"f{state.coco_start.problem}_d{state.coco_start.dim}_i{state.coco_start.inst}.{file_type}",

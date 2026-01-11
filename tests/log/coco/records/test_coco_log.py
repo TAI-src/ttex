@@ -20,6 +20,7 @@ def test_coco_log(coco_start_params):
     header = COCOLogHeader(state, file_type="dummy")
     expected_filepath = osp.join(
         f"{start_event.exp_id}",
+        f"{start_event.suite}",
         f"{start_event.algo}",
         f"data_{start_event.problem}",
         f"f{start_event.problem}_d{start_event.dim}_i{start_event.inst}.dummy",

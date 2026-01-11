@@ -10,14 +10,16 @@ from typing import Optional, Dict, List
 import shlex
 
 
-def run_cmd(cmd: str, parse: str = "raw", split_char=":") -> dict:
+def run_cmd(cmd: str, parse: str = "raw", split_char=":", filter_fn=None) -> dict:
     try:
         # shlex is for input sanitation
         output = subprocess.check_output(shlex.split(cmd), text=True).strip()
 
         if parse == "lines":
-            return {"success": True, "lines": output.splitlines()}
-
+            lines = output.splitlines()
+            if filter_fn:
+                lines = [line for line in lines if filter_fn(line)]
+            return {"success": True, "lines": lines}
         elif parse == "kv":
             result = {}
             for line in output.splitlines():
@@ -61,10 +63,20 @@ def get_memory_info():
 
 
 def get_gpu_info():
-    if shutil.which("lspci"):
-        return {"gpu": run_cmd("lspci | grep -i 'vga\\|3d\\|2d'")}
-    elif shutil.which("nvidia-smi"):
+    if shutil.which("nvidia-smi"):
         return {"gpu": run_cmd("nvidia-smi", parse="lines")}
+    elif shutil.which("rocm-smi"):
+        return {"gpu": run_cmd("rocm-smi", parse="lines")}
+    elif shutil.which("lspci"):
+        return {
+            "gpu": run_cmd(
+                "lspci",
+                parse="lines",
+                filter_fn=lambda line: any(
+                    s in line.lower() for s in ("vga", "3d", "2d")
+                ),
+            )
+        }
     else:
         return {"gpu": "No GPU information available"}
 

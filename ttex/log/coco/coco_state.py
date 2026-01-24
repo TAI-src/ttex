@@ -56,7 +56,8 @@ class COCOState(LoggingState):
     def _update_eval(self, coco_eval: COCOEval) -> None:
         assert not self._needs_start, "COCOStart must be processed before COCOEval"
         assert self.coco_start is not None
-        if self.coco_start.dim > 0:
+        if self.coco_start.dim > 0:  # If dimension changes, it is set to 0
+            # Check that the dimension of x matches the problem dimension
             assert len(coco_eval.x) == self.coco_start.dim
         self.f_evals += 1
         self.last_imp = max(

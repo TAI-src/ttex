@@ -69,7 +69,7 @@ class COCOInfoHeader(StrHeader):
         return COCOInfoHeader.template.format(
             suite=self.suite,
             funcId=self.funcId,
-            dim=self.dim,
+            dim=max(self.dim, 1),  # avoid 0 dimensions for postprocessing
             prec=self.prec,
             algId=self.algId,
             coco_version=self.coco_version,

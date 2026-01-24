@@ -18,7 +18,7 @@ def run_cocopp(
     args = result_paths
     if output_dir is not None:
         args = ["-o", output_dir] + args
-    args = " ".join(args)
+    args_str = " ".join(args)
 
     # Suppress DEBUG logs from matplotlib components
     logging.getLogger("matplotlib").setLevel(logging.WARNING)
@@ -34,8 +34,8 @@ def run_cocopp(
     if silent:
         with open(os.devnull, "w") as fnull:
             with redirect_stdout(fnull):
-                res = cocopp.main(args)
+                res = cocopp.main(args_str)
     else:
-        res = cocopp.main(args)
+        res = cocopp.main(args_str)
 
     return res

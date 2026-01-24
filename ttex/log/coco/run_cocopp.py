@@ -28,7 +28,7 @@ def run_cocopp(
     logging.getLogger("fontTools.subset").setLevel(logging.WARNING)
     logging.getLogger("fontTools.ttLib").setLevel(logging.WARNING)
 
-    ## Create an register testbedsettings for cocopp based on suite info
+    ## Create and register testbedsettings for cocopp based on suite info
     TestbedFactory.create_testbed_class(suite_info)
 
     if silent:

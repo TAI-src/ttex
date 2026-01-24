@@ -1,5 +1,4 @@
 # integration test for coco logging
-import enum
 import os.path as osp
 import cocopp
 from ttex.log.coco import (
@@ -11,25 +10,24 @@ import numpy as np
 from cocopp.pproc import DictAlg
 import shutil
 import pytest
-from typing import Optional
 from ttex.log.utils.coco_logging_setup import teardown_coco_logger, setup_coco_logger
-from log.coco.postp.test_testbed import create_testbedsettings
+from tests.log.coco.postp.test_testbed import create_testbedsettings
 from ttex.log.coco.postp.testbed import TestbedFactory
 from ttex.log.coco.postp.info import SuiteInfo
 
 
 def get_dummy_start_params(
     suite: SuiteInfo,
-    problem: int,
-    dim: int,
+    problem_idx: int,
+    dim_idx: int,
     inst: int,
 ) -> dict:
-    func_info = suite.function_infos[problem]
+    func_info = suite.function_infos[problem_idx]
     return_dict = {
         "fopt": np.random.randn() * 100,
         "algo": "test_algo",
         "problem": func_info.func_id,
-        "dim": func_info.dims[dim],
+        "dim": func_info.dims[dim_idx],
         "inst": inst,
         "suite": suite.name,
         "exp_id": "test_exp_id",
@@ -40,12 +38,12 @@ def get_dummy_start_params(
 def generate_events(
     num_evals: int,
     suite: SuiteInfo,
-    problem: int,
-    dim: int,
+    problem_idx: int,
+    dim_idx: int,
     inst: int,
 ):
     events = []
-    return_dict = get_dummy_start_params(suite, problem, dim, inst)
+    return_dict = get_dummy_start_params(suite, problem_idx, dim_idx, inst)
     start_record = COCOStart(**return_dict)
     events.append(start_record)
     for _ in range(num_evals):
@@ -72,11 +70,11 @@ def simulate_once(
     logger,
     num_evals: int,
     suite: SuiteInfo,
-    problem: int = 0,
-    dim: int = 0,
+    problem_idx: int = 0,
+    dim_idx: int = 0,
     inst: int = 2,
 ):
-    events = generate_events(num_evals, suite, problem, dim, inst)
+    events = generate_events(num_evals, suite, problem_idx, dim_idx, inst)
     for event in events:
         logger.info(event)
 
@@ -134,8 +132,8 @@ def test_coco_logging_integration():
             logger,
             num_evals=sim_vals["num_evals"],
             suite=suite_info,
-            problem=sim_vals["problem_idx"],
-            dim=sim_vals["dim_idx"],
+            problem_idx=sim_vals["problem_idx"],
+            dim_idx=sim_vals["dim_idx"],
             inst=sim_vals["inst"],
         )
 
@@ -188,7 +186,7 @@ def test_coco_logging_integration_no_dim_inst():
     TestbedFactory.create_testbed_class(suite_info)
     logger = setup_coco_logger("coco_logger2")
     start_record = simulate_once(
-        logger, num_evals=20, suite=suite_info, problem=2, dim=0, inst=0
+        logger, num_evals=20, suite=suite_info, problem_idx=2, dim_idx=0, inst=0
     )
     # Close handlers and remove from logger
     teardown_coco_logger("coco_logger2")  # Ensure handlers are closed
@@ -197,3 +195,4 @@ def test_coco_logging_integration_no_dim_inst():
     check_files_exist(start_record)
 
     res = cocopp.main(f"-o test_exp_id/ppdata test_exp_id/{suite_info.name}/test_algo")
+    assert isinstance(res, DictAlg)

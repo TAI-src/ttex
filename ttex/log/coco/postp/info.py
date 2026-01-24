@@ -30,6 +30,9 @@ class SuiteInfo:
     scenario = "rlbased"
 
     def __post_init__(self):
+        assert (
+            len(self.function_infos) > 0
+        ), "function_infos must contain at least one FunctionInfo"
         # defaults based on ttex implementation
         self.instances_are_uniform = False
         self.reference_algorithm_filename = None

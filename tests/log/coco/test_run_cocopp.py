@@ -24,5 +24,5 @@ def test_run_cocopp():
         in excinfo.value.args[0]
     )
 
-    # Remove ppdsata folder
+    # Remove ppdata folder
     shutil.rmtree("ppdata", ignore_errors=True)

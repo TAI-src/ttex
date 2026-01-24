@@ -6,7 +6,6 @@ import cocopp.genericsettings as genericsettings
 
 
 class TestbedSettings:
-
     def __init__(self, suite_info: SuiteInfo):
         self.suite_info = suite_info
         self.settings = TestbedSettings._create_settings_dict(suite_info)
@@ -110,7 +109,6 @@ class TestbedSettings:
 
 
 class TestbedFactory:
-
     @classmethod
     def create_testbed_class(cls, suite_info: SuiteInfo):
         settings = TestbedSettings(suite_info).settings

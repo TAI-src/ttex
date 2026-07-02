@@ -63,3 +63,4 @@ Navigate to the $project page and click on "Jobs". Find the job with the selecte
 ```
 wandb launch -j $job_name -q $queue -e $entity -c path/to/config.json
 ```
+

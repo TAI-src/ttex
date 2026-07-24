@@ -148,7 +148,7 @@ class ConfigFactory(ABC):
             c (Type): The extracted attribute
         """
         # Split the string, will throw value error if there is no .
-        module_name = None  # type: Optional[str]
+        module_name: str | None = None
         enum_val = None
         try:
             if assume_enum:
@@ -322,7 +322,9 @@ class ConfigFactory(ABC):
             raise ValueError(f"Unexpected config format {e}")
 
         # Now extract the config
-        config = ConfigFactory.extract(config_class, dict_config[class_key], context)
+        config: Config = ConfigFactory.extract(
+            config_class, dict_config[class_key], context
+        )
         return config
 
     @staticmethod

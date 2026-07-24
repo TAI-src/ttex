@@ -8,9 +8,7 @@ from typing import cast
 LOGGER_NAME = "DefaultLogger"
 
 
-def get_logging_config(
-    logger_name: str, disable_existing: bool | None = True
-) -> dict:
+def get_logging_config(logger_name: str, disable_existing: bool | None = True) -> dict:
     """
     Get a default logging configuration dictionary
 

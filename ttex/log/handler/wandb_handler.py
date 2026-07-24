@@ -1,11 +1,11 @@
-import logging
 import ast
-from wandb.sdk.wandb_run import Run, AlertLevel
-import wandb
-from typing import Optional, Dict, List
-from ttex.log import LOGGER_NAME
+import logging
 import os.path as osp
-from dataclasses import dataclass
+
+import wandb
+from wandb.sdk.wandb_run import AlertLevel, Run
+
+from ttex.log import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 
@@ -17,11 +17,11 @@ class WandbHandler(logging.Handler):
 
     def __init__(
         self,
-        custom_metrics: Optional[Dict] = None,
+        custom_metrics: dict | None = None,
         snapshot: bool = True,
-        snapshot_sensitive_keys: Optional[List[str]] = None,
-        project: Optional[str] = None,
-        group: Optional[str] = None,
+        snapshot_sensitive_keys: list[str] | None = None,
+        project: str | None = None,
+        group: str | None = None,
         level=logging.NOTSET,
     ):
         """
@@ -33,7 +33,7 @@ class WandbHandler(logging.Handler):
         super().__init__(level)
         self.snapshot = snapshot
         self.snapshot_sensitive_keys = snapshot_sensitive_keys
-        self._run: Optional[Run] = None
+        self._run: Run | None = None
         self.custom_metrics = custom_metrics if custom_metrics else {}
         self.project = project
         self.group = group
@@ -76,9 +76,9 @@ class WandbHandler(logging.Handler):
 
     @staticmethod
     def wandb_init(
-        run_config: Dict,
-        project: Optional[str] = None,
-        group: Optional[str] = None,
+        run_config: dict,
+        project: str | None = None,
+        group: str | None = None,
     ) -> Run:
         """
         Initialize wandb run
@@ -102,8 +102,8 @@ class WandbHandler(logging.Handler):
         artifact_name: str,
         local_path: str,
         artifact_type: str = "evaluation",
-        description: Optional[str] = "",
-    ) -> Optional[wandb.Artifact]:
+        description: str | None = "",
+    ) -> wandb.Artifact | None:
         artifact_name = f"{artifact_name}_{run.id}"
         artifact = wandb.Artifact(
             name=artifact_name, type=artifact_type, description=description
@@ -123,9 +123,9 @@ class WandbHandler(logging.Handler):
     @staticmethod
     def log_snapshot(
         run: Run,
-        extra_info: Optional[Dict] = None,
-        extra_sensitive_keys: Optional[List[str]] = None,
-    ) -> Optional[wandb.Artifact]:
+        extra_info: dict | None = None,
+        extra_sensitive_keys: list[str] | None = None,
+    ) -> wandb.Artifact | None:
         from ttex.log import capture_snapshot
 
         snapshot_path = f"snapshot_{run.id}.json"

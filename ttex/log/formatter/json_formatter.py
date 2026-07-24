@@ -1,6 +1,5 @@
-import logging
 import json
-from typing import Optional
+import logging
 
 # Based on https://stackoverflow.com/questions/50144628/python-logging-into-file-as-a-dictionary-or-json
 
@@ -16,7 +15,7 @@ class JsonFormatter(logging.Formatter):
 
     def __init__(
         self,
-        fmt_dict: Optional[dict] = None,
+        fmt_dict: dict | None = None,
         time_format: str = "%Y-%m-%dT%H:%M:%S",
         msec_format: str = "%s.%03dZ",
     ):

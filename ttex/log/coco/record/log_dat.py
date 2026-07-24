@@ -1,7 +1,7 @@
-from ttex.log.coco.record import COCOLogRecord, COCOLogHeader
-from ttex.log.coco import COCOState
 import math
-from typing import Optional
+
+from ttex.log.coco import COCOState
+from ttex.log.coco.record import COCOLogHeader, COCOLogRecord
 
 
 class COCOdatRecord(COCOLogRecord):
@@ -13,10 +13,8 @@ class COCOdatRecord(COCOLogRecord):
             state (COCOState): The current state of the COCO logging.
         """
         super().__init__(state)
-        self.reason: Optional[str] = None
-        self.best_target: Optional[
-            float
-        ] = None  # Best target reached (from .dat logging)
+        self.reason: str | None = None
+        self.best_target: float | None = None  # Best target reached (from .dat logging)
 
     @staticmethod
     def ceil_to_target(value: float, improvement_step: float = 1e-5) -> float:

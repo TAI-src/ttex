@@ -1,7 +1,7 @@
-from ttex.log.coco.record import COCOLogRecord, COCOLogHeader
-from ttex.log.coco import COCOState
-from typing import Optional, List
 import math
+
+from ttex.log.coco import COCOState
+from ttex.log.coco.record import COCOLogHeader, COCOLogRecord
 
 
 class COCOtdatRecord(COCOLogRecord):
@@ -27,7 +27,7 @@ class COCOtdatRecord(COCOLogRecord):
 
     @staticmethod
     def base_eval(
-        base_evaluation_triggers: List[int], dimension: int, f_evals: int
+        base_evaluation_triggers: list[int], dimension: int, f_evals: int
     ) -> bool:
         """
         Determine if the current function evaluation count `f_evals` meets the
@@ -56,9 +56,9 @@ class COCOtdatRecord(COCOLogRecord):
 
     def emit(  # type: ignore[override]
         self,
-        base_evaluation_triggers: Optional[List[int]] = None,
+        base_evaluation_triggers: list[int] | None = None,
         number_evaluation_triggers: int = 20,
-        last_tdat_emit: Optional[int] = None,  # only pass when emitting the last record
+        last_tdat_emit: int | None = None,  # only pass when emitting the last record
     ) -> bool:  # type: ignore[override]
         """
         Check if the record should be emitted based on the trigger_nth condition.

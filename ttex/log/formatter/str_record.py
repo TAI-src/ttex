@@ -16,7 +16,6 @@ class StrRecord(ABC):
         Returns:
             str: Formatted record string.
         """
-        pass
 
     def emit(self) -> bool:
         return True
@@ -39,7 +38,6 @@ class StrHeader(StrRecord):
         Returns:
             str: The UUID of the header.
         """
-        pass
 
     @property
     @abstractmethod

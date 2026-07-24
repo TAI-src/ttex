@@ -1,18 +1,19 @@
 import logging
-from ttex.log.handler import WandbHandler
-from typing import Optional, Dict, List
+
 import wandb
+
 from ttex.log import LOGGER_NAME
+from ttex.log.handler import WandbHandler
 
 logger = logging.getLogger(LOGGER_NAME)
 
 
 def setup_wandb_logger(
-    custom_metrics: Optional[Dict] = None,
+    custom_metrics: dict | None = None,
     snapshot: bool = True,
-    snapshot_sensitive_keys: Optional[List[str]] = None,
-    project: Optional[str] = None,
-    group: Optional[str] = None,
+    snapshot_sensitive_keys: list[str] | None = None,
+    project: str | None = None,
+    group: str | None = None,
     name: str = "wandb_logger",
     level: int = logging.INFO,
 ) -> logging.Logger:
@@ -44,7 +45,7 @@ def teardown_wandb_logger(name: str = "wandb_logger") -> None:
     wandb_logger._wandb_setup = False  # type: ignore[attr-defined]
 
 
-def _get_wandb_logger(name: str = "wandb_logger") -> Optional[logging.Logger]:
+def _get_wandb_logger(name: str = "wandb_logger") -> logging.Logger | None:
     wandb_logger = logging.getLogger(name)
     if not getattr(wandb_logger, "_wandb_setup", None):
         return None
@@ -53,7 +54,7 @@ def _get_wandb_logger(name: str = "wandb_logger") -> Optional[logging.Logger]:
         return wandb_logger
 
 
-def get_wandb_logger(name: str = "wandb_logger") -> Optional[logging.Logger]:
+def get_wandb_logger(name: str = "wandb_logger") -> logging.Logger | None:
     """
     Get the wandb logger if it exists and is properly set up with a wandb run
     """
@@ -66,7 +67,7 @@ def get_wandb_logger(name: str = "wandb_logger") -> Optional[logging.Logger]:
     return wandb_logger
 
 
-def _get_wandb_handler(name: str = "wandb_logger") -> Optional[WandbHandler]:
+def _get_wandb_handler(name: str = "wandb_logger") -> WandbHandler | None:
     wandb_logger = _get_wandb_logger(name=name)
     if wandb_logger is None:
         return None
@@ -77,9 +78,9 @@ def _get_wandb_handler(name: str = "wandb_logger") -> Optional[WandbHandler]:
 
 
 def log_wandb_init(
-    run_config: Dict,
+    run_config: dict,
     logger_name: str = "wandb_logger",
-) -> Optional[wandb.sdk.wandb_run.Run]:
+) -> wandb.sdk.wandb_run.Run | None:
     handler = _get_wandb_handler(name=logger_name)
     if handler is None:
         logger.warning("WandbHandler not found")
@@ -97,7 +98,7 @@ def log_wandb_artifact(
     local_path: str,
     artifact_type: str = "evaluation",
     description: str = "",
-) -> Optional[wandb.Artifact]:
+) -> wandb.Artifact | None:
     handler = _get_wandb_handler(name=logger_name)
     if handler is None or not getattr(handler, "run", None):
         logger.warning("WandbHandler not found or not initialized with wandb run")

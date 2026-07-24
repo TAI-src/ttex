@@ -1,31 +1,26 @@
-from ttex.log.filter import LoggingState, LogEvent
-from ttex.log.coco import COCOEval, COCOStart, COCOEnd
-import numpy as np
 import os.path as osp
-from typing import Optional
+
+import numpy as np
+
+from ttex.log.coco import COCOEnd, COCOEval, COCOStart
+from ttex.log.filter import LogEvent, LoggingState
 
 
 class COCOState(LoggingState):
     def __init__(self):
         self._needs_start = True
         self.last_tdat_emit = 0
-        self.best_target: Optional[
-            float
-        ] = None  # Best target reached (from .dat logging)
-        self.dat_filepath: Optional[
-            str
-        ] = None  # Path to the .dat file (relative to info file)
-        self.coco_start: Optional[COCOStart] = None  # The last COCOStart event
+        self.best_target: float | None = None  # Best target reached (from .dat logging)
+        self.dat_filepath: str | None = None  # Path to the .dat file (relative to info file)
+        self.coco_start: COCOStart | None = None  # The last COCOStart event
         self.f_evals = 0  # Number of function evaluations
         self.g_evals = 0  # Number of constraint evaluations (not currently supported)
         self.best_mf = np.inf  # Best observed function value
-        self.fopt: Optional[float] = None  # Optimal function value (if known)
-        self.inst: Optional[int] = None  # Problem instance number
-        self.last_eval: Optional[COCOEval] = None  # The last COCOEval event
-        self.best_diff_opt: Optional[float] = None  # Best difference to optimal value
-        self.last_imp: Optional[
-            float
-        ] = None  # Improvement of best_mf since last evaluation
+        self.fopt: float | None = None  # Optimal function value (if known)
+        self.inst: int | None = None  # Problem instance number
+        self.last_eval: COCOEval | None = None  # The last COCOEval event
+        self.best_diff_opt: float | None = None  # Best difference to optimal value
+        self.last_imp: float | None = None  # Improvement of best_mf since last evaluation
         super().__init__()
 
     def update(self, event: LogEvent) -> None:

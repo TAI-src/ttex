@@ -1,8 +1,9 @@
-import numpy as np
-from ttex.log.coco.postp.info import SuiteInfo
-from cocopp.testbedsettings import Testbed, suite_to_testbed
 import cocopp.testbedsettings as tbs
-import cocopp.genericsettings as genericsettings
+import numpy as np
+from cocopp import genericsettings
+from cocopp.testbedsettings import Testbed, suite_to_testbed
+
+from ttex.log.coco.postp.info import SuiteInfo
 
 
 class TestbedSettings:

@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 
 class KeyFormatter(logging.Formatter):
@@ -9,7 +8,7 @@ class KeyFormatter(logging.Formatter):
     """
 
     def __init__(
-        self, key: str, fmt: str = "%(message)s", datefmt: Optional[str] = None
+        self, key: str, fmt: str = "%(message)s", datefmt: str | None = None
     ):
         """
         Initialize the KeyFormatter with a specific key and format.

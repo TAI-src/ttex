@@ -1,8 +1,9 @@
-import os.path as osp
-from ttex.log.formatter import StrHeader, StrRecord
-from ttex.log.coco import COCOState
 import math
+import os.path as osp
 from uuid import uuid4
+
+from ttex.log.coco import COCOState
+from ttex.log.formatter import StrHeader, StrRecord
 
 
 class COCOLogRecord(StrRecord):

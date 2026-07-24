@@ -1,12 +1,12 @@
-from uuid import uuid4
 from dataclasses import dataclass
-from typing import List, Optional
+from uuid import uuid4
+
 from ttex.log.filter import LogEvent
 
 
 @dataclass(frozen=True)
 class COCOEval(LogEvent):
-    x: List[float]  # point in search space
+    x: list[float]  # point in search space
     mf: float  # measured fitness
 
 
@@ -22,7 +22,7 @@ class COCOStart(LogEvent):
     suite: str  # suite name
     exp_id: str = str(uuid4())  # experiment id, defaults to random uuid
     algo_info: str = ""  # additional algorithm info
-    fopt: Optional[float] = None  # optimal fitness value (if known)
+    fopt: float | None = None  # optimal fitness value (if known)
     dim: int = 0  # search space dimension
     inst: int = 0  # instance id
 

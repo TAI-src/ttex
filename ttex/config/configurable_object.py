@@ -1,7 +1,7 @@
-from abc import ABC
-from typing import TypeVar, Type, Union, Dict, Optional
 import logging
 import os
+from abc import ABC
+from typing import TypeVar
 
 from ttex.config.config import Config, ConfigFactory
 from ttex.log import LOGGER_NAME
@@ -35,10 +35,10 @@ class ConfigurableObjectFactory(ABC):  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def create(
-        configurable_object_class: Type[T],
-        config: Union[Dict, Config, str],
+        configurable_object_class: type[T],
+        config: dict | Config | str,
         *args,
-        context: Optional[Dict] = None,
+        context: dict | None = None,
         **kwargs,
     ) -> T:
         """Create configurable object with the given config

@@ -7,9 +7,7 @@ class KeyFormatter(logging.Formatter):
     This is useful for logging records that contain different types of data.
     """
 
-    def __init__(
-        self, key: str, fmt: str = "%(message)s", datefmt: str | None = None
-    ):
+    def __init__(self, key: str, fmt: str = "%(message)s", datefmt: str | None = None):
         """
         Initialize the KeyFormatter with a specific key and format.
 

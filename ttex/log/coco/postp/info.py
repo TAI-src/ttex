@@ -42,4 +42,4 @@ class SuiteInfo:
         all_dims = [dim for info in self.function_infos for dim in info.dims]
         # replace 0 with 1 to avoid having 0 dimensions in postp
         all_dims = [1 if dim == 0 else dim for dim in all_dims]
-        self.dimensions = sorted(list(set(all_dims)))
+        self.dimensions = sorted(set(all_dims))

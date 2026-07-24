@@ -222,7 +222,7 @@ class ConfigFactory(ABC):
         elif isinstance(value, dict):
             if len(value.keys()) == 1:
                 # 1-key dicts might be configs, try converting
-                key_class = list(value.keys())[0]
+                key_class = next(iter(value.keys()))
                 try:
                     v_attr = ConfigFactory._try_extract_attr(key_class, context)
                     if issubclass(v_attr, Config):
@@ -280,7 +280,7 @@ class ConfigFactory(ABC):
         if isinstance(config, dict):
             # If we have a dict, we have a potential mismatch of values
             # check that all passed values are in the signature
-            assert all([k in values for k, _ in config.items()])
+            assert all(k in values for k, _ in config.items())
 
         for k, v in values.items():
             values[k] = ConfigFactory._extract_value(v, context=context)
@@ -315,7 +315,7 @@ class ConfigFactory(ABC):
         # Check the format is as expected
         # dictionary with 1 key which is config class name
         assert len(dict_config.keys()) == 1
-        class_key = list(dict_config.keys())[0]
+        class_key = next(iter(dict_config.keys()))
         try:
             config_class = ConfigFactory._extract_attr(class_key, context)
         except ValueError as e:

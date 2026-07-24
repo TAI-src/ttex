@@ -33,10 +33,12 @@ class DummyConfig(Config):
         self,
         a: int,
         b: Config | str,
-        c: list[str] = [""],
+        c: list[str] | None = None,
         d: tuple[str, int] = ("", 3),
         e: DummyEnum = DummyEnum.A,
     ):
+        if c is None:
+            c = [""]
         self.a = a
         self.b = b
         self.c = c

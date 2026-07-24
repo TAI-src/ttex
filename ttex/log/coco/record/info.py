@@ -97,10 +97,7 @@ class COCOInfoRecord(StrRecord):
 
     def emit(self) -> bool:  # type: ignore[override]
         # Only emit if there has been at least one function evaluation
-        if self.f_evals > 0:
-            return True
-        else:
-            return False
+        return self.f_evals > 0
 
     def __str__(self) -> str:
         """

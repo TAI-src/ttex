@@ -18,7 +18,7 @@ def test_set_genericsettings():
     from cocopp import genericsettings
 
     original_settings = genericsettings.single_runlength_factors.copy()
-    testbed_settings, suite_info = create_testbedsettings()
+    _testbed_settings, suite_info = create_testbedsettings()
     adapted_budget_factors = TestbedSettings._get_pprldistr_runlength_factors(
         min(suite_info.dimensions)
     )

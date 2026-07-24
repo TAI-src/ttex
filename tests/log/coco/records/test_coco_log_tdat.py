@@ -33,7 +33,9 @@ def test_trigger_nth():
         assert not COCOtdatRecord.trigger_nth(20, ntval)
 
 
-def correct_base_triggers(base_evaluation_triggers=[1, 2, 5], dim=3):
+def correct_base_triggers(base_evaluation_triggers=None, dim=3):
+    if base_evaluation_triggers is None:
+        base_evaluation_triggers = [1, 2, 5]
     trigger_vals = []
     for exp in range(6):
         for base in base_evaluation_triggers:
@@ -84,7 +86,7 @@ def test_coco_tdat(coco_start_params):
         base_evaluation_triggers=[1, 2, 5], dim=coco_start_params["dim"]
     )
     correct_n_trigg = correct_n_triggers(number_of_triggers=20)
-    correct_triggers = sorted(list(set(correct_base_trigg + correct_n_trigg)))
+    correct_triggers = sorted(set(correct_base_trigg + correct_n_trigg))
 
     record.f_evals = 0
     assert not record.emit()

@@ -1,4 +1,4 @@
-from ttex.log.coco import COCOEval, COCOEnd, COCOStart
+from ttex.log.event.coco_event import COCOEval, COCOEnd, COCOStart
 from ttex.log.filter import LogEvent
 import pytest
 from dataclasses import FrozenInstanceError

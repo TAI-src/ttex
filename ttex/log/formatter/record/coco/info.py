@@ -1,6 +1,6 @@
 from ttex.log.formatter import StrHeader, StrRecord
 import os.path as osp
-from ttex.log.coco import COCOState
+from ttex.log.state.coco_state import COCOState
 from uuid import uuid4
 
 

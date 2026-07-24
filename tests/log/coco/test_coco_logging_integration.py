@@ -1,19 +1,21 @@
 # integration test for coco logging
 import os.path as osp
-import cocopp
-from ttex.log.coco import (
-    COCOStart,
-    COCOEval,
-    COCOEnd,
-)
-import numpy as np
-from cocopp.pproc import DictAlg
 import shutil
+
+import cocopp
+import numpy as np
 import pytest
-from ttex.log.utils.coco_logging_setup import teardown_coco_logger, setup_coco_logger
-from tests.log.coco.postp.test_testbed import create_testbedsettings
-from ttex.log.coco.postp.testbed import TestbedFactory
+from cocopp.pproc import DictAlg
+from ttex.log.coco import (
+    COCOEnd,
+    COCOEval,
+    COCOStart,
+)
 from ttex.log.coco.postp.info import SuiteInfo
+from ttex.log.coco.postp.testbed import TestbedFactory
+from ttex.log.utils.coco_logging_setup import setup_coco_logger, teardown_coco_logger
+
+from tests.log.coco.postp.test_testbed import create_testbedsettings
 
 
 def get_dummy_start_params(

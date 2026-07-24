@@ -1,13 +1,14 @@
 import logging
-from ttex.log.handler import WandbHandler
 import os
+import os.path as osp
 import shutil
 from importlib.metadata import version
-from typing import Dict, Optional
-from wandb.sdk import launch
-import wandb
+
 import pytest
-import os.path as osp
+from ttex.log.handler import WandbHandler
+from wandb.sdk import launch
+
+import wandb
 
 
 @pytest.fixture(autouse=True)
@@ -95,7 +96,7 @@ def test_log_snapshot():
 
 
 @pytest.mark.parametrize("snapshot", [True, False])
-def test_wandb_handler_init_close(snapshot, config: Optional[Dict] = None):
+def test_wandb_handler_init_close(snapshot, config: dict | None = None):
     # Update config
     ttex_version = version("tai_ttex")
     config_override = {"repo": "ttex", "version": ttex_version}

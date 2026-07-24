@@ -5,7 +5,7 @@ import os.path as osp
 import wandb
 from wandb.sdk.wandb_run import AlertLevel, Run
 
-from ttex.log import LOGGER_NAME
+from ttex.log.utils.logging_setup import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 

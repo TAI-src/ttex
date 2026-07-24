@@ -1,6 +1,8 @@
-from ..handler.test_manual_rotating_file_handler import DummyHeader
 from logging import makeLogRecord
+
 from ttex.log.filter import KeyFilter
+
+from ..handler.test_manual_rotating_file_handler import DummyHeader
 
 
 def test_filter_not_key():

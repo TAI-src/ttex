@@ -10,7 +10,7 @@ from typing import Any, Protocol, TypeVar
 
 import numpy as np
 
-from ttex.log import LOGGER_NAME
+from ttex.log.utils.logging_setup import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 

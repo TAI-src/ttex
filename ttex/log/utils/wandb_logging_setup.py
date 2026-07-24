@@ -2,8 +2,8 @@ import logging
 
 import wandb
 
-from ttex.log import LOGGER_NAME
 from ttex.log.handler import WandbHandler
+from ttex.log.utils.logging_setup import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 

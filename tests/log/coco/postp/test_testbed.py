@@ -1,9 +1,11 @@
-from ttex.log.coco.postp.testbed import TestbedSettings, TestbedFactory
-import numpy as np
-from cocopp.testbedsettings import Testbed, get_testbed_from_suite
 import importlib
-from tests.log.coco.postp.test_info import create_suite_info
+
+import numpy as np
 import pytest
+from cocopp.testbedsettings import Testbed, get_testbed_from_suite
+from ttex.log.coco.postp.testbed import TestbedFactory, TestbedSettings
+
+from tests.log.coco.postp.test_info import create_suite_info
 
 
 def create_testbedsettings():
@@ -13,7 +15,7 @@ def create_testbedsettings():
 
 
 def test_set_genericsettings():
-    import cocopp.genericsettings as genericsettings
+    from cocopp import genericsettings
 
     original_settings = genericsettings.single_runlength_factors.copy()
     testbed_settings, suite_info = create_testbedsettings()

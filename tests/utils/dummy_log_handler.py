@@ -1,6 +1,7 @@
+import copy
 import logging
 import logging.config
-import copy
+
 from ttex.log import initiate_logger
 
 

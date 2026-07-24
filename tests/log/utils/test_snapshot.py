@@ -1,5 +1,6 @@
-from ttex.log import capture_snapshot
 import os
+
+from ttex.log import capture_snapshot
 
 
 def test_capture_snapshot():

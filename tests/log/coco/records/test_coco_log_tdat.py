@@ -1,9 +1,11 @@
-from ttex.log.coco.record import COCOtdatRecord, COCOtdatHeader
-from ..test_coco_events import get_coco_start_params, random_eval_params
-from ttex.log.coco import COCOState, COCOStart, COCOEval
-import pytest
 import math
 import os.path as osp
+
+import pytest
+from ttex.log.coco import COCOEval, COCOStart, COCOState
+from ttex.log.coco.record import COCOtdatHeader, COCOtdatRecord
+
+from ..test_coco_events import get_coco_start_params, random_eval_params
 
 
 def correct_n_triggers(number_of_triggers=20):
@@ -33,11 +35,11 @@ def test_trigger_nth():
 
 def correct_base_triggers(base_evaluation_triggers=[1, 2, 5], dim=3):
     trigger_vals = []
-    for exp in range(0, 6):
+    for exp in range(6):
         for base in base_evaluation_triggers:
             val = base * dim * (10**exp)
             trigger_vals.append(val)
-    trigger_vals = list(sorted(set(trigger_vals)))
+    trigger_vals = sorted(set(trigger_vals))
 
     return trigger_vals
 

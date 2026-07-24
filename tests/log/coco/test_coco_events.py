@@ -1,8 +1,9 @@
-from ttex.log.coco import COCOEval, COCOEnd, COCOStart
-from ttex.log.filter import LogEvent
-import pytest
-from dataclasses import FrozenInstanceError
 import random
+from dataclasses import FrozenInstanceError
+
+import pytest
+from ttex.log.coco import COCOEnd, COCOEval, COCOStart
+from ttex.log.filter import LogEvent
 
 
 def get_coco_start_params(fopt: bool = True):

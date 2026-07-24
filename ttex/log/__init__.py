@@ -3,7 +3,6 @@ from ttex.log.utils.coco_logging_setup import (
     teardown_coco_logger,
 )
 from ttex.log.utils.logging_setup import (
-    LOGGER_NAME,
     get_logging_config,
     initiate_logger,
 )

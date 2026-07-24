@@ -1,7 +1,9 @@
-from ttex.config import Config
-from .. import dummy_log_handler
-from typing import Union, List, Tuple, Any
 from enum import Enum
+from typing import Any, List, Tuple, Union
+
+from ttex.config import Config
+
+from .. import dummy_log_handler
 
 
 class DummyContext:
@@ -30,9 +32,9 @@ class DummyConfig(Config):
     def __init__(
         self,
         a: int,
-        b: Union[Config, str],
-        c: List[str] = [""],
-        d: Tuple[str, int] = ("", 3),
+        b: Config | str,
+        c: list[str] = [""],
+        d: tuple[str, int] = ("", 3),
         e: DummyEnum = DummyEnum.A,
     ):
         self.a = a

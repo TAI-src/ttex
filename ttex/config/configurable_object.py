@@ -4,7 +4,7 @@ from abc import ABC
 from typing import TypeVar
 
 from ttex.config.config import Config, ConfigFactory
-from ttex.log import LOGGER_NAME
+from ttex.log.utils.logging_setup import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 

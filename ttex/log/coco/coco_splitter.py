@@ -1,4 +1,3 @@
-
 from ttex.log.coco import COCOEnd, COCOEval, COCOStart, COCOState
 from ttex.log.coco.record import (
     COCOdatHeader,

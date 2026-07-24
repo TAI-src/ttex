@@ -1,8 +1,10 @@
-from ttex.log.coco.record import COCOInfoHeader, COCOInfoRecord
-from ..test_coco_events import get_coco_start_params, end_params, random_eval_params
-from ttex.log.coco import COCOState, COCOStart, COCOEval, COCOEnd
 import os.path as osp
+
 import pytest
+from ttex.log.coco import COCOEnd, COCOEval, COCOStart, COCOState
+from ttex.log.coco.record import COCOInfoHeader, COCOInfoRecord
+
+from ..test_coco_events import end_params, get_coco_start_params, random_eval_params
 
 
 @pytest.mark.parametrize(

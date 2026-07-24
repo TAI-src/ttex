@@ -1,11 +1,13 @@
-from ttex.config import Config, ConfigFactory
-from . import DummyConfig, dict_config, DummyEnum, DummyContext
-import pytest
-from logging import Handler
-import os
-import json
 import copy
+import json
+import os
+from logging import Handler
+
 import numpy as np
+import pytest
+from ttex.config import Config, ConfigFactory
+
+from . import DummyConfig, DummyContext, DummyEnum, dict_config
 
 
 def test_get_val():

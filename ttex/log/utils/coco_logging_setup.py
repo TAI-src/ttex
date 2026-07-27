@@ -35,7 +35,7 @@ def setup_coco_logger(
             "target_precision": target_precision,
         }
         coco_filter = EventKeysplitFilter(
-            key_splitter_cls="ttex.log.coco.coco_splitter.COCOKeySplitter",
+            key_splitter_cls="ttex.log.filter.splitter.coco_splitter.COCOKeySplitter",
             key_splitter_args=splitter_args,
         )
         logger.addFilter(coco_filter)

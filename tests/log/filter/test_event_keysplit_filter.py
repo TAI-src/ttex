@@ -8,7 +8,7 @@ from ttex.log.filter.event_keysplit_filter import (
     LogEvent,
     LoggingState,
 )
-from ttex.log.formatter.str_record import StrRecord
+from ttex.log.formatter.record.str_record import StrRecord
 
 from ..handler.test_manual_rotating_file_handler import DummyRecord
 

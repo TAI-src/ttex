@@ -3,7 +3,7 @@ import os.path as osp
 from uuid import uuid4
 
 from ttex.log.filter.state.coco_state import COCOState
-from ttex.log.formatter.str_record import StrHeader, StrRecord
+from ttex.log.formatter.record.str_record import StrHeader, StrRecord
 
 
 class COCOLogRecord(StrRecord):

@@ -3,7 +3,7 @@ import numpy as np
 from cocopp import genericsettings
 from cocopp.testbedsettings import Testbed, suite_to_testbed
 
-from ttex.log.cocopp.info import SuiteInfo
+from ttex.log.utils.cocopp.info import SuiteInfo
 
 
 class TestbedSettings:

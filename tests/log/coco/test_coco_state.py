@@ -2,8 +2,8 @@ import math
 import os.path as osp
 
 import pytest
-from ttex.log.coco.coco_events import COCOEnd, COCOEval, COCOStart
-from ttex.log.coco.coco_splitter import COCOState
+from ttex.log.filter.event.coco_events import COCOEnd, COCOEval, COCOStart
+from ttex.log.filter.state.coco_state import COCOState
 
 from .test_coco_events import end_params, get_coco_start_params, random_eval_params
 

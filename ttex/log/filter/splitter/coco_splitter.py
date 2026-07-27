@@ -1,10 +1,10 @@
-from ttex.log.event.coco_event import COCOStart, COCOEval, COCOEnd
+from ttex.log.filter.event.coco_events import COCOEnd, COCOEval, COCOStart
+from ttex.log.filter.event_keysplit_filter import KeySplitter, LogEvent, LoggingState
+from ttex.log.filter.state.coco_state import COCOState
 from ttex.log.formatter.record.coco.info import COCOInfoHeader, COCOInfoRecord
 from ttex.log.formatter.record.coco.log_dat import COCOdatHeader, COCOdatRecord
 from ttex.log.formatter.record.coco.log_tdat import COCOtdatHeader, COCOtdatRecord
-from ttex.log.state.coco_state import COCOState
-from ttex.log.filter.event_keysplit_filter import KeySplitter, LogEvent, LoggingState
-from ttex.log.formatter.str_record import StrRecord
+from ttex.log.formatter.record.str_record import StrRecord
 
 
 class COCOKeySplitter(KeySplitter):

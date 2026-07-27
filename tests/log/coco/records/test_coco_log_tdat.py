@@ -2,9 +2,9 @@ import math
 import os.path as osp
 
 import pytest
-from ttex.log.coco.coco_events import COCOEval, COCOStart
-from ttex.log.coco.coco_state import COCOState
-from ttex.log.coco.record.log_tdat import COCOtdatHeader, COCOtdatRecord
+from ttex.log.filter.event.coco_events import COCOEval, COCOStart
+from ttex.log.filter.state.coco_state import COCOState
+from ttex.log.formatter.record.coco.log_tdat import COCOtdatHeader, COCOtdatRecord
 
 from ..test_coco_events import get_coco_start_params, random_eval_params
 

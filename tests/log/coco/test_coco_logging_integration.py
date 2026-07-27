@@ -6,13 +6,13 @@ import cocopp
 import numpy as np
 import pytest
 from cocopp.pproc import DictAlg
-from ttex.log.coco.coco_events import (
+from ttex.log.filter.event.coco_events import (
     COCOEnd,
     COCOEval,
     COCOStart,
 )
-from ttex.log.coco.postp.info import SuiteInfo
-from ttex.log.coco.postp.testbed import TestbedFactory
+from ttex.log.utils.cocopp.info import SuiteInfo
+from ttex.log.utils.cocopp.testbed import TestbedFactory
 from ttex.log.utils.coco_logging_setup import setup_coco_logger, teardown_coco_logger
 
 from tests.log.coco.postp.test_testbed import create_testbedsettings

@@ -1,8 +1,8 @@
 import shutil
 
 import pytest
-from ttex.log.coco.postp.info import FunctionInfo, SuiteInfo
-from ttex.log.coco.run_cocopp import run_cocopp
+from ttex.log.utils.cocopp.info import FunctionInfo, SuiteInfo
+from ttex.log.utils.cocopp.run_cocopp import run_cocopp
 
 
 def test_run_cocopp():

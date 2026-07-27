@@ -1,6 +1,7 @@
 import pytest
-from ttex.log.coco.coco_events import COCOEnd, COCOEval, COCOStart
-from ttex.log.coco.coco_splitter import COCOKeySplitter, COCOState
+from ttex.log.filter.event.coco_events import COCOEnd, COCOEval, COCOStart
+from ttex.log.filter.splitter.coco_splitter import COCOKeySplitter
+from ttex.log.filter.state.coco_state import COCOState
 
 from .test_coco_events import random_eval_params
 

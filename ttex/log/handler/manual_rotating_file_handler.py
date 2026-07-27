@@ -31,7 +31,7 @@ class ManualRotatingFileHandler(BaseRotatingHandler):
         assert hasattr(record, self.key), f"Record must have the key '{self.key}'"
         record_obj = getattr(record, self.key)
         if hasattr(record_obj, "filepath"):
-            new_filepath = getattr(record_obj, "filepath")
+            new_filepath = record_obj.filepath
             if new_filepath != self.current_filepath:
                 # Rollover condition met
                 if self.current_filepath is None:

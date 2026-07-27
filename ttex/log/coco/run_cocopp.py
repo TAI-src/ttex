@@ -1,16 +1,17 @@
-import cocopp
-from typing import List, Optional
 import logging
 import os
 from contextlib import redirect_stdout
+
+import cocopp
+
 from ttex.log.coco.postp.info import SuiteInfo
 from ttex.log.coco.postp.testbed import TestbedFactory
 
 
 def run_cocopp(
-    result_paths: List[str],
+    result_paths: list[str],
     suite_info: SuiteInfo,
-    output_dir: Optional[str] = None,
+    output_dir: str | None = None,
     silent: bool = False,
 ):
     """Run COCO post-processing on given result paths."""
@@ -32,9 +33,8 @@ def run_cocopp(
     TestbedFactory.create_testbed_class(suite_info)
 
     if silent:
-        with open(os.devnull, "w") as fnull:
-            with redirect_stdout(fnull):
-                res = cocopp.main(args_str)
+        with open(os.devnull, "w") as fnull, redirect_stdout(fnull):
+            res = cocopp.main(args_str)
     else:
         res = cocopp.main(args_str)
 

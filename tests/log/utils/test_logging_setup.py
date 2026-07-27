@@ -1,5 +1,9 @@
-from ttex.log import LOGGER_NAME, get_logging_config, initiate_logger
 import pytest
+from ttex.log.utils.logging_setup import (
+    LOGGER_NAME,
+    get_logging_config,
+    initiate_logger,
+)
 
 
 def test_default_name():

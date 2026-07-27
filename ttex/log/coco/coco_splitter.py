@@ -1,22 +1,16 @@
-from ttex.log.coco import COCOEnd, COCOEval, COCOStart, COCOState
-from ttex.log.filter import KeySplitter, LogEvent
-from ttex.log.filter.event_keysplit_filter import LoggingState
-from ttex.log.formatter import StrRecord
-from ttex.log.coco.record import (
-    COCOInfoHeader,
-    COCOInfoRecord,
-    COCOtdatHeader,
-    COCOtdatRecord,
-    COCOdatHeader,
-    COCOdatRecord,
-)
-from typing import List, Dict, Optional
+from ttex.log.coco.coco_events import COCOEnd, COCOEval, COCOStart
+from ttex.log.coco.coco_state import COCOState
+from ttex.log.coco.record.info import COCOInfoHeader, COCOInfoRecord
+from ttex.log.coco.record.log_dat import COCOdatHeader, COCOdatRecord
+from ttex.log.coco.record.log_tdat import COCOtdatHeader, COCOtdatRecord
+from ttex.log.filter.event_keysplit_filter import KeySplitter, LogEvent, LoggingState
+from ttex.log.formatter.str_record import StrRecord
 
 
 class COCOKeySplitter(KeySplitter):
     def __init__(
         self,
-        base_evaluation_triggers: Optional[List[int]] = None,
+        base_evaluation_triggers: list[int] | None = None,
         number_evaluation_triggers: int = 20,
         improvement_steps: float = 1e-5,
         number_target_triggers: int = 20,
@@ -28,9 +22,9 @@ class COCOKeySplitter(KeySplitter):
         self.number_target_triggers = number_target_triggers
         self.target_precision = target_precision
 
-    def process(self, state: LoggingState, event: LogEvent) -> Dict[str, StrRecord]:
+    def process(self, state: LoggingState, event: LogEvent) -> dict[str, StrRecord]:
         assert isinstance(state, COCOState)
-        return_dict: Dict[str, StrRecord] = {}
+        return_dict: dict[str, StrRecord] = {}
 
         if isinstance(event, COCOStart):
             info_header = COCOInfoHeader(state)

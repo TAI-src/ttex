@@ -1,7 +1,9 @@
-from ttex.log.formatter import JsonFormatter
-from ...utils.dummy_log_handler import DummyLogHandler
-import logging
 import json
+import logging
+
+from ttex.log.formatter.json_formatter import JsonFormatter
+
+from ...utils.dummy_log_handler import DummyLogHandler
 
 
 def test_json_formatter():

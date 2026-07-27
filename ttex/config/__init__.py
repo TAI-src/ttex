@@ -1,5 +1,7 @@
-from ttex.config.config import Config, ConfigFactory
+from ttex.config.config import Config as Config
 from ttex.config.configurable_object import (
-    ConfigurableObject,
-    ConfigurableObjectFactory,
+    ConfigurableObject as ConfigurableObject,
+)
+from ttex.config.configurable_object import (
+    ConfigurableObjectFactory as ConfigurableObjectFactory,
 )

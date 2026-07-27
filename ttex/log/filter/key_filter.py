@@ -17,7 +17,9 @@ class KeyFilter(Filter):
         super().__init__(name)
 
     def filter(self, record):
-        """ """
+        """
+        Filter log records to allow only those that have the specified key and a unique UUID.
+        """
         if not hasattr(record, self.key):
             return False
 

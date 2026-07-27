@@ -1,16 +1,14 @@
 """Convenient setup for python logging module"""
 
+import copy
 import logging
 import logging.config
-import copy
-from typing import cast, Optional, Dict
+from typing import cast
 
 LOGGER_NAME = "DefaultLogger"
 
 
-def get_logging_config(
-    logger_name: str, disable_existing: Optional[bool] = True
-) -> Dict:
+def get_logging_config(logger_name: str, disable_existing: bool | None = True) -> dict:
     """
     Get a default logging configuration dictionary
 
@@ -61,9 +59,9 @@ def get_logging_config(
 
 def initiate_logger(
     log_level: int,
-    logger_name: Optional[str] = None,
-    disable_existing: Optional[bool] = True,
-    logging_config: Optional[Dict] = None,
+    logger_name: str | None = None,
+    disable_existing: bool | None = True,
+    logging_config: dict | None = None,
 ):
     """
     Convenience function to set the logging level of a given logger

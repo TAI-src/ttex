@@ -1,14 +1,16 @@
 """Config class and ConfigFactory to create one from different sources"""
 
-from abc import ABC
-from typing import TypeVar, Type, Union, Dict, Optional, Protocol, Any
-from inspect import signature, Parameter
 import importlib
 import json
 import logging
-import numpy as np
-from ttex.log import LOGGER_NAME
+from abc import ABC
 from collections.abc import Iterable
+from inspect import Parameter, signature
+from typing import Any, Protocol, TypeVar
+
+import numpy as np
+
+from ttex.log.utils.logging_setup import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 
@@ -33,24 +35,24 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
      as defined by that object's specific config
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Init a configuration
         Should be overriden by each Config object to specify
         exactly which values are required
         """
         # TODO could add something that auto-adds all the values to the dict
         # TODO consider if this should be a dictionary or a namedtuple or sth
-        self._to_dict: Optional[Dict] = None
-        self._ctx: Optional[ContextProtocol] = None
+        self._to_dict: dict | None = None
+        self._ctx: ContextProtocol | None = None
 
-    def get(self, key: str, default=None):
+    def get(self, key: str, default=None) -> Any:
         """Get a specific value from the config dict.
         This might need to be modified for nesting
         Ideally also shouldn't access the dict directly
         """
         return self.__dict__.get(key, default)
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """
         Convert the config to a dictionary
         """
@@ -60,13 +62,13 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
         else:
             raise NotImplementedError
 
-    def _setup(self, ctx: Optional[ContextProtocol] = None) -> bool:
+    def _setup(self, ctx: ContextProtocol | None = None) -> bool:
         """
         Setup the config (private version for override)
         """
         return True
 
-    def setup(self, ctx: Optional[ContextProtocol] = None) -> bool:
+    def setup(self, ctx: ContextProtocol | None = None) -> bool:
         """
         Setup the config and any sub-configs
         ctx: Optional[ContextProtocol]
@@ -80,13 +82,13 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
                 success = v.setup(ctx=ctx) and success
         return self._setup(ctx=ctx) and success
 
-    def _teardown(self, ctx: Optional[ContextProtocol] = None) -> bool:
+    def _teardown(self, ctx: ContextProtocol | None = None) -> bool:
         """
         Teardown the config (private version for override)
         """
         return True
 
-    def teardown(self, ctx: Optional[ContextProtocol] = None) -> bool:
+    def teardown(self, ctx: ContextProtocol | None = None) -> bool:
         """
         Teardown the config and any sub-configs
         ctx: Optional[ContextProtocol]
@@ -114,7 +116,7 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
                 v.set_context(ctx)
         self._ctx = ctx
 
-    def get_context(self) -> Optional[ContextProtocol]:
+    def get_context(self) -> ContextProtocol | None:
         """
         Get the context associated with this config instance.
 
@@ -132,8 +134,8 @@ class ConfigFactory(ABC):
 
     @staticmethod
     def _extract_attr(
-        full_name: str, context: Optional[Dict] = None, assume_enum: bool = False
-    ) -> Type:
+        full_name: str, context: dict | None = None, assume_enum: bool = False
+    ) -> type:
         """
         Extract attribute from a string
 
@@ -146,7 +148,7 @@ class ConfigFactory(ABC):
             c (Type): The extracted attribute
         """
         # Split the string, will throw value error if there is no .
-        module_name = None  # type: Optional[str]
+        module_name: str | None = None
         enum_val = None
         try:
             if assume_enum:
@@ -188,7 +190,7 @@ class ConfigFactory(ABC):
         return c
 
     @staticmethod
-    def _try_extract_attr(full_name: str, context: Optional[Dict] = None) -> Type:
+    def _try_extract_attr(full_name: str, context: dict | None = None) -> type:
         """Try to extract attribute from a string
 
         Args:
@@ -208,7 +210,7 @@ class ConfigFactory(ABC):
             )
 
     @staticmethod
-    def _extract_value(value: Any, context: Optional[Dict] = None) -> Any:
+    def _extract_value(value: Any, context: dict | None = None) -> Any:
         logger.debug(f"Extracting value {value}")
         if isinstance(value, str):
             try:
@@ -220,7 +222,7 @@ class ConfigFactory(ABC):
         elif isinstance(value, dict):
             if len(value.keys()) == 1:
                 # 1-key dicts might be configs, try converting
-                key_class = list(value.keys())[0]
+                key_class = next(iter(value.keys()))
                 try:
                     v_attr = ConfigFactory._try_extract_attr(key_class, context)
                     if issubclass(v_attr, Config):
@@ -246,9 +248,9 @@ class ConfigFactory(ABC):
 
     @staticmethod
     def extract(
-        config_class: Type[T],
-        config: Union[Dict, Config],
-        context: Optional[Dict] = None,
+        config_class: type[T],
+        config: dict | Config,
+        context: dict | None = None,
     ) -> T:
         """Extract Config of config_class from config
 
@@ -278,17 +280,17 @@ class ConfigFactory(ABC):
         if isinstance(config, dict):
             # If we have a dict, we have a potential mismatch of values
             # check that all passed values are in the signature
-            assert all([k in values for k, _ in config.items()])
+            assert all(k in values for k, _ in config.items())
 
         for k, v in values.items():
             values[k] = ConfigFactory._extract_value(v, context=context)
         return_config = config_class(**values)  # type: ignore[call-arg]
-        if isinstance(config, Dict):
+        if isinstance(config, dict):
             return_config._to_dict = config  # type: ignore[attr-defined]
         return return_config
 
     @staticmethod
-    def from_dict(dict_config: Dict, context: Optional[Dict] = None) -> Config:
+    def from_dict(dict_config: dict, context: dict | None = None) -> Config:
         """Create config from a dict
 
         Creates a config by reading the dict and extracting each sub-config.
@@ -313,18 +315,20 @@ class ConfigFactory(ABC):
         # Check the format is as expected
         # dictionary with 1 key which is config class name
         assert len(dict_config.keys()) == 1
-        class_key = list(dict_config.keys())[0]
+        class_key = next(iter(dict_config.keys()))
         try:
             config_class = ConfigFactory._extract_attr(class_key, context)
         except ValueError as e:
             raise ValueError(f"Unexpected config format {e}")
 
         # Now extract the config
-        config = ConfigFactory.extract(config_class, dict_config[class_key], context)
+        config: Config = ConfigFactory.extract(
+            config_class, dict_config[class_key], context
+        )
         return config
 
     @staticmethod
-    def from_file(path_to_json_file: str, context: Optional[Dict] = None) -> Config:
+    def from_file(path_to_json_file: str, context: dict | None = None) -> Config:
         """Create config from a json file
 
         Creates a config by reading the json file + extracting each sub-config.

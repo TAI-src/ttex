@@ -1,10 +1,10 @@
 import logging
-from ttex.log.handler import ManualRotatingFileHandler
 import os.path as osp
-import pytest
-from typing import Optional
 import shutil
 from uuid import uuid4
+
+import pytest
+from ttex.log.handler.manual_rotating_file_handler import ManualRotatingFileHandler
 
 
 @pytest.fixture(autouse=True, scope="module")
@@ -27,7 +27,7 @@ class DummyRecord:
 
 class DummyHeader(DummyRecord):
     def __init__(
-        self, val: float, filepath: Optional[str] = None, uuid: Optional[str] = None
+        self, val: float, filepath: str | None = None, uuid: str | None = None
     ):
         self.val = val
         if filepath is not None:

@@ -1,8 +1,11 @@
-from ttex.log.coco.record import COCOdatRecord, COCOdatHeader
-from ..test_coco_events import get_coco_start_params, random_eval_params
-from ttex.log.coco import COCOState, COCOStart, COCOEval
 import math
+
 import pytest
+from ttex.log.coco.coco_events import COCOEval, COCOStart
+from ttex.log.coco.coco_state import COCOState
+from ttex.log.coco.record.log_dat import COCOdatRecord
+
+from ..test_coco_events import get_coco_start_params, random_eval_params
 
 
 def test_ceil_to_target():

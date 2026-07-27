@@ -76,7 +76,9 @@ class TestbedSettings:
         first_func = min(info.func_id for info in suite_info.function_infos)
         last_func = max(info.func_id for info in suite_info.function_infos)
         fun_settings = {
-            "short_names": {info.func_id: info.name for info in suite_info.function_infos},
+            "short_names": {
+                info.func_id: info.name for info in suite_info.function_infos
+            },
             "first_function_number": first_func,
             "last_function_number": last_func,
             "functions_with_legend": (first_func, last_func),

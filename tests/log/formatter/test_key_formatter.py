@@ -1,6 +1,8 @@
-from ttex.log.formatter import KeyFormatter
-from ...utils.dummy_log_handler import DummyLogHandler
 import logging
+
+from ttex.log.formatter.key_formatter import KeyFormatter
+
+from ...utils.dummy_log_handler import DummyLogHandler
 
 
 def test_key_format():

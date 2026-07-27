@@ -1,11 +1,14 @@
-from ttex.config import Config, ConfigFactory
-from . import DummyConfig, dict_config, DummyEnum, DummyContext
-import pytest
-from logging import Handler
-import os
-import json
 import copy
+import json
+import os
+from logging import Handler
+
 import numpy as np
+import pytest
+from ttex.config import Config
+from ttex.config.config import ConfigFactory
+
+from . import DummyConfig, DummyContext, DummyEnum, dict_config
 
 
 def test_get_val():
@@ -93,7 +96,9 @@ def test_extract():
 
 
 def test_exctract_class():
-    ex_class = ConfigFactory._extract_attr("ttex.log.handler.WandbHandler")
+    ex_class = ConfigFactory._extract_attr(
+        "ttex.log.handler.wandb_handler.WandbHandler"
+    )
     assert issubclass(ex_class, Handler)
 
     with pytest.raises(ValueError) as e:

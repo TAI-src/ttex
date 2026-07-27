@@ -1,14 +1,17 @@
-from ttex.log.coco import COCOState, COCOStart, COCOEval, COCOEnd
-from .test_coco_events import get_coco_start_params, end_params, random_eval_params
-import pytest
-import os.path as osp
 import math
+import os.path as osp
+
+import pytest
+from ttex.log.coco.coco_events import COCOEnd, COCOEval, COCOStart
+from ttex.log.coco.coco_splitter import COCOState
+
+from .test_coco_events import end_params, get_coco_start_params, random_eval_params
 
 
 def test_coco_state_end():
     state = COCOState()
     assert state._needs_start is True, "State should require a start event"
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         state.update(
             "invalid_event"
         )  # Should raise an error for invalid event best_dist_prev

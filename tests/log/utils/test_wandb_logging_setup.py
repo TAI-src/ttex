@@ -1,17 +1,19 @@
-from ttex.log.utils.wandb_logging_setup import (
-    setup_wandb_logger,
-    _get_wandb_logger,
-    teardown_wandb_logger,
-    _get_wandb_handler,
-    log_wandb_init,
-    log_wandb_artifact,
-    get_wandb_logger,
-)
-from ttex.log.handler import WandbHandler
 import logging
-import pytest
 import os
 import shutil
+
+import pytest
+from ttex.log.handler.wandb_handler import WandbHandler
+from ttex.log.utils.wandb_logging_setup import (
+    _get_wandb_handler,
+    _get_wandb_logger,
+    get_wandb_logger,
+    log_wandb_artifact,
+    log_wandb_init,
+    setup_wandb_logger,
+    teardown_wandb_logger,
+)
+
 import wandb
 
 

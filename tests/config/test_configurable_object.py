@@ -1,10 +1,12 @@
-from ttex.config import ConfigurableObject, ConfigurableObjectFactory, ConfigFactory
-from . import DummyConfig, EmptyConfig, dict_config, DummyContext
-from .. import dummy_log_handler
-import pytest
+import copy
 import json
 import os
-import copy
+
+import pytest
+from ttex.config import ConfigurableObject, ConfigurableObjectFactory
+
+from .. import dummy_log_handler
+from . import DummyConfig, DummyContext, EmptyConfig, dict_config
 
 
 class DummyConfigurableObject(ConfigurableObject):
@@ -69,8 +71,8 @@ def test_create(mode):
     # apply config
     for arg in ["a", "b", "c", "d"]:
         assert hasattr(conf_obj, arg)
-    assert getattr(conf_obj, "args_test") == "test"
-    assert getattr(conf_obj, "kwargs_test") == "kwargs_test"
+    assert conf_obj.args_test == "test"
+    assert conf_obj.kwargs_test == "kwargs_test"
 
     if mode == "json":
         os.remove(config)

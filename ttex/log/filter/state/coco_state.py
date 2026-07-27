@@ -1,29 +1,29 @@
-from ttex.log.filter import LoggingState, LogEvent
-from ttex.log.event.coco_events import COCOEval, COCOStart, COCOEnd
-import numpy as np
 import os.path as osp
-from typing import Optional
+
+import numpy as np
+
+from ttex.log.filter.event.coco_events import COCOEnd, COCOEval, COCOStart
+from ttex.log.filter.event_keysplit_filter import LogEvent, LoggingState
 
 
 class COCOState(LoggingState):
-    def __init__(self):
+    def __init__(self) -> None:
         self._needs_start = True
         self.last_tdat_emit = 0
-        self.best_target: Optional[float] = (
-            None  # Best target reached (from .dat logging)
-        )
-        self.dat_filepath: Optional[str] = (
+
+        self.best_target: float | None = None  # Best target reached (from .dat logging)
+        self.dat_filepath: str | None = (
             None  # Path to the .dat file (relative to info file)
         )
-        self.coco_start: Optional[COCOStart] = None  # The last COCOStart event
+        self.coco_start: COCOStart | None = None  # The last COCOStart event
         self.f_evals = 0  # Number of function evaluations
         self.g_evals = 0  # Number of constraint evaluations (not currently supported)
         self.best_mf = np.inf  # Best observed function value
-        self.fopt: Optional[float] = None  # Optimal function value (if known)
-        self.inst: Optional[int] = None  # Problem instance number
-        self.last_eval: Optional[COCOEval] = None  # The last COCOEval event
-        self.best_diff_opt: Optional[float] = None  # Best difference to optimal value
-        self.last_imp: Optional[float] = (
+        self.fopt: float | None = None  # Optimal function value (if known)
+        self.inst: int | None = None  # Problem instance number
+        self.last_eval: COCOEval | None = None  # The last COCOEval event
+        self.best_diff_opt: float | None = None  # Best difference to optimal value
+        self.last_imp: float | None = (
             None  # Improvement of best_mf since last evaluation
         )
         super().__init__()
@@ -36,7 +36,7 @@ class COCOState(LoggingState):
         elif isinstance(event, COCOEnd):
             self._update_end(event)
         else:
-            raise ValueError(
+            raise TypeError(
                 "COCOState can only process COCOStart, COCOEval, and COCOEnd events"
             )
 
@@ -73,5 +73,5 @@ class COCOState(LoggingState):
     def _update_end(self, coco_end: COCOEnd) -> None:
         self._needs_start = True
 
-    def set_dat_filepath(self, dat_filepath: str, info_filepath: str):
+    def set_dat_filepath(self, dat_filepath: str, info_filepath: str) -> None:
         self.dat_filepath = osp.relpath(dat_filepath, start=osp.dirname(info_filepath))

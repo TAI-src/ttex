@@ -1,8 +1,9 @@
-import numpy as np
-from ttex.log.coco.postp.info import SuiteInfo
-from cocopp.testbedsettings import Testbed, suite_to_testbed
 import cocopp.testbedsettings as tbs
-import cocopp.genericsettings as genericsettings
+import numpy as np
+from cocopp import genericsettings
+from cocopp.testbedsettings import Testbed, suite_to_testbed
+
+from ttex.log.cocopp.info import SuiteInfo
 
 
 class TestbedSettings:
@@ -52,34 +53,36 @@ class TestbedSettings:
     def _create_settings_dict(
         suite_info: SuiteInfo, max_ppfigdim_targets: int = 5
     ) -> dict:
-        suite_settings = dict(
-            name=suite_info.name,
-            instances_are_uniform=suite_info.instances_are_uniform,
-            reference_algorithm_filename=suite_info.reference_algorithm_filename,
-            reference_algorithm_displayname=suite_info.reference_algorithm_displayname,
-            instancesOfInterest=suite_info.instancesOfInterest,
-            data_format=suite_info.data_format,
-            scenario=suite_info.scenario,
-            number_of_points=suite_info.number_of_points,
-        )
-        dim_settings = dict(
-            plots_on_main_html_page=[
+        suite_settings = {
+            "name": suite_info.name,
+            "instances_are_uniform": suite_info.instances_are_uniform,
+            "reference_algorithm_filename": suite_info.reference_algorithm_filename,
+            "reference_algorithm_displayname": suite_info.reference_algorithm_displayname,
+            "instancesOfInterest": suite_info.instancesOfInterest,
+            "data_format": suite_info.data_format,
+            "scenario": suite_info.scenario,
+            "number_of_points": suite_info.number_of_points,
+        }
+        dim_settings = {
+            "plots_on_main_html_page": [
                 f"pprldmany_{dim}D_noiselessall.svg" for dim in suite_info.dimensions
             ],
-            goto_dimension=min(
+            "goto_dimension": min(
                 suite_info.dimensions
             ),  # auto-focus on smallest dimension in html
-            rldDimsOfInterest=suite_info.dimensions,
-            dimensions_to_display=suite_info.dimensions,
-        )
+            "rldDimsOfInterest": suite_info.dimensions,
+            "dimensions_to_display": suite_info.dimensions,
+        }
         first_func = min(info.func_id for info in suite_info.function_infos)
         last_func = max(info.func_id for info in suite_info.function_infos)
-        fun_settings = dict(
-            short_names={info.func_id: info.name for info in suite_info.function_infos},
-            first_function_number=first_func,
-            last_function_number=last_func,
-            functions_with_legend=(first_func, last_func),
-        )
+        fun_settings = {
+            "short_names": {
+                info.func_id: info.name for info in suite_info.function_infos
+            },
+            "first_function_number": first_func,
+            "last_function_number": last_func,
+            "functions_with_legend": (first_func, last_func),
+        }
         few_targets = [
             10**exp
             for exp in range(suite_info.max_target, suite_info.min_target - 1, -1)
@@ -90,20 +93,20 @@ class TestbedSettings:
                 suite_info.max_target, suite_info.min_target - 0.2, -0.2
             )
         ]
-        target_settings = dict(
-            pptable_ftarget=(
+        target_settings = {
+            "pptable_ftarget": (
                 10**suite_info.min_target
             ),  # value for determining the success ratio in all tables
-            ppfvdistr_min_target=10**suite_info.min_target,
-            pptable_targetsOfInterest=tuple(few_targets),
-            ppfigdim_target_values=tuple(
+            "ppfvdistr_min_target": 10**suite_info.min_target,
+            "pptable_targetsOfInterest": tuple(few_targets),
+            "ppfigdim_target_values": tuple(
                 TestbedSettings.spread_select(few_targets, max_ppfigdim_targets)
             ),
-            pprldistr_target_values=tuple(few_targets),
-            pprldmany_target_values=tuple(many_targets),
-            hardesttargetlatex=f"$10^{{{suite_info.min_target}}}$",
-            pprldmany_target_range_latex=f"$10^{{[{suite_info.min_target}..{suite_info.max_target}]}}$",
-        )
+            "pprldistr_target_values": tuple(few_targets),
+            "pprldmany_target_values": tuple(many_targets),
+            "hardesttargetlatex": f"$10^{{{suite_info.min_target}}}$",
+            "pprldmany_target_range_latex": f"$10^{{[{suite_info.min_target}..{suite_info.max_target}]}}$",
+        }
         settings = {**suite_settings, **dim_settings, **fun_settings, **target_settings}
         return settings
 

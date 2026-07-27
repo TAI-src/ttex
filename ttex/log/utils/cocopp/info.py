@@ -1,12 +1,11 @@
 from dataclasses import dataclass
-from typing import List
+
 from cocopp.dataformatsettings import BBOBNewDataFormat
-from typing import Optional
 
 
 class FunctionInfo:
     def __init__(
-        self, func_id: int, name: str, long_name: str, dims: Optional[List[int]] = None
+        self, func_id: int, name: str, long_name: str, dims: list[int] | None = None
     ):
         self.func_id = func_id
         self.name = name
@@ -23,7 +22,7 @@ class FunctionInfo:
 @dataclass
 class SuiteInfo:
     name: str
-    function_infos: List[FunctionInfo]
+    function_infos: list[FunctionInfo]
     number_of_points = 5  # number of points in log-scale plots (per decade)
     max_target = 2  # exponent of maximum target value for postprocessing
     min_target = -8  # exponent of minimum target value for postprocessing
@@ -43,4 +42,4 @@ class SuiteInfo:
         all_dims = [dim for info in self.function_infos for dim in info.dims]
         # replace 0 with 1 to avoid having 0 dimensions in postp
         all_dims = [1 if dim == 0 else dim for dim in all_dims]
-        self.dimensions = sorted(list(set(all_dims)))
+        self.dimensions = sorted(set(all_dims))

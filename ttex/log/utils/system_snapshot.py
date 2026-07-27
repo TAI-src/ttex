@@ -1,13 +1,12 @@
-import os
-import sys
 import json
+import os
 import platform
-import subprocess
+import shlex
 import shutil
+import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional, Dict, List
-import shlex
 
 
 def run_cmd(cmd: str, parse: str = "raw", split_char=":", filter_fn=None) -> dict:
@@ -148,9 +147,9 @@ def get_installed_apt_packages():
 
 
 def capture_snapshot(
-    output_path: Optional[str] = None,
-    extra_info: Optional[Dict] = None,
-    extra_sensitive_keys: Optional[List[str]] = None,
+    output_path: str | None = None,
+    extra_info: dict | None = None,
+    extra_sensitive_keys: list[str] | None = None,
 ):
     sensitive_keys = [
         "DOCKER_USER_NAME",

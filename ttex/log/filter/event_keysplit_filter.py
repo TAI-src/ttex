@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from logging import Filter
 
-from ttex.log.formatter.str_record import StrRecord
+from ttex.log.formatter.record.str_record import StrRecord
 
 
 class LogEvent(ABC):

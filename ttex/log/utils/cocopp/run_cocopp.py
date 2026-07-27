@@ -4,8 +4,8 @@ from contextlib import redirect_stdout
 
 import cocopp
 
-from ttex.log.coco.postp.info import SuiteInfo
-from ttex.log.coco.postp.testbed import TestbedFactory
+from ttex.log.utils.cocopp.info import SuiteInfo
+from ttex.log.utils.cocopp.testbed import TestbedFactory
 
 
 def run_cocopp(

@@ -35,7 +35,7 @@ def get_coco_logging_config(
             },
             "coco_filter": {
                 "()": "ttex.log.filter.event_keysplit_filter.EventKeysplitFilter",
-                "key_splitter_cls": "ttex.log.coco.coco_splitter.COCOKeySplitter",
+                "key_splitter_cls": "ttex.log.filter.coco_splitter.COCOKeySplitter",
                 "key_splitter_args": {"trigger_nth": trigger_nth},
             },
         },

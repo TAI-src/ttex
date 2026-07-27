@@ -1,4 +1,4 @@
-from ttex.log.coco.postp.info import FunctionInfo, SuiteInfo
+from ttex.log.utils.cocopp.info import FunctionInfo, SuiteInfo
 
 
 def test_f_info():

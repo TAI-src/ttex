@@ -2,7 +2,7 @@ import os.path as osp
 
 import numpy as np
 
-from ttex.log.coco.coco_events import COCOEnd, COCOEval, COCOStart
+from ttex.log.filter.event.coco_events import COCOEnd, COCOEval, COCOStart
 from ttex.log.filter.event_keysplit_filter import LogEvent, LoggingState
 
 
@@ -10,6 +10,7 @@ class COCOState(LoggingState):
     def __init__(self) -> None:
         self._needs_start = True
         self.last_tdat_emit = 0
+
         self.best_target: float | None = None  # Best target reached (from .dat logging)
         self.dat_filepath: str | None = (
             None  # Path to the .dat file (relative to info file)

@@ -1,7 +1,7 @@
 import math
 
-from ttex.log.coco.coco_state import COCOState
-from ttex.log.coco.record.log import COCOLogHeader, COCOLogRecord
+from ttex.log.filter.state.coco_state import COCOState
+from ttex.log.formatter.record.coco.log import COCOLogHeader, COCOLogRecord
 
 
 class COCOtdatRecord(COCOLogRecord):

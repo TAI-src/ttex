@@ -3,7 +3,7 @@ import importlib
 import numpy as np
 import pytest
 from cocopp.testbedsettings import Testbed, get_testbed_from_suite
-from ttex.log.coco.postp.testbed import TestbedFactory, TestbedSettings
+from ttex.log.utils.cocopp.testbed import TestbedFactory, TestbedSettings
 
 from tests.log.coco.postp.test_info import create_suite_info
 

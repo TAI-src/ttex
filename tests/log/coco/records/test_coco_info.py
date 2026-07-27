@@ -1,8 +1,9 @@
 import os.path as osp
 
 import pytest
-from ttex.log.coco import COCOEnd, COCOEval, COCOStart, COCOState
-from ttex.log.coco.record import COCOInfoHeader, COCOInfoRecord
+from ttex.log.coco.coco_events import COCOEnd, COCOEval, COCOStart
+from ttex.log.coco.coco_splitter import COCOState
+from ttex.log.coco.record.info import COCOInfoHeader, COCOInfoRecord
 
 from ..test_coco_events import end_params, get_coco_start_params, random_eval_params
 

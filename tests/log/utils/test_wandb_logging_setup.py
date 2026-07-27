@@ -3,7 +3,7 @@ import os
 import shutil
 
 import pytest
-from ttex.log.handler import WandbHandler
+from ttex.log.handler.wandb_handler import WandbHandler
 from ttex.log.utils.wandb_logging_setup import (
     _get_wandb_handler,
     _get_wandb_logger,

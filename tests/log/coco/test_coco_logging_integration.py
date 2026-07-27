@@ -6,7 +6,7 @@ import cocopp
 import numpy as np
 import pytest
 from cocopp.pproc import DictAlg
-from ttex.log.coco import (
+from ttex.log.coco.coco_events import (
     COCOEnd,
     COCOEval,
     COCOStart,

@@ -1,7 +1,7 @@
 import math
 
-from ttex.log.coco import COCOState
-from ttex.log.coco.record import COCOLogHeader, COCOLogRecord
+from ttex.log.coco.coco_state import COCOState
+from ttex.log.coco.record.log import COCOLogHeader, COCOLogRecord
 
 
 class COCOtdatRecord(COCOLogRecord):
@@ -69,11 +69,8 @@ class COCOtdatRecord(COCOLogRecord):
             base_evaluation_triggers = [1, 2, 5]
         if last_tdat_emit is not None:
             # This is the last evaluation before the end of the run
-            if self.f_evals > last_tdat_emit:
-                # The last evaluation has not already been emitted
-                return True
-            else:  # evaluation already emitted
-                return False
+            # The last evaluation has not already been emitted
+            return self.f_evals > last_tdat_emit
         if self.f_evals == 1:
             # Always emit the first evaluation (unless it is also the last)
             return True

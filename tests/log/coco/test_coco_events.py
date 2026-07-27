@@ -3,7 +3,7 @@ from dataclasses import FrozenInstanceError
 
 import pytest
 from ttex.log.coco import COCOEnd, COCOEval, COCOStart
-from ttex.log.filter import LogEvent
+from ttex.log.filter.event_keysplit_filter import LogEvent
 
 
 def get_coco_start_params(fopt: bool = True):

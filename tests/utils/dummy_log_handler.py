@@ -2,7 +2,7 @@ import copy
 import logging
 import logging.config
 
-from ttex.log import initiate_logger
+from ttex.log.utils.logging_setup import initiate_logger
 
 
 # This is a test handler so it is easy to capture what was logged

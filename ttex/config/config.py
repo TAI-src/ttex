@@ -35,7 +35,7 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
      as defined by that object's specific config
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Init a configuration
         Should be overriden by each Config object to specify
         exactly which values are required
@@ -45,7 +45,7 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
         self._to_dict: dict | None = None
         self._ctx: ContextProtocol | None = None
 
-    def get(self, key: str, default=None):
+    def get(self, key: str, default=None) -> Any:
         """Get a specific value from the config dict.
         This might need to be modified for nesting
         Ideally also shouldn't access the dict directly

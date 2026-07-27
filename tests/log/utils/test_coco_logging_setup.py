@@ -18,7 +18,9 @@ def test_setup_teardown_coco_logger():
 
     # Check that handlers are instances of ManualRotatingFileHandler
     for handler in logger.handlers:
-        from ttex.log.handler import ManualRotatingFileHandler
+        from ttex.log.handler.manual_rotating_file_handler import (
+            ManualRotatingFileHandler,
+        )
 
         assert isinstance(handler, ManualRotatingFileHandler)
     logger.info("This is a test log message.")

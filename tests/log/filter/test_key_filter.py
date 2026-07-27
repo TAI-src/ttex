@@ -1,6 +1,6 @@
 from logging import makeLogRecord
 
-from ttex.log.filter import KeyFilter
+from ttex.log.filter.key_filter import KeyFilter
 
 from ..handler.test_manual_rotating_file_handler import DummyHeader
 

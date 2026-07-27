@@ -2,8 +2,13 @@ import sys
 from logging import makeLogRecord
 from uuid import uuid4
 
-from ttex.log.filter import EventKeysplitFilter, KeySplitter, LogEvent, LoggingState
-from ttex.log.formatter import StrRecord
+from ttex.log.filter.event_keysplit_filter import (
+    EventKeysplitFilter,
+    KeySplitter,
+    LogEvent,
+    LoggingState,
+)
+from ttex.log.formatter.str_record import StrRecord
 
 from ..handler.test_manual_rotating_file_handler import DummyRecord
 

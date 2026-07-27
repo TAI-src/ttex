@@ -1,9 +1,12 @@
 import logging
 import os.path as osp
 
-from ttex.log.filter import EventKeysplitFilter, KeyFilter
-from ttex.log.formatter import KeyFormatter
-from ttex.log.handler import ManualRotatingFileHandler
+from ttex.log.filter.event_keysplit_filter import EventKeysplitFilter
+from ttex.log.filter.key_filter import KeyFilter
+from ttex.log.formatter.key_formatter import KeyFormatter
+from ttex.log.handler.manual_rotating_file_handler import ManualRotatingFileHandler
+
+LOGGER_NAME = "DefaultLogger"
 
 
 def setup_coco_logger(
@@ -32,7 +35,7 @@ def setup_coco_logger(
             "target_precision": target_precision,
         }
         coco_filter = EventKeysplitFilter(
-            key_splitter_cls="ttex.log.coco.COCOKeySplitter",
+            key_splitter_cls="ttex.log.coco.coco_splitter.COCOKeySplitter",
             key_splitter_args=splitter_args,
         )
         logger.addFilter(coco_filter)

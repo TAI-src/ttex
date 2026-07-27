@@ -8,40 +8,40 @@ def get_coco_logging_config(
         "disable_existing_loggers": disable_existing,
         "formatters": {
             "info_form": {
-                "()": "ttex.log.coco.KeyFormatter",
+                "()": "ttex.log.formatter.key_formatter.KeyFormatter",
                 "key": "info",
             },
             "log_dat_form": {
-                "()": "ttex.log.coco.KeyFormatter",
+                "()": "ttex.log.formatter.key_formatter.KeyFormatter",
                 "key": "log_dat",
             },
             "log_tdat_form": {
-                "()": "ttex.log.coco.KeyFormatter",
+                "()": "ttex.log.formatter.key_formatter.KeyFormatter",
                 "key": "log_tdat",
             },
         },
         "filters": {
             "info_filter": {
-                "()": "ttex.log.coco.KeyFilter",
+                "()": "ttex.log.filter.key_filter.KeyFilter",
                 "key": "info",
             },
             "log_dat_filter": {
-                "()": "ttex.log.coco.KeyFilter",
+                "()": "ttex.log.filter.key_filter.KeyFilter",
                 "key": "log_dat",
             },
             "log_tdat_filter": {
-                "()": "ttex.log.coco.KeyFilter",
+                "()": "ttex.log.filter.key_filter.KeyFilter",
                 "key": "log_tdat",
             },
             "coco_filter": {
-                "()": "ttex.log.coco.EventKeysplitFilter",
-                "key_splitter_cls": "ttex.log.coco.COCOKeySplitter",
+                "()": "ttex.log.filter.event_keysplit_filter.EventKeysplitFilter",
+                "key_splitter_cls": "ttex.log.coco.coco_splitter.COCOKeySplitter",
                 "key_splitter_args": {"trigger_nth": trigger_nth},
             },
         },
         "handlers": {
             "info_handler": {
-                "()": "ttex.log.coco.ManualRotatingFileHandler",
+                "()": "ttex.log.handler.manual_rotating_file_handler.ManualRotatingFileHandler",
                 "filepath": "coco_info.txt",
                 "key": "info",
                 "mode": "a",
@@ -49,7 +49,7 @@ def get_coco_logging_config(
                 "filters": ["info_filter"],
             },
             "log_dat_handler": {
-                "()": "ttex.log.coco.ManualRotatingFileHandler",
+                "()": "ttex.log.handler.manual_rotating_file_handler.ManualRotatingFileHandler",
                 "filepath": "coco_log_dat.txt",
                 "key": "log_dat",
                 "mode": "a",
@@ -57,7 +57,7 @@ def get_coco_logging_config(
                 "filters": ["log_dat_filter"],
             },
             "log_tdat_handler": {
-                "()": "ttex.log.coco.ManualRotatingFileHandler",
+                "()": "ttex.log.handler.manual_rotating_file_handler.ManualRotatingFileHandler",
                 "filepath": "coco_log_tdat.txt",
                 "key": "log_tdat",
                 "mode": "a",

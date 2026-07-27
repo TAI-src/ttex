@@ -4,7 +4,7 @@ import shutil
 from uuid import uuid4
 
 import pytest
-from ttex.log.handler import ManualRotatingFileHandler
+from ttex.log.handler.manual_rotating_file_handler import ManualRotatingFileHandler
 
 
 @pytest.fixture(autouse=True, scope="module")

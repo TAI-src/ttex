@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from logging import Filter
 
-from ttex.log.formatter import StrRecord
+from ttex.log.formatter.str_record import StrRecord
 
 
 class LogEvent(ABC):
@@ -54,7 +54,9 @@ class EventKeysplitFilter(Filter):
         return getattr(module, class_name)
 
     def filter(self, record) -> bool:
-        """ """
+        """
+        Filter log records to allow only those that are instances of LogEvent.
+        """
 
         if not isinstance(record.msg, LogEvent):
             return False

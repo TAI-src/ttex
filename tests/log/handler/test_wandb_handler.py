@@ -5,7 +5,7 @@ import shutil
 from importlib.metadata import version
 
 import pytest
-from ttex.log.handler import WandbHandler
+from ttex.log.handler.wandb_handler import WandbHandler
 from wandb.sdk import launch
 
 import wandb

@@ -2,12 +2,12 @@ import os.path as osp
 
 import numpy as np
 
-from ttex.log.coco import COCOEnd, COCOEval, COCOStart
-from ttex.log.filter import LogEvent, LoggingState
+from ttex.log.coco.coco_events import COCOEnd, COCOEval, COCOStart
+from ttex.log.filter.event_keysplit_filter import LogEvent, LoggingState
 
 
 class COCOState(LoggingState):
-    def __init__(self):
+    def __init__(self) -> None:
         self._needs_start = True
         self.last_tdat_emit = 0
         self.best_target: float | None = None  # Best target reached (from .dat logging)
@@ -35,7 +35,7 @@ class COCOState(LoggingState):
         elif isinstance(event, COCOEnd):
             self._update_end(event)
         else:
-            raise ValueError(
+            raise TypeError(
                 "COCOState can only process COCOStart, COCOEval, and COCOEnd events"
             )
 
@@ -72,5 +72,5 @@ class COCOState(LoggingState):
     def _update_end(self, coco_end: COCOEnd) -> None:
         self._needs_start = True
 
-    def set_dat_filepath(self, dat_filepath: str, info_filepath: str):
+    def set_dat_filepath(self, dat_filepath: str, info_filepath: str) -> None:
         self.dat_filepath = osp.relpath(dat_filepath, start=osp.dirname(info_filepath))

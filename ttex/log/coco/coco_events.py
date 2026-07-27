@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from uuid import uuid4
 
-from ttex.log.filter import LogEvent
+from ttex.log.filter.event_keysplit_filter import LogEvent
 
 
 @dataclass(frozen=True)

@@ -91,9 +91,6 @@ def test_extract():
     for arg in ["c", "d"]:
         assert getattr(test_config, arg) == getattr(config, arg)
 
-    with pytest.raises(NotImplementedError):
-        test_config.to_dict()  # Due to hack
-
 
 def test_exctract_class():
     ex_class = ConfigFactory._extract_attr(
@@ -154,9 +151,43 @@ def test_from_dict(mode):
     assert config.c == ConfigFactory
     assert config.e == DummyEnum.B
 
-    assert config.to_dict() == dict_config["DummyConfig"]
+    to_dict_config = config.to_dict()
+    print(to_dict_config)
+    assert to_dict_config["DummyConfig"]["a"] == "a"
+    assert to_dict_config["DummyConfig"]["b"]["DummyConfig"]["a"] == "a2"
+    assert to_dict_config["DummyConfig"]["c"] == "ttex.config.config.ConfigFactory"
+    assert to_dict_config["DummyConfig"]["e"] == "tests.config.DummyEnum.B"
     if mode == "json":
         os.remove(path)
+
+
+def test_to_dict_standard():
+    # check that the fully qualified dict can be turned into a config again
+    config = ConfigFactory.from_dict(dict_config, context=globals())
+    to_dict_config = config.to_dict()
+    config2 = ConfigFactory.from_dict(to_dict_config, context=globals())
+    assert isinstance(config2, DummyConfig)
+    assert config2.a == "a"
+    assert isinstance(config2.b, DummyConfig)
+    assert config2.b.a == "a2"
+    assert config2.c == ConfigFactory
+    assert config2.e == DummyEnum.B
+
+
+def test_to_dict_dummy():
+    config = DummyConfig(
+        a=1, b=DummyConfig(a=2, b="b2"), c=["c"], d=("d", 4), e=DummyEnum.B
+    )
+    to_dict_config = config.to_dict()
+    assert to_dict_config["DummyConfig"]["a"] == 1
+    assert to_dict_config["DummyConfig"]["b"]["DummyConfig"]["a"] == 2
+    assert to_dict_config["DummyConfig"]["c"] == ["c"]
+    assert to_dict_config["DummyConfig"]["d"] == ("d", 4)
+    assert to_dict_config["DummyConfig"]["e"] == "tests.config.DummyEnum.B"
+
+    cfg = ConfigFactory.from_dict(to_dict_config, context=globals())
+    assert isinstance(cfg, DummyConfig)
+    assert cfg.a == 1
 
 
 def test_config_dict_format():

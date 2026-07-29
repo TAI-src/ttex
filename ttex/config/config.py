@@ -5,6 +5,7 @@ import json
 import logging
 from abc import ABC
 from collections.abc import Iterable
+from enum import Enum
 from inspect import Parameter, signature
 from typing import Any, Protocol, TypeVar
 
@@ -52,15 +53,42 @@ class Config(ABC):  # pylint: disable=too-few-public-methods
         """
         return self.__dict__.get(key, default)
 
+    @staticmethod
+    def serialise(obj: Any) -> Any:
+        """
+        Convert an object to a dictionary
+        """
+        if isinstance(obj, Config):
+            return obj.to_dict()
+        elif isinstance(obj, dict):
+            return {k: Config.serialise(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [Config.serialise(v) for v in obj]
+        elif isinstance(obj, tuple):
+            return tuple(Config.serialise(v) for v in obj)
+        elif isinstance(obj, Enum):
+            return f"{obj.__class__.__module__}.{obj.__class__.__qualname__}.{obj.name}"
+        elif isinstance(obj, type):
+            return f"{obj.__module__}.{obj.__qualname__}"
+        else:
+            return obj
+
     def to_dict(self) -> dict:
         """
         Convert the config to a dictionary
         """
-        # TODO: implement a generic to_dict method. This is just a hack in case we already have a dict at creation
-        if hasattr(self, "_to_dict") and self._to_dict is not None:
-            return self._to_dict
-        else:
-            raise NotImplementedError
+        sig = signature(type(self).__init__)
+        dict_res = {}
+        for name in sig.parameters:
+            if name == "self":
+                continue
+            if not hasattr(self, name):
+                raise ValueError(
+                    f"Config {type(self).__name__} is missing attribute {name}"
+                )
+            value = getattr(self, name)
+            dict_res[name] = Config.serialise(value)
+        return {type(self).__name__: dict_res}
 
     def _setup(self, ctx: ContextProtocol | None = None) -> bool:
         """

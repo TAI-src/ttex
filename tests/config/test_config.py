@@ -161,7 +161,7 @@ def test_from_dict(mode):
         os.remove(path)
 
 
-def test_to_dict():
+def test_to_dict_standard():
     # check that the fully qualified dict can be turned into a config again
     config = ConfigFactory.from_dict(dict_config, context=globals())
     to_dict_config = config.to_dict()
@@ -172,6 +172,22 @@ def test_to_dict():
     assert config2.b.a == "a2"
     assert config2.c == ConfigFactory
     assert config2.e == DummyEnum.B
+
+
+def test_to_dict_dummy():
+    config = DummyConfig(
+        a=1, b=DummyConfig(a=2, b="b2"), c=["c"], d=("d", 4), e=DummyEnum.B
+    )
+    to_dict_config = config.to_dict()
+    assert to_dict_config["DummyConfig"]["a"] == 1
+    assert to_dict_config["DummyConfig"]["b"]["DummyConfig"]["a"] == 2
+    assert to_dict_config["DummyConfig"]["c"] == ["c"]
+    assert to_dict_config["DummyConfig"]["d"] == ("d", 4)
+    assert to_dict_config["DummyConfig"]["e"] == "tests.config.DummyEnum.B"
+
+    cfg = ConfigFactory.from_dict(to_dict_config, context=globals())
+    assert isinstance(cfg, DummyConfig)
+    assert cfg.a == 1
 
 
 def test_config_dict_format():

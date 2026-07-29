@@ -1,12 +1,34 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from uuid import uuid4
 from ttex.config import Config
 
 from ttex.log.filter.event_keysplit_filter import LogEvent
 
 
-@dataclass(frozen=True)
-class ExperimentStart(LogEvent):
+@dataclass(frozen=True, kw_only=True)
+class ExperimentEvent(LogEvent):
+    """
+    Base class for all experiment-related events.
+    """
+
+    exp_id: str | None = (
+        None  # Experiment ID, should match the one from ExperimentStart
+    )
+
+
+@dataclass(frozen=True, kw_only=True)
+class ClosingEvent(LogEvent):
+    """
+    Base class for all closing events.
+    """
+
+    artifacts: dict[str, str] | None = (
+        None  # Dictionary of artifact names to file paths
+    )
+
+
+@dataclass(frozen=True, kw_only=True)
+class ExperimentStart(ExperimentEvent):
     """
     Event representing the start of an experiment.
     Experiments are assumed to run a single algorithm on a set of environments, and can have multiple phases (e.g., offline, online, post).
@@ -17,20 +39,33 @@ class ExperimentStart(LogEvent):
         Config | dict
     )  # Experiment configuration, can be a Config object or a dictionary
     exp_kwargs: dict  # Additional runtime args for the experiment
-    exp_id: str = str(uuid4())  # Experiment ID, defaults to a random UUID
+    exp_id: str = field(
+        default_factory=lambda: str(uuid4())
+    )  # Experiment ID, defaults to a random UUID
 
 
-@dataclass(frozen=True)
-class ExperimentEnd(LogEvent):
+@dataclass(frozen=True, kw_only=True)
+class ExperimentEnd(ExperimentEvent, ClosingEvent):
     """
     Event representing the end of an experiment.
     """
 
-    exp_id: str  # Experiment ID, should match the one from ExperimentStart
+    pass
 
 
-@dataclass(frozen=True)
-class EnvironmentInit(LogEvent):
+@dataclass(frozen=True, kw_only=True)
+class EnvironmentEvent(ExperimentEvent):
+    """
+    Base class for all environment-related events.
+    """
+
+    env_id: str | None = (
+        None  # Environment ID, should match the one from EnvironmentInit
+    )
+
+
+@dataclass(frozen=True, kw_only=True)
+class EnvironmentInit(EnvironmentEvent):
     """
     Event representing the start of an environment within an experiment.
     """
@@ -39,27 +74,29 @@ class EnvironmentInit(LogEvent):
         Config | dict
     )  # Environment configuration, can be a Config object or a dictionary
     env_kwargs: dict  # Additional runtime args for the environment
-    exp_id: str  # Experiment ID, should match the one from ExperimentStart
     phase: str = "online"  # Phase of the experiment (e.g., "offline", "online", "post")
-    env_id: str = str(uuid4())  # Environment ID, defaults to a random
+    env_id: str = field(
+        default_factory=lambda: str(
+            uuid4()
+        )  # Environment ID, defaults to a random UUID
+    )
 
 
-@dataclass(frozen=True)
-class EnvironmentClose(LogEvent):
+@dataclass(frozen=True, kw_only=True)
+class EnvironmentClose(EnvironmentEvent, ClosingEvent):
     """
     Event representing the closing of an environment within an experiment.
     """
 
-    env_id: str  # Environment ID, should match the one from EnvironmentStart
+    pass
 
 
-@dataclass(frozen=True)
-class EnvironmentStep(LogEvent):
+@dataclass(frozen=True, kw_only=True)
+class EnvironmentStep(EnvironmentEvent):
     """
     Event representing a step taken in the environment.
     """
 
-    env_id: str  # Environment ID, should match the one from EnvironmentStart
     step: int  # Current step number
     observation: dict  # Observation from the environment
     reward: float  # Reward received from the environment
@@ -68,17 +105,26 @@ class EnvironmentStep(LogEvent):
 
 
 @dataclass(frozen=True)
-class EnvironmentReset(LogEvent):
+class EnvironmentReset(EnvironmentEvent):
     """
     Event representing the reset of the environment.
     """
 
-    env_id: str  # Environment ID, should match the one from EnvironmentStart
     observation: dict  # Initial observation after reset
+    seed: int | None = None  # Optional seed used for the reset
 
 
-@dataclass(frozen=True)
-class AlgorithmStart(LogEvent):
+@dataclass(frozen=True, kw_only=True)
+class AlgorithmEvent(EnvironmentEvent):
+    """
+    Base class for all algorithm-related events.
+    """
+
+    algo_id: str | None = None  # Algorithm ID, should match the one from AlgorithmInit
+
+
+@dataclass(frozen=True, kw_only=True)
+class AlgorithmStart(AlgorithmEvent):
     """
     Event representing the initialization of an algorithm within an experiment.
     """
@@ -87,29 +133,26 @@ class AlgorithmStart(LogEvent):
         Config | dict
     )  # Algorithm configuration, can be a Config object or a dictionary
     algo_kwargs: dict  # Additional runtime args for the algorithm
-    exp_id: str  # Experiment ID, should match the one from ExperimentStart
-    env_id: str  # Environment ID, should match the one from EnvironmentInit
-    algo_id: str = str(uuid4())  # Algorithm ID, defaults to a random UUID
+    algo_id: str = field(
+        default_factory=lambda: str(uuid4())
+    )  # Algorithm ID, defaults to a random UUID
 
 
-@dataclass(frozen=True)
-class AlgorithmStop(LogEvent):
+@dataclass(frozen=True, kw_only=True)
+class AlgorithmStop(AlgorithmEvent, ClosingEvent):
     """
     Event representing the closing of an algorithm within an experiment.
     """
 
-    algo_id: str  # Algorithm ID, should match the one from AlgorithmInit
-    env_id: str  # Environment ID, should match the one from EnvironmentInit
+    pass
 
 
-@dataclass(frozen=True)
-class AlgorithmStep(LogEvent):
+@dataclass(frozen=True, kw_only=True)
+class AlgorithmStep(AlgorithmEvent):
     """
     Event representing a step taken by the algorithm.
     """
 
-    algo_id: str  # Algorithm ID, should match the one from AlgorithmInit
-    env_id: str  # Environment ID, should match the one from EnvironmentInit
     step: int  # Current step number
     action: dict  # Action taken by the algorithm
     algo_state: (

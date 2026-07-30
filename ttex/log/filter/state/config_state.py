@@ -35,9 +35,9 @@ class ConfigState(LoggingState):
         self.config_event_type = config_event
         self.config_event: ConfigEvent | None = None
         self.closing_event_type = closing_event
-        self.last_events: dict[str, ExperimentEvent] = (
-            {}
-        )  # Store the last event of each type
+        self.last_events: dict[
+            str, ExperimentEvent
+        ] = {}  # Store the last event of each type
         self.expected_ids = expected_ids if expected_ids is not None else {}
         self.artifacts: dict[str, str] = {}  # Store artifacts from ClosingEvent
         self.event_counter: dict[str, int] = defaultdict(

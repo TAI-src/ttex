@@ -1,6 +1,7 @@
-from ttex.log.filter.event.environment_events import EnvironmentStep
-from ttex.log.filter.event_keysplit_filter import LoggingState
 import numpy as np
+
+from ttex.log.filter.event.environment_events import EnvironmentStep
+from ttex.log.filter.event_keysplit_filter import LogEvent, LoggingState
 
 
 class TargetState(LoggingState):
@@ -51,7 +52,7 @@ class TargetState(LoggingState):
         else:
             return b - a
 
-    def update(self, event: LoggingState) -> None:
+    def update(self, event: LogEvent) -> None:
         assert isinstance(
             event, EnvironmentStep
         ), "TargetState can only process EnvironmentStep events"

@@ -12,10 +12,9 @@ class ImprovementState(LoggingState):
         self.target_key = target_key
         self.target_val = target_val
         self.is_min = is_min
-        self.best_target: float = np.nan  # Best target value observed so from
         self.eval_count = 0  # Count of evaluations processed
         self.best_observed = np.nan  # Best observed value
-        self.best_diff_opt: float = (
+        self.best_dist_target: float = (
             np.nan
         )  # Best difference to optimal value (if known)
         self.last_observed: float = np.nan  # Last observed value
@@ -23,8 +22,7 @@ class ImprovementState(LoggingState):
             np.nan
         )  # Improvement of best_observed since last evaluation
 
-    @staticmethod
-    def retrieve_val(event: EnvironmentStep, target_key: str) -> float | None:
+    def retrieve_val(self, event: EnvironmentStep, target_key: str) -> float | None:
         val = None
         if target_key.startswith("obs."):
             obs_key = target_key[4:]  # Remove "obs." prefix
@@ -80,8 +78,8 @@ class ImprovementState(LoggingState):
         self.best_observed = self.get_better(self.best_observed, val, self.is_min)
         self.last_observed = val
         if self.target_val is None:
-            self.best_diff_opt = self.best_observed
+            self.best_dist_target = self.best_observed
         else:
-            self.best_diff_opt = self.get_diff(
+            self.best_dist_target = self.get_diff(
                 self.best_observed, self.target_val, self.is_min
             )

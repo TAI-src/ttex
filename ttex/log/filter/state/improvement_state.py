@@ -4,7 +4,7 @@ from ttex.log.filter.event.environment_events import EnvironmentStep
 from ttex.log.filter.event_keysplit_filter import LogEvent, LoggingState
 
 
-class TargetState(LoggingState):
+class ImprovementState(LoggingState):
     def __init__(
         self, target_key: str, target_val: float | None = None, is_min: bool = True
     ) -> None:
@@ -12,23 +12,35 @@ class TargetState(LoggingState):
         self.target_key = target_key
         self.target_val = target_val
         self.is_min = is_min
-        self.best_target: float | None = None  # Best target value observed so from
+        self.best_target: float = np.nan  # Best target value observed so from
         self.eval_count = 0  # Count of evaluations processed
-        self.best_observed = np.inf if is_min else -np.inf  # Best observed value
-        self.best_diff_opt: float | None = (
-            None  # Best difference to optimal value (if known)
-        )
-        self.last_observed: float | None = None  # Last observed value
-        self.last_imp: float | None = (
-            None  # Improvement of best_observed since last evaluation
-        )
+        self.best_observed = np.nan  # Best observed value
+        self.best_diff_opt: float = (
+            np.nan
+        )  # Best difference to optimal value (if known)
+        self.last_observed: float = np.nan  # Last observed value
+        self.last_imp: float = (
+            np.nan
+        )  # Improvement of best_observed since last evaluation
 
     @staticmethod
     def retrieve_val(event: EnvironmentStep, target_key: str) -> float | None:
         val = None
         if target_key.startswith("obs."):
-            obs_index = int(target_key[4:])  # Remove "obs." prefix
-            val = event.observation.get(obs_index, None)
+            obs_key = target_key[4:]  # Remove "obs." prefix
+            # check if obs_key is an integer
+            try:
+                obs_index = int(obs_key)
+                assert obs_index >= 0, "Observation index must be non-negative"
+                assert obs_index < len(
+                    event.observation
+                ), "Observation index out of bounds"
+                val = event.observation[obs_index]
+            except ValueError:
+                assert (
+                    obs_key in event.observation
+                ), f"Observation key '{obs_key}' not found"
+                val = event.observation.get(obs_key)
         elif target_key == "reward":
             val = event.reward
         elif target_key.startswith("info."):
@@ -41,9 +53,9 @@ class TargetState(LoggingState):
     @staticmethod
     def get_better(a: float, b: float, is_min: bool) -> float:
         if is_min:
-            return min(a, b)
+            return np.nanmin([a, b])
         else:
-            return max(a, b)
+            return np.nanmax([a, b])
 
     @staticmethod
     def get_diff(a: float, b: float, is_min: bool) -> float:
@@ -62,7 +74,9 @@ class TargetState(LoggingState):
         ), f"Value for target_key '{self.target_key}' not found in event"
 
         self.eval_count += 1
-        self.last_imp = max(self.get_diff(self.best_observed, val, self.is_min), 0)
+        self.last_imp = np.maximum(
+            self.get_diff(self.best_observed, val, self.is_min), 0
+        )
         self.best_observed = self.get_better(self.best_observed, val, self.is_min)
         self.last_observed = val
         if self.target_val is None:

@@ -1,6 +1,7 @@
 from ttex.log.filter.tracker.improvement_tracker import ImprovementTracker
 from ttex.log.filter.tracker.parser import Parser
 import math
+from ttex.log.filter.event_keysplit_filter import LogEvent
 
 
 class ExpTargetImprovementParser(Parser):
@@ -57,6 +58,7 @@ class ExpTargetImprovementTracker(ImprovementTracker):
         n_bins: int,
         is_min: bool = True,
         target_precision: float = 1e-11,
+        event_type: type[LogEvent] = LogEvent,
     ) -> None:
         parser = ExpTargetImprovementParser(
             target_val=target_val,
@@ -66,5 +68,9 @@ class ExpTargetImprovementTracker(ImprovementTracker):
         )
         # Since we are tracking the distance to the target, we set target_val=0 and is_min=True
         super().__init__(
-            target_key=target_key, target_val=0, is_min=True, parser=parser
+            target_key=target_key,
+            target_val=0,
+            is_min=True,
+            parser=parser,
+            event_type=event_type,
         )

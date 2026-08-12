@@ -23,6 +23,7 @@ class ImprovementTracker(Tracker):
         self.last_imp: float = (
             np.nan
         )  # Improvement of best_observed since last evaluation
+        self.last_update: int = 1  # Last event count when best_observed was updated
 
     @staticmethod
     def get_better(a: float, b: float, is_min: bool) -> float:
@@ -43,6 +44,8 @@ class ImprovementTracker(Tracker):
         self.last_imp = np.maximum(
             self.get_diff(self.best_observed, val, self.is_min), 0
         )
+        if self.last_imp > 0:
+            self.last_update = self.event_count
         self.best_observed = self.get_better(self.best_observed, val, self.is_min)
         if self.target_val is None:
             self.best_dist_target = self.best_observed
@@ -58,6 +61,7 @@ class ImprovementTracker(Tracker):
                 "best_observed": self.best_observed,
                 "best_dist_target": self.best_dist_target,
                 "last_imp": self.last_imp,
+                "last_update": self.last_update,
             }
         )
         return info

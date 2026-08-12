@@ -4,6 +4,8 @@ from typing import Any
 class Parser:
 
     def retrieve_val(self, obj: Any, target_key: str) -> Any | None:
+        if obj is None:
+            return None
         # split target_key by '.' to handle nested attributes
         current_key = target_key.split(".")[0]
         remaining_key = (
@@ -13,9 +15,9 @@ class Parser:
         # check if current_key is an integer index
         try:
             index = int(current_key)
-            if index > 0 and len(obj) > index:
+            try:
                 val = obj[index]
-            else:
+            except (IndexError, TypeError):
                 val = None
         except ValueError:
             # current_key is not an integer, treat it as a dictionary key

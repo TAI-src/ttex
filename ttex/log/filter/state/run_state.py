@@ -29,9 +29,9 @@ class RunState(ConfigState):
             ],  # Ignore ID mismatch for the run,
         )
         self.exp_id = exp_id
-        self.env_list: list[
-            EnvironmentState
-        ] = []  # List to hold EnvironmentState instances for this run
+        self.env_list: list[EnvironmentState] = (
+            []
+        )  # List to hold EnvironmentState instances for this run
         self.algorithm = AlgorithmState(
             exp_id=exp_id
         )  # Initialize the AlgorithmState for this run

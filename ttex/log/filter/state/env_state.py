@@ -79,9 +79,9 @@ class EnvironmentState(ResetEnvironmentState):
     def __init__(self, exp_id: str, alg_id: str) -> None:
         super().__init__(exp_id=exp_id, alg_id=alg_id)
         self.child_environments: list[ResetEnvironmentState] = []
-        self.stack: list[
-            int
-        ] = []  # Stack to keep track of the current child environment indeces
+        self.stack: list[int] = (
+            []
+        )  # Stack to keep track of the current child environment indeces
         self.exp_id = exp_id
         self.alg_id = alg_id
 

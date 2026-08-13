@@ -20,9 +20,9 @@ class ClosingEvent(LogEvent):
     Base class for all closing events.
     """
 
-    artifacts: dict[
-        str, str
-    ] | None = None  # Dictionary of artifact names to file paths
+    artifacts: dict[str, str] | None = (
+        None  # Dictionary of artifact names to file paths
+    )
 
 
 @dataclass(frozen=True, kw_only=True)

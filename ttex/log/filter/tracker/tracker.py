@@ -1,6 +1,7 @@
+import numpy as np
+
 from ttex.log.filter.event_keysplit_filter import LogEvent
 from ttex.log.filter.tracker.parser import Parser
-import numpy as np
 
 
 class Tracker:
@@ -23,7 +24,11 @@ class Tracker:
         if not isinstance(event, self.event_type):
             return
         self.event_count += 1
-        self.last_observed = self.parser.retrieve_val(event, self.target_key)
+        last_observed = self.parser.retrieve_val(event, self.target_key)
+        if last_observed is not None:
+            self.last_observed = float(last_observed)
+        else:
+            self.last_observed = np.nan
         assert (
             self.last_observed is not None
         ), f"Value for target_key '{self.target_key}' is None"

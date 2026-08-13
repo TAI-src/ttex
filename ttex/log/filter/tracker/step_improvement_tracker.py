@@ -1,8 +1,10 @@
+from typing import Any
+
+import numpy as np
+
+from ttex.log.filter.event_keysplit_filter import LogEvent
 from ttex.log.filter.tracker.improvement_tracker import ImprovementTracker
 from ttex.log.filter.tracker.parser import Parser
-from ttex.log.filter.event_keysplit_filter import LogEvent
-import numpy as np
-from typing import Any
 
 
 class StepImprovementParser(Parser):

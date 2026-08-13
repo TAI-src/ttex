@@ -1,6 +1,6 @@
-from ttex.log.filter.tracker.improvement_tracker import ImprovementTracker
+from ttex.xp_log.tracker.improvement_tracker import ImprovementTracker
 import numpy as np
-from ttex.log.filter.event.environment_events import EnvironmentStep
+from ttex.xp_log.event.environment_events import EnvironmentStep
 import pytest
 
 

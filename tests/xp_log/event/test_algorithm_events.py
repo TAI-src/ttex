@@ -1,4 +1,4 @@
-from ttex.log.filter.event.algorithm_events import (
+from ttex.xp_log.event.algorithm_events import (
     AlgorithmEvent,
     AlgorithmStart,
     TrainingStart,

@@ -1,12 +1,12 @@
-from ttex.log.filter.event.algorithm_events import AlgorithmStart
-from ttex.log.filter.event.experiment_events import (
+from ttex.log.filter.event_keysplit_filter import LogEvent
+from ttex.xp_log.event.algorithm_events import AlgorithmStart
+from ttex.xp_log.event.experiment_events import (
     ExperimentEnd,
     ExperimentEvent,
     ExperimentStart,
 )
-from ttex.log.filter.event_keysplit_filter import LogEvent
-from ttex.log.filter.state.config_state import ConfigState
-from ttex.log.filter.state.run_state import RunState
+from ttex.xp_log.state.config_state import ConfigState
+from ttex.xp_log.state.run_state import RunState
 
 
 class ExperimentState(ConfigState):

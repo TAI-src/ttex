@@ -1,17 +1,17 @@
-from ttex.log.filter.event.algorithm_events import (
+from ttex.log.filter.event_keysplit_filter import LogEvent
+from ttex.xp_log.event.algorithm_events import (
     AlgorithmEvent,
     AlgorithmStart,
     AlgorithmStop,
 )
-from ttex.log.filter.event.environment_events import (
+from ttex.xp_log.event.environment_events import (
     EnvironmentEvent,
     EnvironmentInit,
     EnvironmentStep,
 )
-from ttex.log.filter.event_keysplit_filter import LogEvent
-from ttex.log.filter.state.alg_state import AlgorithmState
-from ttex.log.filter.state.config_state import ConfigState, EventIssue
-from ttex.log.filter.state.env_state import EnvironmentState
+from ttex.xp_log.state.alg_state import AlgorithmState
+from ttex.xp_log.state.config_state import ConfigState, EventIssue
+from ttex.xp_log.state.env_state import EnvironmentState
 
 
 class RunState(ConfigState):

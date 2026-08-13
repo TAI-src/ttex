@@ -1,6 +1,7 @@
 from enum import Enum
 
-from ttex.log.filter.event.algorithm_events import (
+from ttex.log.filter.event_keysplit_filter import LogEvent
+from ttex.xp_log.event.algorithm_events import (
     AlgorithmEvent,
     AlgorithmStart,
     AlgorithmStop,
@@ -9,9 +10,8 @@ from ttex.log.filter.event.algorithm_events import (
     TrainingEnd,
     TrainingStart,
 )
-from ttex.log.filter.event.environment_events import EnvironmentStep
-from ttex.log.filter.event_keysplit_filter import LogEvent
-from ttex.log.filter.state.config_state import ConfigState
+from ttex.xp_log.event.environment_events import EnvironmentStep
+from ttex.xp_log.state.config_state import ConfigState
 
 
 class Phase(Enum):

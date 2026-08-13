@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from uuid import uuid4
-from ttex.log.filter.state.config_state import ConfigState, EventIssue
-from ttex.log.filter.event.experiment_events import (
+from ttex.xp_log.state.config_state import ConfigState, EventIssue
+from ttex.xp_log.event.experiment_events import (
     ConfigEvent,
     ExperimentEvent,
     ClosingEvent,

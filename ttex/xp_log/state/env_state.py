@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from copy import deepcopy
 
-from ttex.log.filter.event.environment_events import (
+from ttex.log.filter.event_keysplit_filter import LogEvent
+from ttex.xp_log.event.environment_events import (
     EnvironmentClose,
     EnvironmentEvent,
     EnvironmentInit,
     EnvironmentReset,
     EnvironmentStep,
 )
-from ttex.log.filter.event_keysplit_filter import LogEvent
-from ttex.log.filter.state.config_state import ConfigState, EventIssue
+from ttex.xp_log.state.config_state import ConfigState, EventIssue
 
 
 class SingleEnvironmentState(ConfigState):

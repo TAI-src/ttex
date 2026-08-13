@@ -3,12 +3,12 @@ from copy import deepcopy
 from enum import Enum
 from typing import Any
 
-from ttex.log.filter.event.experiment_events import (
+from ttex.log.filter.event_keysplit_filter import LogEvent, LoggingState
+from ttex.xp_log.event.experiment_events import (
     ClosingEvent,
     ConfigEvent,
     ExperimentEvent,
 )
-from ttex.log.filter.event_keysplit_filter import LogEvent, LoggingState
 
 
 class EventIssue(Enum):

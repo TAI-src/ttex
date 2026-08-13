@@ -1,15 +1,15 @@
-from ttex.log.filter.state.env_state import (
+from ttex.xp_log.state.env_state import (
     SingleEnvironmentState,
     ResetEnvironmentState,
     EnvironmentState,
 )
-from ttex.log.filter.event.environment_events import (
+from ttex.xp_log.event.environment_events import (
     EnvironmentClose,
     EnvironmentInit,
     EnvironmentReset,
     EnvironmentStep,
 )
-from ttex.log.filter.state.config_state import EventIssue
+from ttex.xp_log.state.config_state import EventIssue
 import pytest
 
 

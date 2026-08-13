@@ -1,4 +1,4 @@
-from ttex.log.filter.tracker.step_improvement_tracker import (
+from ttex.xp_log.tracker.step_improvement_tracker import (
     StepImprovementTracker,
     StepImprovementParser,
 )

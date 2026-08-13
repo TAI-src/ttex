@@ -1,4 +1,4 @@
-from ttex.log.filter.event.algorithm_events import (
+from ttex.xp_log.event.algorithm_events import (
     TrainingStart,
     AlgorithmStart,
     TrainingEnd,
@@ -6,9 +6,9 @@ from ttex.log.filter.event.algorithm_events import (
     EvaluationEnd,
     AlgorithmStop,
 )
-from ttex.log.filter.state.run_state import RunState
-from ttex.log.filter.state.alg_state import AlgorithmState, Phase
-from ttex.log.filter.event.environment_events import (
+from ttex.xp_log.state.run_state import RunState
+from ttex.xp_log.state.alg_state import AlgorithmState, Phase
+from ttex.xp_log.event.environment_events import (
     EnvironmentClose,
     EnvironmentInit,
     EnvironmentStep,

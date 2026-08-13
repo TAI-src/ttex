@@ -1,6 +1,6 @@
 from ttex.config import Config
 import pytest
-from ttex.log.filter.event.experiment_events import (
+from ttex.xp_log.event.experiment_events import (
     ConfigEvent,
     ExperimentStart,
     ExperimentEnd,

@@ -1,4 +1,4 @@
-from ttex.log.filter.event.environment_events import (
+from ttex.xp_log.event.environment_events import (
     EnvironmentClose,
     EnvironmentInit,
     EnvironmentReset,

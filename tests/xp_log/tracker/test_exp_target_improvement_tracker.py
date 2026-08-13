@@ -1,4 +1,4 @@
-from ttex.log.filter.tracker.exp_target_improvement_tracker import (
+from ttex.xp_log.tracker.exp_target_improvement_tracker import (
     ExpTargetImprovementTracker,
     ExpTargetImprovementParser,
 )

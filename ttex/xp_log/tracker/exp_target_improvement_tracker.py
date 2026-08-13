@@ -1,8 +1,8 @@
 import math
 
 from ttex.log.filter.event_keysplit_filter import LogEvent
-from ttex.log.filter.tracker.improvement_tracker import ImprovementTracker
-from ttex.log.filter.tracker.parser import Parser
+from ttex.xp_log.tracker.improvement_tracker import ImprovementTracker
+from ttex.xp_log.tracker.parser import Parser
 
 
 class ExpTargetImprovementParser(Parser):

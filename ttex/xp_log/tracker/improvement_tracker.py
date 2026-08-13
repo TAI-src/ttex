@@ -1,8 +1,8 @@
 import numpy as np
 
 from ttex.log.filter.event_keysplit_filter import LogEvent
-from ttex.log.filter.tracker.parser import Parser
-from ttex.log.filter.tracker.tracker import Tracker
+from ttex.xp_log.tracker.parser import Parser
+from ttex.xp_log.tracker.tracker import Tracker
 
 
 class ImprovementTracker(Tracker):

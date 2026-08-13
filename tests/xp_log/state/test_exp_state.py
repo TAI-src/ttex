@@ -1,8 +1,8 @@
-from ttex.log.filter.state.experiment_state import ExperimentState
-from ttex.log.filter.event.algorithm_events import AlgorithmStart, AlgorithmStop
-from ttex.log.filter.event.experiment_events import ExperimentStart, ExperimentEnd
-from ttex.log.filter.event.environment_events import EnvironmentInit, EnvironmentClose
-from ttex.log.filter.state.run_state import RunState
+from ttex.xp_log.state.experiment_state import ExperimentState
+from ttex.xp_log.event.algorithm_events import AlgorithmStart, AlgorithmStop
+from ttex.xp_log.event.experiment_events import ExperimentStart, ExperimentEnd
+from ttex.xp_log.event.environment_events import EnvironmentInit, EnvironmentClose
+from ttex.xp_log.state.run_state import RunState
 import pytest
 
 

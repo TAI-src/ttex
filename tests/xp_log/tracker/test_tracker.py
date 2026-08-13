@@ -1,5 +1,5 @@
-from ttex.log.filter.tracker.tracker import Tracker
-from ttex.log.filter.event.environment_events import EnvironmentStep, EnvironmentReset
+from ttex.xp_log.tracker.tracker import Tracker
+from ttex.xp_log.event.environment_events import EnvironmentStep, EnvironmentReset
 import numpy as np
 
 

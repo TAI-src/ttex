@@ -1,5 +1,5 @@
-from ttex.log.filter.state.alg_state import AlgorithmState, Phase
-from ttex.log.filter.event.algorithm_events import (
+from ttex.xp_log.state.alg_state import AlgorithmState, Phase
+from ttex.xp_log.event.algorithm_events import (
     AlgorithmStart,
     AlgorithmStop,
     TrainingStart,
@@ -8,8 +8,7 @@ from ttex.log.filter.event.algorithm_events import (
     EvaluationEnd,
     AlgorithmEvent,
 )
-from ttex.log.filter.event.environment_events import EnvironmentStep
-from ttex.log.filter.event_keysplit_filter import LogEvent
+from ttex.xp_log.event.environment_events import EnvironmentStep
 import pytest
 
 
